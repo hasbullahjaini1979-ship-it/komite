@@ -2,6 +2,7 @@
 =======================================================
   IURAN KOMITE SD NEGERI-1 RAJA
   Versi: 3 TAB (Publik / Bendahara / Admin)
+  FIXED: Sinkronisasi Google Sheets lengkap
 =======================================================
 -->
 
@@ -10,9 +11,6 @@
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 
 <style>
-/* ============================================================
-   Semua style dibatasi dalam #ik-app agar tidak bocor ke blog
-   ============================================================ */
 #ik-app {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 14px;
@@ -25,7 +23,7 @@
   margin: 0; padding: 0;
 }
 
-/* ---- MAIN TAB BAR (3 besar) ---- */
+/* ---- MAIN TAB BAR ---- */
 #ik-app .ik-main-tabs {
   display: flex;
   border-radius: 10px 10px 0 0;
@@ -64,15 +62,9 @@
   padding: 40px 20px;
   text-align: center;
 }
-#ik-app .ik-lock-icon {
-  font-size: 3rem; margin-bottom: 12px;
-}
-#ik-app .ik-lock-title {
-  font-size: 1rem; font-weight: 700; color: #1e293b; margin-bottom: 4px;
-}
-#ik-app .ik-lock-sub {
-  font-size: 0.78rem; color: #64748b; margin-bottom: 20px;
-}
+#ik-app .ik-lock-icon { font-size: 3rem; margin-bottom: 12px; }
+#ik-app .ik-lock-title { font-size: 1rem; font-weight: 700; color: #1e293b; margin-bottom: 4px; }
+#ik-app .ik-lock-sub { font-size: 0.78rem; color: #64748b; margin-bottom: 20px; }
 #ik-app .ik-lock-form {
   display: flex; flex-direction: column; align-items: center; gap: 10px; max-width: 280px; margin: 0 auto;
 }
@@ -94,9 +86,7 @@
   cursor: pointer; transition: background 0.15s;
 }
 #ik-app .ik-lock-btn:hover { background: #7f1d1d; }
-#ik-app .ik-lock-hint {
-  font-size: 0.68rem; color: #94a3b8; margin-top: 6px;
-}
+#ik-app .ik-lock-hint { font-size: 0.68rem; color: #94a3b8; margin-top: 6px; }
 
 /* ---- Widget Header ---- */
 #ik-app .ik-widget-head {
@@ -114,12 +104,8 @@
   display: flex; align-items: center; justify-content: center;
   font-size: 18px; flex-shrink: 0;
 }
-#ik-app .ik-widget-title {
-  color: white; font-weight: 700; font-size: 0.95rem; line-height: 1.2;
-}
-#ik-app .ik-widget-sub {
-  color: rgba(255,255,255,0.72); font-size: 0.72rem; margin-top: 1px;
-}
+#ik-app .ik-widget-title { color: white; font-weight: 700; font-size: 0.95rem; line-height: 1.2; }
+#ik-app .ik-widget-sub { color: rgba(255,255,255,0.72); font-size: 0.72rem; margin-top: 1px; }
 #ik-app .ik-ta-badge {
   background: rgba(255,255,255,0.2);
   border: 1px solid rgba(255,255,255,0.3);
@@ -447,6 +433,23 @@
 /* ---- Divider ---- */
 #ik-app .ik-divider { border:none; border-top:1px solid #e2e8f0; margin:12px 0; }
 
+/* ---- Sync status bar ---- */
+#ik-app .ik-sync-bar {
+  display:flex; align-items:center; gap:8px;
+  padding:7px 12px; font-size:0.72rem; font-weight:600;
+  border-radius:0; border-left:1px solid #e2e8f0; border-right:1px solid #e2e8f0;
+  background:#f0fdf4; color:#047857; border-bottom:1px solid #bbf7d0;
+  transition: all 0.3s;
+}
+#ik-app .ik-sync-bar.syncing { background:#fffbeb; color:#92400e; border-bottom-color:#fde68a; }
+#ik-app .ik-sync-bar.error { background:#fef2f2; color:#b91c1c; border-bottom-color:#fee2e2; }
+#ik-app .ik-sync-dot {
+  width:7px; height:7px; border-radius:50%; background:#047857; flex-shrink:0;
+}
+#ik-app .ik-sync-bar.syncing .ik-sync-dot { background:#d97706; animation:ikPulse2 1s infinite; }
+#ik-app .ik-sync-bar.error .ik-sync-dot { background:#b91c1c; }
+@keyframes ikPulse2 { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
 /* ---- Toast ---- */
 #ik-toast-app {
   position: fixed; bottom: 20px; right: 20px;
@@ -454,7 +457,7 @@
   padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 0.82rem;
   box-shadow: 0 8px 24px rgba(0,0,0,0.2); z-index: 99999;
   opacity: 0; transform: translateY(8px) scale(0.96);
-  transition: all 0.28s; pointer-events: none; max-width: 300px;
+  transition: all 0.28s; pointer-events: none; max-width: 320px;
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 #ik-toast-app.show { opacity: 1; transform: translateY(0) scale(1); }
@@ -485,6 +488,25 @@
 }
 #ik-app .ik-log-item:last-child { border-bottom:none; }
 
+/* ---- Loading overlay ---- */
+#ik-loading-overlay {
+  position:fixed; inset:0; background:rgba(15,23,42,0.7);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  z-index:999999; font-family:'Plus Jakarta Sans',sans-serif;
+}
+#ik-loading-overlay .lo-box {
+  background:white; border-radius:12px; padding:28px 32px;
+  text-align:center; max-width:280px;
+}
+#ik-loading-overlay .lo-spinner {
+  width:44px; height:44px; border:4px solid #fee2e2;
+  border-top-color:#b91c1c; border-radius:50%;
+  animation:ikSpin 0.8s linear infinite; margin:0 auto 12px;
+}
+@keyframes ikSpin { to{transform:rotate(360deg)} }
+#ik-loading-overlay .lo-title { font-weight:700; font-size:0.95rem; color:#1e293b; margin-bottom:4px; }
+#ik-loading-overlay .lo-sub { font-size:0.75rem; color:#64748b; }
+
 /* ---- Print ---- */
 @media print {
   #ik-app .ik-main-tabs,
@@ -493,12 +515,23 @@
   #ik-app .ik-filter-bar,
   #ik-app .ik-btn-row,
   #ik-app .ik-card-title-row .ik-btn-sm,
+  #ik-app .ik-sync-bar,
+  #ik-loading-overlay,
   .no-print-ik { display: none !important; }
   #ik-app .ik-body { background: white; border: none; padding: 0; }
   #ik-app { font-size: 13px; }
   #ik-app .ik-section.active { display: block !important; }
 }
 </style>
+
+<!-- Loading overlay -->
+<div id="ik-loading-overlay">
+  <div class="lo-box">
+    <div class="lo-spinner"></div>
+    <div class="lo-title">Memuat Data...</div>
+    <div class="lo-sub" id="lo-status">Menghubungi Google Sheets</div>
+  </div>
+</div>
 
 <!-- ==================== APP HTML ==================== -->
 <div id="ik-app">
@@ -521,9 +554,15 @@
     </button>
   </div>
 
+  <!-- Sync status bar -->
+  <div class="ik-sync-bar" id="ik-sync-bar">
+    <div class="ik-sync-dot"></div>
+    <span id="ik-sync-text">Terhubung ke Google Sheets</span>
+    <span style="margin-left:auto;cursor:pointer;text-decoration:underline" onclick="ikLoadSheets()">Refresh</span>
+  </div>
+
   <!-- ===== PANE: PUBLIK ===== -->
   <div class="ik-main-pane active" id="ik-pane-publik">
-    <!-- Widget Header -->
     <div class="ik-widget-head">
       <div class="ik-widget-head-left">
         <div class="ik-widget-icon">🏫</div>
@@ -534,12 +573,8 @@
       </div>
       <div class="ik-ta-badge" id="ik-header-ta">TA 2025/2026</div>
     </div>
-    <!-- Body: Dashboard only -->
     <div class="ik-body">
       <div class="ik-section active" id="ik-section-dashboard">
-        <div id="ik-banner-setup" class="ik-alert ik-alert-warn" style="display:none">
-          ⚙️ <span>Google Sheets belum dikonfigurasi. Buka <strong>Pengaturan</strong>.</span>
-        </div>
         <!-- Hero Progress -->
         <div class="ik-hero-bar">
           <div class="hb-label">Total Pemasukan Tahun Ajaran <span id="ik-dash-ta">2025/2026</span></div>
@@ -596,7 +631,6 @@
 
   <!-- ===== PANE: BENDAHARA ===== -->
   <div class="ik-main-pane" id="ik-pane-bendahara">
-    <!-- Lock screen -->
     <div class="ik-lock-screen" id="ik-lock-bendahara">
       <div class="ik-lock-icon">💼</div>
       <div class="ik-lock-title">Area Bendahara</div>
@@ -609,9 +643,7 @@
         <div class="ik-lock-hint">Default: <code>komite2025</code></div>
       </div>
     </div>
-    <!-- Content (hidden until unlocked) -->
     <div id="ik-content-bendahara" style="display:none">
-      <!-- Widget Header -->
       <div class="ik-widget-head">
         <div class="ik-widget-head-left">
           <div class="ik-widget-icon">💼</div>
@@ -622,7 +654,6 @@
         </div>
         <button class="ik-logout-btn" onclick="ikLock('bendahara')">🔒 Keluar</button>
       </div>
-      <!-- Sub Nav Tabs Bendahara -->
       <div class="ik-nav" id="nav-bendahara">
         <button class="ik-nav-btn active" onclick="ikShowBendahara('bayar',this)">💳 Pembayaran</button>
         <button class="ik-nav-btn" onclick="ikShowBendahara('scan',this)">📷 Scan QR</button>
@@ -632,7 +663,6 @@
         <button class="ik-nav-btn" onclick="ikShowBendahara('bukas',this)">💰 Bu Kas</button>
         <button class="ik-nav-btn" onclick="ikShowBendahara('siswa',this)">👨‍🎓 Siswa</button>
       </div>
-      <!-- Body Bendahara -->
       <div class="ik-body">
 
         <!-- ===== PEMBAYARAN ===== -->
@@ -668,7 +698,6 @@
               <button class="ik-btn ik-btn-success" onclick="ikBayar()">💾 Simpan Pembayaran</button>
             </div>
           </div>
-          <!-- Riwayat Pembayaran -->
           <div class="ik-card">
             <div class="ik-card-title-row">
               <div class="ik-card-title">📜 Riwayat Pembayaran</div>
@@ -719,13 +748,11 @@
             <canvas id="scan-canvas" style="display:none"></canvas>
             <div id="scan-result-area"></div>
           </div>
-          <!-- Pilih bulan scan -->
           <div class="ik-card">
             <div class="ik-card-title">📅 Bulan yang Dibayar (Scan)</div>
             <div class="ik-scan-bulan-grid" id="scan-bulan-grid"></div>
             <div style="font-size:0.72rem;color:#64748b;margin-top:6px">💡 Hijau = sudah bayar. Klik kuning untuk pilih bulan yang akan dibayar.</div>
           </div>
-          <!-- Log scan -->
           <div class="ik-card">
             <div class="ik-card-title-row">
               <div class="ik-card-title">📋 Log Scan Hari Ini</div>
@@ -801,7 +828,6 @@
 
         <!-- ===== BU KAS ===== -->
         <div class="ik-section" id="ik-section-bukas">
-          <!-- Ringkasan Kas -->
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
             <div class="ik-kpi k2" style="background:white;border:1px solid #e2e8f0;border-radius:8px;padding:12px;border-top:3px solid #047857">
               <div class="ik-kpi-val" id="bukas-total-masuk" style="font-size:1.2rem">Rp 0</div>
@@ -818,7 +844,6 @@
               <div class="ik-kpi-label">💰 Saldo Kas</div>
             </div>
           </div>
-          <!-- Catat Pengeluaran -->
           <div class="ik-card">
             <div class="ik-card-title">➖ Catat Pengeluaran</div>
             <div class="ik-form-row">
@@ -845,7 +870,6 @@
               <button class="ik-btn ik-btn-danger" onclick="ikTambahPengeluaran()">➖ Catat Pengeluaran</button>
             </div>
           </div>
-          <!-- Pemasukan dari Iuran -->
           <div class="ik-card">
             <div class="ik-card-title-row">
               <div class="ik-card-title">📥 Rekap Pemasukan Iuran</div>
@@ -860,7 +884,6 @@
               </table>
             </div>
           </div>
-          <!-- Riwayat Pengeluaran -->
           <div class="ik-card">
             <div class="ik-card-title-row">
               <div class="ik-card-title">📤 Riwayat Pengeluaran</div>
@@ -870,7 +893,6 @@
               <div class="ik-empty"><div class="e-icon">📋</div><div class="e-sub">Belum ada pengeluaran</div></div>
             </div>
           </div>
-          <!-- Laporan Kas -->
           <div class="ik-card no-print-ik">
             <div class="ik-card-title-row">
               <div class="ik-card-title">📋 Laporan Kas Umum</div>
@@ -884,16 +906,14 @@
           <div id="bukas-lap-out"></div>
         </div>
 
-        <!-- ===== SISWA (di tab bendahara) ===== -->
+        <!-- ===== SISWA ===== -->
         <div class="ik-section" id="ik-section-siswa">
           <div class="ik-card">
             <div class="ik-card-title">➕ Tambah Siswa</div>
             <div class="ik-form-row">
               <div class="ik-fg" style="flex:2;min-width:150px"><label>Nama Lengkap *</label><input type="text" id="ik-inp-nama" placeholder="Nama siswa"></div>
               <div class="ik-fg"><label>Kelas *</label>
-                <select id="ik-inp-kelas">
-                  <option value="">-- Pilih --</option>
-                </select>
+                <select id="ik-inp-kelas"><option value="">-- Pilih --</option></select>
               </div>
               <div class="ik-fg"><label>Orang Tua</label><input type="text" id="ik-inp-ortu" placeholder="Opsional"></div>
               <div class="ik-fg"><label>No. HP</label><input type="text" id="ik-inp-hp" placeholder="08xx..."></div>
@@ -902,7 +922,6 @@
               <button class="ik-btn ik-btn-primary" onclick="ikTambahSiswa()">➕ Tambah Siswa</button>
             </div>
           </div>
-          <!-- Import/Export -->
           <div class="ik-card">
             <div class="ik-card-title">📁 Import / Export Data Siswa</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
@@ -926,7 +945,6 @@
               </div>
             </div>
           </div>
-          <!-- Tabel Siswa -->
           <div class="ik-card">
             <div class="ik-card-title-row">
               <div class="ik-card-title">📋 Daftar Siswa</div>
@@ -934,9 +952,7 @@
             </div>
             <div class="ik-filter-bar">
               <div class="ik-fg"><label>Kelas</label>
-                <select id="ik-flt-kelas-siswa" onchange="ikRenderSiswa()">
-                  <option value="">Semua</option>
-                </select>
+                <select id="ik-flt-kelas-siswa" onchange="ikRenderSiswa()"><option value="">Semua</option></select>
               </div>
               <div class="ik-fg"><label>Cari Nama</label>
                 <input type="text" id="ik-cari-siswa" placeholder="Nama..." oninput="ikRenderSiswa()">
@@ -951,13 +967,12 @@
           </div>
         </div>
 
-      </div><!-- /ik-body bendahara -->
-    </div><!-- /ik-content-bendahara -->
-  </div><!-- /ik-pane-bendahara -->
+      </div>
+    </div>
+  </div>
 
   <!-- ===== PANE: ADMIN ===== -->
   <div class="ik-main-pane" id="ik-pane-admin">
-    <!-- Lock screen -->
     <div class="ik-lock-screen" id="ik-lock-admin">
       <div class="ik-lock-icon">⚙️</div>
       <div class="ik-lock-title">Area Admin</div>
@@ -970,9 +985,7 @@
         <div class="ik-lock-hint">Default: <code>komite2025</code></div>
       </div>
     </div>
-    <!-- Content admin -->
     <div id="ik-content-admin" style="display:none">
-      <!-- Widget Header -->
       <div class="ik-widget-head">
         <div class="ik-widget-head-left">
           <div class="ik-widget-icon">⚙️</div>
@@ -983,27 +996,25 @@
         </div>
         <button class="ik-logout-btn" onclick="ikLock('admin')">🔒 Keluar</button>
       </div>
-      <!-- Sub Nav Tabs Admin -->
       <div class="ik-nav" id="nav-admin">
         <button class="ik-nav-btn active" onclick="ikShowAdmin('sinkron',this)">☁️ Sinkron</button>
         <button class="ik-nav-btn" onclick="ikShowAdmin('setting',this)">⚙️ Pengaturan</button>
         <button class="ik-nav-btn" onclick="ikShowAdmin('editstatus',this)">✏️ Edit Status</button>
       </div>
-      <!-- Body Admin -->
       <div class="ik-body">
 
         <!-- ===== SINKRON ===== -->
         <div class="ik-section active" id="ik-section-sinkron">
           <div class="ik-card">
             <div class="ik-card-title">☁️ Sinkronisasi Google Sheets</div>
-            <div class="ik-alert ik-alert-success" style="margin-bottom:10px">
-              ✅ URL Apps Script dan Spreadsheet ID sudah tertanam di aplikasi. Tidak perlu konfigurasi tambahan.
+            <div class="ik-alert ik-alert-success">
+              ✅ Data otomatis disinkron ke Google Sheets setiap ada perubahan (tambah/hapus pembayaran & siswa).
             </div>
             <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:12px;margin-bottom:12px;font-size:0.78rem">
               <div style="font-weight:700;color:#475569;margin-bottom:6px;text-transform:uppercase;font-size:0.68rem;letter-spacing:0.4px">Konfigurasi Aktif</div>
               <div style="display:flex;gap:8px;align-items:flex-start;flex-direction:column">
-                <div><span style="color:#94a3b8">Apps Script URL:</span> <code style="font-size:0.68rem;background:#e2e8f0;padding:2px 6px;border-radius:4px;word-break:break-all">...AKfycbzy...BacmA/exec</code></div>
-                <div><span style="color:#94a3b8">Spreadsheet ID:</span> <code style="font-size:0.68rem;background:#e2e8f0;padding:2px 6px;border-radius:4px">1v0eI1F_Sy...NjCy2H_o_BacmA</code></div>
+                <div><span style="color:#94a3b8">Apps Script URL:</span> <code style="font-size:0.68rem;background:#e2e8f0;padding:2px 6px;border-radius:4px;word-break:break-all">...AKfycbxT03...exec</code></div>
+                <div><span style="color:#94a3b8">Spreadsheet ID:</span> <code style="font-size:0.68rem;background:#e2e8f0;padding:2px 6px;border-radius:4px">1v0eI1F_Sy...BacmA</code></div>
               </div>
             </div>
             <div class="ik-btn-row">
@@ -1011,7 +1022,7 @@
               <button class="ik-btn ik-btn-sky" onclick="ikLoadSheets()">⬇️ Ambil Data dari Sheets</button>
             </div>
             <div style="margin-top:12px;padding:10px;background:#fffbeb;border:1px solid #fde68a;border-radius:7px;font-size:0.75rem;color:#92400e">
-              <strong>⚠️ Perhatian:</strong> "Kirim ke Sheets" akan mengirim data lokal ke Google Sheets. "Ambil dari Sheets" akan mengambil data dari Sheets dan menimpa data lokal.
+              <strong>⚠️ Perhatian:</strong> "Kirim ke Sheets" akan menimpa data di Google Sheets dengan data lokal. "Ambil dari Sheets" akan menimpa data lokal dengan data dari Sheets.
             </div>
           </div>
           <div class="ik-card">
@@ -1037,9 +1048,7 @@
         <div class="ik-section" id="ik-section-setting">
           <div class="ik-card">
             <div class="ik-card-title">🏫 Manajemen Kelas</div>
-            <div class="ik-alert ik-alert-info" style="margin-bottom:10px">
-              Kelola daftar kelas. Klik ✏️ untuk ubah nama, ✕ untuk hapus (kelas berisi siswa tidak bisa dihapus).
-            </div>
+            <div class="ik-alert ik-alert-info">Kelola daftar kelas. ✏️ untuk ubah nama, ✕ untuk hapus.</div>
             <div class="ik-form-row" style="align-items:flex-end">
               <div class="ik-fg" style="flex:2">
                 <label>Nama Kelas Baru</label>
@@ -1091,7 +1100,7 @@
               <div class="ik-fg" style="max-width:280px">
                 <label>🔐 Password Bendahara & Admin</label>
                 <input type="password" id="ik-cfg-password" placeholder="Password baru..." autocomplete="new-password">
-                <div style="font-size:0.68rem;color:#94a3b8;margin-top:3px">Default: <code>komite2025</code> — Segera ganti!</div>
+                <div style="font-size:0.68rem;color:#94a3b8;margin-top:3px">Default: <code>komite2025</code></div>
               </div>
               <div class="ik-fg" style="max-width:280px">
                 <label>🔐 Konfirmasi Password</label>
@@ -1120,9 +1129,7 @@
               <div class="ik-card-title">✏️ Edit Status Pembayaran</div>
               <span class="ik-tag" id="es-count-tag">0 siswa</span>
             </div>
-            <div class="ik-alert ik-alert-warn" style="margin-bottom:10px">
-              ⚠️ Fitur ini mengubah status pembayaran secara langsung. Perubahan tidak bisa dibatalkan.
-            </div>
+            <div class="ik-alert ik-alert-warn">⚠️ Semua perubahan otomatis tersimpan ke Google Sheets.</div>
             <div class="ik-filter-bar">
               <div class="ik-fg"><label>Tahun Ajaran</label>
                 <select id="es-ta" onchange="ikEsPopulateBulan(true);ikRenderEditStatus()"></select>
@@ -1146,7 +1153,6 @@
                 <input type="text" id="es-cari" placeholder="Nama siswa..." oninput="ikRenderEditStatus()">
               </div>
             </div>
-            <!-- Aksi Massal -->
             <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px;padding:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px">
               <button class="ik-btn ik-btn-ghost ik-btn-xs" onclick="ikEsSelectAll()">☑️ Pilih Semua</button>
               <button class="ik-btn ik-btn-ghost ik-btn-xs" onclick="ikEsDeselectAll()">⬜ Batal Pilih</button>
@@ -1154,12 +1160,11 @@
               <button class="ik-btn ik-btn-success ik-btn-sm" onclick="ikEsBulkAksi('lunas')">✅ Tandai Lunas</button>
               <button class="ik-btn ik-btn-danger ik-btn-sm" onclick="ikEsBulkAksi('belum')">❌ Tandai Belum Bayar</button>
             </div>
-            <!-- Tabel -->
             <div class="ik-table-wrap">
               <table id="es-tabel">
                 <thead>
                   <tr>
-                    <th style="width:32px"><input type="checkbox" id="es-cb-all" onclick="ikEsToggleAll(this)" title="Pilih semua"></th>
+                    <th style="width:32px"><input type="checkbox" id="es-cb-all" onclick="ikEsToggleAll(this)"></th>
                     <th>#</th><th>Nama Siswa</th><th>Kelas</th><th>Status</th><th>Aksi Cepat</th>
                   </tr>
                 </thead>
@@ -1167,7 +1172,6 @@
               </table>
             </div>
           </div>
-          <!-- Log Perubahan -->
           <div class="ik-card">
             <div class="ik-card-title-row">
               <div class="ik-card-title">📋 Log Perubahan Status</div>
@@ -1179,11 +1183,11 @@
           </div>
         </div>
 
-      </div><!-- /ik-body admin -->
-    </div><!-- /ik-content-admin -->
-  </div><!-- /ik-pane-admin -->
+      </div>
+    </div>
+  </div>
 
-  <!-- Modal Password Konfirmasi (untuk Edit Status) -->
+  <!-- Modal Password Konfirmasi -->
   <div class="ik-modal-overlay" id="ik-modal-password">
     <div class="ik-modal" style="max-width:380px">
       <div class="ik-modal-hd">
@@ -1226,141 +1230,360 @@
 
 <script>
 (function(){
+'use strict';
+
 // ================================================================
-// STATE
-// ================================================================
-// ================================================================
-// KONFIGURASI TETAP (HARDCODED)
+// KONFIGURASI TETAP
 // ================================================================
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbxT03XJ4t4--eGYtyHdj3ifh5slH29udokq03oz0xDsGZQH6MycX7ZdPc0BQALudhL9Uw/exec';
 const SHEET_ID = '1v0eI1F_SyPlK18jcBPqvLGEb1x07mElv9Fa2RX7nUvY';
 
+// ================================================================
+// STATE
+// ================================================================
 const IK = {
   siswa: [], pembayaran: [],
   hapusId: null, scanSiswa: null, scanLog: [],
   kelasList: ['1','2','3','4','5','6'],
   pengeluaran: [],
   cfg: {
-    url: GAS_URL, sid: SHEET_ID, iuran:25000,
-    sekolah:'SD Negeri-1 Raja', alamat:'', kepsek:'', nip:'', ketua:'',
-    ta:'2025/2026',
-    password:'komite2025'
+    iuran: 25000,
+    sekolah: 'SD Negeri-1 Raja', alamat: '', kepsek: '', nip: '', ketua: '',
+    ta: '2025/2026',
+    password: 'komite2025'
   }
 };
 
-// Session state untuk login tab
 const IK_SESSION = { bendahara: false, admin: false };
 
 const BN = ['','Januari','Februari','Maret','April','Mei','Juni',
-             'Juli','Agustus','September','Oktober','November','Desember'];
-const BUTA = [7,8,9,10,11,12,1,2,3,4,5,6]; // Jul→Jun
+            'Juli','Agustus','September','Oktober','November','Desember'];
+const BUTA = [7,8,9,10,11,12,1,2,3,4,5,6];
 let scanTimer = null;
+let esLog = [];
 
-function parseTA(ta){ const p=ta.split('/'); return {t1:+p[0],t2:+p[1]}; }
-function bkey(b,y){ return b+'-'+y; }
-function thnFromB(b,ta){ const {t1,t2}=parseTA(ta); return b>=7?t1:t2; }
-function taList(){ const y=new Date().getFullYear(); const r=[]; for(let i=1;i>=-2;i--)r.push((y+i)+'/'+(y+i+1)); return r; }
+// ================================================================
+// SYNC STATUS BAR
+// ================================================================
+function setSyncStatus(status, msg) {
+  const bar = document.getElementById('ik-sync-bar');
+  const txt = document.getElementById('ik-sync-text');
+  if (!bar || !txt) return;
+  bar.className = 'ik-sync-bar' + (status === 'syncing' ? ' syncing' : status === 'error' ? ' error' : '');
+  txt.textContent = msg;
+}
 
-function sudahBayar(sid,ta){
-  const {t1,t2}=parseTA(ta); const s=new Set();
-  IK.pembayaran.forEach(p=>{ if(p.siswaId!==sid)return; if((p.tahun===t1&&p.bulan>=7)||(p.tahun===t2&&p.bulan<=6))s.add(bkey(p.bulan,p.tahun)); });
+// ================================================================
+// GOOGLE SHEETS — FUNGSI INTI
+// ================================================================
+
+/**
+ * POST ke GAS — kirim satu action dan tunggu respons JSON.
+ * Menggunakan fetch biasa (bukan no-cors) agar bisa baca respons.
+ * CORS ditangani oleh GAS via doPost yang mengembalikan ContentService JSON.
+ */
+async function gasPost(action, data) {
+  const body = JSON.stringify({ action, sid: SHEET_ID, data });
+  // Coba kirim sebagai text/plain karena GAS kadang reject application/json dari CORS
+  const res = await fetch(GAS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body
+  });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const text = await res.text();
+  try { return JSON.parse(text); } catch(e) { throw new Error('Respons bukan JSON: ' + text.substring(0,100)); }
+}
+
+/**
+ * Fire-and-forget kirim satu pembayaran ke Sheets.
+ * Tidak blocking, error hanya ditampilkan di sync bar.
+ */
+function ikPushBayar(rec) {
+  setSyncStatus('syncing', '🔄 Menyimpan pembayaran...');
+  const mapped = {
+    id: rec.id || '',
+    siswaId: rec.siswaId || '',
+    namaSiswa: rec.namaSiswa || '',
+    kelas: rec.kelas || '',
+    bulan: rec.bulan || 0,
+    namaBulan: BN[rec.bulan] || '',
+    ta: rec.ta || '',
+    jumlah: rec.jumlah || 0,
+    tanggal: rec.tanggal || '',
+    catatan: rec.catatan || ''
+  };
+  gasPost('addPembayaran', mapped)
+    .then(j => {
+      if (j && j.ok) {
+        setSyncStatus('ok', '✅ Tersimpan ke Google Sheets · ' + new Date().toLocaleTimeString('id-ID'));
+      } else {
+        setSyncStatus('error', '⚠️ Gagal simpan ke Sheets: ' + (j && j.error ? j.error : 'Unknown'));
+      }
+    })
+    .catch(e => setSyncStatus('error', '⚠️ ' + e.message));
+}
+
+/**
+ * Fire-and-forget hapus pembayaran dari Sheets.
+ */
+function ikDeleteBayarSheets(id) {
+  setSyncStatus('syncing', '🔄 Menghapus dari Sheets...');
+  gasPost('deletePembayaran', { id })
+    .then(j => {
+      if (j && j.ok) {
+        setSyncStatus('ok', '✅ Dihapus dari Google Sheets · ' + new Date().toLocaleTimeString('id-ID'));
+      } else {
+        setSyncStatus('error', '⚠️ ' + (j && j.error ? j.error : 'Gagal hapus'));
+      }
+    })
+    .catch(e => setSyncStatus('error', '⚠️ ' + e.message));
+}
+
+/**
+ * Fire-and-forget tambah siswa ke Sheets.
+ */
+function ikPushSiswa(s) {
+  setSyncStatus('syncing', '🔄 Menyimpan siswa...');
+  const mapped = { id: s.id, nama: s.nama, kelas: s.kelas, ortu: s.ortu || '', hp: s.hp || '', tanggal: s.tanggal || '' };
+  gasPost('addSiswa', mapped)
+    .then(j => {
+      if (j && j.ok) setSyncStatus('ok', '✅ Siswa disimpan ke Sheets · ' + new Date().toLocaleTimeString('id-ID'));
+      else setSyncStatus('error', '⚠️ ' + (j && j.error ? j.error : 'Gagal simpan siswa'));
+    })
+    .catch(e => setSyncStatus('error', '⚠️ ' + e.message));
+}
+
+/**
+ * Fire-and-forget hapus siswa dari Sheets.
+ */
+function ikDeleteSiswaSheets(id) {
+  setSyncStatus('syncing', '🔄 Menghapus siswa dari Sheets...');
+  gasPost('deleteSiswa', { id })
+    .then(j => {
+      if (j && j.ok) setSyncStatus('ok', '✅ Siswa dihapus dari Sheets · ' + new Date().toLocaleTimeString('id-ID'));
+      else setSyncStatus('error', '⚠️ ' + (j && j.error ? j.error : 'Gagal'));
+    })
+    .catch(e => setSyncStatus('error', '⚠️ ' + e.message));
+}
+
+/**
+ * Fire-and-forget tambah pengeluaran ke Sheets.
+ */
+function ikPushPengeluaran(rec) {
+  setSyncStatus('syncing', '🔄 Menyimpan pengeluaran...');
+  gasPost('addPengeluaran', rec)
+    .then(j => {
+      if (j && j.ok) setSyncStatus('ok', '✅ Pengeluaran disimpan ke Sheets · ' + new Date().toLocaleTimeString('id-ID'));
+      else setSyncStatus('error', '⚠️ ' + (j && j.error ? j.error : 'Gagal'));
+    })
+    .catch(e => setSyncStatus('error', '⚠️ ' + e.message));
+}
+
+/**
+ * Fire-and-forget hapus pengeluaran dari Sheets.
+ */
+function ikDeletePengeluaranSheets(id) {
+  setSyncStatus('syncing', '🔄 Menghapus pengeluaran...');
+  gasPost('deletePengeluaran', { id })
+    .then(j => {
+      if (j && j.ok) setSyncStatus('ok', '✅ Pengeluaran dihapus dari Sheets · ' + new Date().toLocaleTimeString('id-ID'));
+      else setSyncStatus('error', '⚠️ ' + (j && j.error ? j.error : 'Gagal'));
+    })
+    .catch(e => setSyncStatus('error', '⚠️ ' + e.message));
+}
+
+// ================================================================
+// AMBIL DATA DARI SHEETS (saat buka / manual refresh)
+// ================================================================
+window.ikLoadSheets = async function(showLoading) {
+  if (showLoading !== false) {
+    const overlay = document.getElementById('ik-loading-overlay');
+    if (overlay) overlay.style.display = 'flex';
+  }
+  setSyncStatus('syncing', '🔄 Memuat data dari Google Sheets...');
+  try {
+    // Coba GET dulu
+    const url = GAS_URL + '?action=getAll&sid=' + encodeURIComponent(SHEET_ID);
+    let j = null;
+    try {
+      const res = await fetch(url, { method: 'GET', redirect: 'follow' });
+      if (res.ok) {
+        const text = await res.text();
+        j = JSON.parse(text);
+      }
+    } catch(e) { j = null; }
+
+    // Fallback ke POST jika GET gagal
+    if (!j || j.ok === false) {
+      j = await gasPost('getAll', {});
+    }
+
+    if (!j || j.ok === false) {
+      throw new Error(j && j.error ? j.error : 'Respons tidak valid dari GAS');
+    }
+
+    if (j.siswa)        IK.siswa        = j.siswa;
+    if (j.pembayaran)   IK.pembayaran   = j.pembayaran;
+    if (j.pengeluaran)  IK.pengeluaran  = j.pengeluaran;
+
+    ikSave(); ikSaveBukas();
+    ikRenderAll();
+    setSyncStatus('ok', '✅ Terhubung · ' + IK.siswa.length + ' siswa, ' + IK.pembayaran.length + ' transaksi · ' + new Date().toLocaleTimeString('id-ID'));
+    ikToast('✅ Data dimuat dari Google Sheets (' + IK.siswa.length + ' siswa, ' + IK.pembayaran.length + ' pembayaran)');
+
+  } catch(e) {
+    // Pakai data lokal jika Sheets gagal
+    setSyncStatus('error', '⚠️ Gagal hubungi Sheets, pakai data lokal · ' + e.message);
+    ikToast('⚠️ Sheets tidak bisa diakses, data lokal dipakai', 'warn');
+    ikRenderAll();
+  } finally {
+    const overlay = document.getElementById('ik-loading-overlay');
+    if (overlay) overlay.style.display = 'none';
+  }
+};
+
+function ikRenderAll() {
+  ikRenderDashboard();
+  ikRenderSiswa();
+  ikPopulateSiswaSelect();
+  ikRenderKartu();
+  ikRenderRiwayat();
+  ikRebuildKelasSelects();
+  ikUpdateSinkronStats();
+  ikRenderBukasUmum();
+  ikRenderBelum();
+}
+
+// ================================================================
+// KIRIM SEMUA DATA KE SHEETS
+// ================================================================
+window.ikSyncAllSheets = async function() {
+  if (!confirm('Kirim semua data lokal ke Google Sheets?\nData lama di Sheets akan ditimpa.')) return;
+  setSyncStatus('syncing', '🔄 Mengirim semua data...');
+  ikToast('⬆️ Mengirim data ke Sheets...');
+  try {
+    const siswaMapped = IK.siswa.map(d => ({
+      id: d.id||'', nama: d.nama||'', kelas: d.kelas||'',
+      ortu: d.ortu||'', hp: d.hp||'', tanggal: d.tanggal||''
+    }));
+    const bayarMapped = IK.pembayaran.map(d => ({
+      id: d.id||'', siswaId: d.siswaId||'', namaSiswa: d.namaSiswa||'', kelas: d.kelas||'',
+      bulan: d.bulan||0, namaBulan: BN[d.bulan]||'',
+      ta: d.ta||'', jumlah: d.jumlah||0,
+      tanggal: d.tanggal||'', catatan: d.catatan||''
+    }));
+    const pengeluaranMapped = (IK.pengeluaran||[]).map(d => ({
+      id: d.id||'', tanggal: d.tanggal||'', ket: d.ket||'',
+      kategori: d.kategori||'', jumlah: d.jumlah||0
+    }));
+    const j = await gasPost('syncAll', { siswa: siswaMapped, pembayaran: bayarMapped, pengeluaran: pengeluaranMapped });
+    if (j && j.ok) {
+      setSyncStatus('ok', '✅ Semua data terkirim · ' + new Date().toLocaleTimeString('id-ID'));
+      ikToast('✅ Semua data berhasil dikirim ke Google Sheets!');
+    } else {
+      throw new Error(j && j.error ? j.error : 'Respons tidak valid');
+    }
+  } catch(e) {
+    setSyncStatus('error', '⚠️ Gagal kirim: ' + e.message);
+    ikToast('❌ Gagal kirim ke Sheets: ' + e.message, 'danger');
+  }
+};
+
+// ================================================================
+// HELPER
+// ================================================================
+function parseTA(ta) { const p = ta.split('/'); return { t1: +p[0], t2: +p[1] }; }
+function bkey(b, y) { return b + '-' + y; }
+function thnFromB(b, ta) { const {t1,t2} = parseTA(ta); return b >= 7 ? t1 : t2; }
+function taList() { const y = new Date().getFullYear(); const r = []; for(let i=1;i>=-2;i--) r.push((y+i)+'/'+(y+i+1)); return r; }
+
+function sudahBayar(sid, ta) {
+  const {t1,t2} = parseTA(ta);
+  const s = new Set();
+  IK.pembayaran.forEach(p => {
+    if (p.siswaId !== sid) return;
+    if ((p.tahun === t1 && p.bulan >= 7) || (p.tahun === t2 && p.bulan <= 6)) s.add(bkey(p.bulan, p.tahun));
+  });
   return s;
 }
 
 // ================================================================
-// MAIN TABS (3 besar)
+// MAIN TABS
 // ================================================================
-window.ikMainTab = function(tab, btn){
-  // Switch pane
-  document.querySelectorAll('#ik-app .ik-main-pane').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('#ik-app .ik-main-tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('ik-pane-'+tab).classList.add('active');
+window.ikMainTab = function(tab, btn) {
+  document.querySelectorAll('#ik-app .ik-main-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#ik-app .ik-main-tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('ik-pane-' + tab).classList.add('active');
   btn.classList.add('active');
-
-  if(tab === 'publik'){
-    ikRenderDashboard();
-  } else if(tab === 'bendahara'){
-    if(IK_SESSION.bendahara){
-      // already logged in
-    } else {
-      // show lock, hide content
-      document.getElementById('ik-lock-bendahara').style.display='block';
-      document.getElementById('ik-content-bendahara').style.display='none';
-    }
-  } else if(tab === 'admin'){
-    if(IK_SESSION.admin){
-      // already logged in
-    } else {
-      document.getElementById('ik-lock-admin').style.display='block';
-      document.getElementById('ik-content-admin').style.display='none';
-    }
+  if (tab === 'publik') ikRenderDashboard();
+  else if (tab === 'bendahara' && !IK_SESSION.bendahara) {
+    document.getElementById('ik-lock-bendahara').style.display = 'block';
+    document.getElementById('ik-content-bendahara').style.display = 'none';
+  }
+  else if (tab === 'admin' && !IK_SESSION.admin) {
+    document.getElementById('ik-lock-admin').style.display = 'block';
+    document.getElementById('ik-content-admin').style.display = 'none';
   }
 };
 
-window.ikUnlock = function(tab){
-  const pw = document.getElementById('pw-'+tab).value;
-  const err = document.getElementById('pw-err-'+tab);
-  if(pw === IK.cfg.password){
+window.ikUnlock = function(tab) {
+  const pw = document.getElementById('pw-' + tab).value;
+  const err = document.getElementById('pw-err-' + tab);
+  if (pw === IK.cfg.password) {
     IK_SESSION[tab] = true;
-    document.getElementById('ik-lock-'+tab).style.display='none';
-    document.getElementById('ik-content-'+tab).style.display='block';
-    document.getElementById('mt-lock-'+tab).textContent='🔓';
-    document.getElementById('pw-'+tab).value='';
-    err.style.display='none';
-    if(tab==='bendahara'){ ikPopulateSiswaSelect(); ikRenderRiwayat(); ikRenderBelum(); ikRenderKartu(); ikRenderBukasUmum(); ikPopulateBukasTA(); }
-    if(tab==='admin'){ ikUpdateSinkronStats(); ikRenderDaftarKelas(); }
-    ikToast('✅ Selamat datang, '+(tab==='bendahara'?'Bendahara':'Admin')+'!');
+    document.getElementById('ik-lock-' + tab).style.display = 'none';
+    document.getElementById('ik-content-' + tab).style.display = 'block';
+    document.getElementById('mt-lock-' + tab).textContent = '🔓';
+    document.getElementById('pw-' + tab).value = '';
+    err.style.display = 'none';
+    if (tab === 'bendahara') { ikPopulateSiswaSelect(); ikRenderRiwayat(); ikRenderBelum(); ikRenderKartu(); ikRenderBukasUmum(); ikPopulateBukasTA(); }
+    if (tab === 'admin') { ikUpdateSinkronStats(); ikRenderDaftarKelas(); }
+    ikToast('✅ Selamat datang, ' + (tab === 'bendahara' ? 'Bendahara' : 'Admin') + '!');
   } else {
-    err.style.display='block';
-    document.getElementById('pw-'+tab).value='';
-    document.getElementById('pw-'+tab).focus();
+    err.style.display = 'block';
+    document.getElementById('pw-' + tab).value = '';
+    document.getElementById('pw-' + tab).focus();
   }
 };
 
-window.ikLock = function(tab){
+window.ikLock = function(tab) {
   IK_SESSION[tab] = false;
-  document.getElementById('ik-lock-'+tab).style.display='block';
-  document.getElementById('ik-content-'+tab).style.display='none';
-  document.getElementById('mt-lock-'+tab).textContent='🔒';
-  ikToast('🔒 Berhasil keluar dari area '+(tab==='bendahara'?'Bendahara':'Admin'));
+  document.getElementById('ik-lock-' + tab).style.display = 'block';
+  document.getElementById('ik-content-' + tab).style.display = 'none';
+  document.getElementById('mt-lock-' + tab).textContent = '🔒';
+  ikToast('🔒 Berhasil keluar dari area ' + (tab === 'bendahara' ? 'Bendahara' : 'Admin'));
 };
 
-// Sub-nav: Bendahara
-window.ikShowBendahara = function(id, btn){
-  document.querySelectorAll('#ik-content-bendahara .ik-section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('#nav-bendahara .ik-nav-btn').forEach(b=>b.classList.remove('active'));
-  const sec = document.getElementById('ik-section-'+id);
-  if(sec){ sec.classList.add('active'); }
-  if(btn) btn.classList.add('active');
-  if(id==='bayar'){ikPopulateSiswaSelect();ikRenderRiwayat();}
-  if(id==='belum')ikRenderBelum();
-  if(id==='kartu')ikRenderKartu();
-  if(id==='scan'){ikRenderScanBulan();ikResetScan();}
-  if(id!=='scan'){ikStopCamera();}
-  if(id==='bukas'){ikRenderBukasUmum();ikPopulateBukasTA();}
+window.ikShowBendahara = function(id, btn) {
+  document.querySelectorAll('#ik-content-bendahara .ik-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('#nav-bendahara .ik-nav-btn').forEach(b => b.classList.remove('active'));
+  const sec = document.getElementById('ik-section-' + id);
+  if (sec) sec.classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (id === 'bayar') { ikPopulateSiswaSelect(); ikRenderRiwayat(); }
+  if (id === 'belum') ikRenderBelum();
+  if (id === 'kartu') ikRenderKartu();
+  if (id === 'scan') { ikRenderScanBulan(); ikResetScan(); }
+  if (id !== 'scan') ikStopCamera();
+  if (id === 'bukas') { ikRenderBukasUmum(); ikPopulateBukasTA(); }
 };
 
-// Sub-nav: Admin
-window.ikShowAdmin = function(id, btn){
-  document.querySelectorAll('#ik-content-admin .ik-section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('#nav-admin .ik-nav-btn').forEach(b=>b.classList.remove('active'));
-  const sec = document.getElementById('ik-section-'+id);
-  if(sec){ sec.classList.add('active'); }
-  if(btn) btn.classList.add('active');
-  if(id==='editstatus'){ikInitEditStatus();}
-  if(id==='sinkron')ikUpdateSinkronStats();
-  if(id==='setting')ikRenderDaftarKelas();
-};
-
-// Backward compat stub (original code uses ikShow)
-window.ikShow = function(id, btn){
-  // Not used in new layout, just stub
+window.ikShowAdmin = function(id, btn) {
+  document.querySelectorAll('#ik-content-admin .ik-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('#nav-admin .ik-nav-btn').forEach(b => b.classList.remove('active'));
+  const sec = document.getElementById('ik-section-' + id);
+  if (sec) sec.classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (id === 'editstatus') ikInitEditStatus();
+  if (id === 'sinkron') ikUpdateSinkronStats();
+  if (id === 'setting') ikRenderDaftarKelas();
 };
 
 // ================================================================
 // INIT
 // ================================================================
-function init(){
+function init() {
   ikLoad();
   ikLoadBukas();
   applyCfg();
@@ -1376,84 +1599,95 @@ function init(){
   ikRenderBelum();
   ikRenderKartu();
   populateLapBulan();
-  document.getElementById('ik-banner-setup').style.display='none';
-  document.getElementById('ik-header-ta').textContent='TA '+IK.cfg.ta;
+  document.getElementById('ik-header-ta').textContent = 'TA ' + IK.cfg.ta;
   ikUpdateSinkronStats();
   ikPopulateBukasTA();
+  // *** AUTO-LOAD dari Google Sheets saat buka ***
+  const loStatus = document.getElementById('lo-status');
+  if (loStatus) loStatus.textContent = 'Menghubungi Google Sheets...';
+  ikLoadSheets(true);
 }
 
-function ikLoad(){
-  try{
-    const s=localStorage.getItem('ik_siswa'),p=localStorage.getItem('ik_bayar'),c=localStorage.getItem('ik_cfg'),k=localStorage.getItem('ik_kelas');
-    if(s)IK.siswa=JSON.parse(s);
-    if(p)IK.pembayaran=JSON.parse(p);
-    if(c)IK.cfg={...IK.cfg,...JSON.parse(c)};
-    if(k)IK.kelasList=JSON.parse(k);
-  }catch(e){}
-}
-function ikSave(){
-  localStorage.setItem('ik_siswa',JSON.stringify(IK.siswa));
-  localStorage.setItem('ik_bayar',JSON.stringify(IK.pembayaran));
-  localStorage.setItem('ik_cfg',JSON.stringify(IK.cfg));
-  localStorage.setItem('ik_kelas',JSON.stringify(IK.kelasList));
-}
-function applyCfg(){
-  document.getElementById('ik-cfg-sekolah').value=IK.cfg.sekolah;
-  const pwEl=document.getElementById('ik-cfg-password'); if(pwEl) pwEl.value='';
-  document.getElementById('ik-cfg-alamat').value=IK.cfg.alamat||'';
-  document.getElementById('ik-cfg-iuran').value=IK.cfg.iuran;
-  document.getElementById('ik-cfg-kepsek').value=IK.cfg.kepsek||'';
-  document.getElementById('ik-cfg-nip').value=IK.cfg.nip||'';
-  document.getElementById('ik-cfg-ketua').value=IK.cfg.ketua||'';
+function ikLoad() {
+  try {
+    const s = localStorage.getItem('ik_siswa');
+    const p = localStorage.getItem('ik_bayar');
+    const c = localStorage.getItem('ik_cfg');
+    const k = localStorage.getItem('ik_kelas');
+    if (s) IK.siswa = JSON.parse(s);
+    if (p) IK.pembayaran = JSON.parse(p);
+    if (c) IK.cfg = { ...IK.cfg, ...JSON.parse(c) };
+    if (k) IK.kelasList = JSON.parse(k);
+  } catch(e) {}
 }
 
-function populateTAAll(){
-  const list=taList();
-  ['ik-inp-ta-bayar','ik-scan-ta','ik-bb-ta','ik-lap-ta','es-ta'].forEach(id=>{
-    const el=document.getElementById(id); if(!el)return;
-    el.innerHTML=list.map(ta=>`<option value="${ta}"${ta===IK.cfg.ta?' selected':''}>${ta}</option>`).join('');
+function ikSave() {
+  localStorage.setItem('ik_siswa', JSON.stringify(IK.siswa));
+  localStorage.setItem('ik_bayar', JSON.stringify(IK.pembayaran));
+  localStorage.setItem('ik_cfg', JSON.stringify(IK.cfg));
+  localStorage.setItem('ik_kelas', JSON.stringify(IK.kelasList));
+}
+
+function applyCfg() {
+  const set = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
+  set('ik-cfg-sekolah', IK.cfg.sekolah);
+  set('ik-cfg-alamat', IK.cfg.alamat || '');
+  set('ik-cfg-iuran', IK.cfg.iuran);
+  set('ik-cfg-kepsek', IK.cfg.kepsek || '');
+  set('ik-cfg-nip', IK.cfg.nip || '');
+  set('ik-cfg-ketua', IK.cfg.ketua || '');
+}
+
+function populateTAAll() {
+  const list = taList();
+  ['ik-inp-ta-bayar','ik-scan-ta','ik-bb-ta','ik-lap-ta','es-ta'].forEach(id => {
+    const el = document.getElementById(id); if (!el) return;
+    el.innerHTML = list.map(ta => `<option value="${ta}"${ta === IK.cfg.ta ? ' selected' : ''}>${ta}</option>`).join('');
   });
   ikRenderBelum();
 }
-function populateLapBulan(){
-  const now=new Date(); const cb=now.getMonth()+1;
-  const el=document.getElementById('ik-lap-bulan'); if(!el)return;
-  el.innerHTML=BUTA.map((b,i)=>{
-    const {t1,t2}=parseTA(IK.cfg.ta); const thn=b>=7?t1:t2;
-    return `<option value="${i}"${b===cb?' selected':''}>${BN[b]} ${thn}</option>`;
+
+function populateLapBulan() {
+  const now = new Date(); const cb = now.getMonth() + 1;
+  const el = document.getElementById('ik-lap-bulan'); if (!el) return;
+  el.innerHTML = BUTA.map((b,i) => {
+    const {t1,t2} = parseTA(IK.cfg.ta); const thn = b >= 7 ? t1 : t2;
+    return `<option value="${i}"${b === cb ? ' selected' : ''}>${BN[b]} ${thn}</option>`;
   }).join('');
-  const bb=document.getElementById('ik-bb-bulan'); if(!bb)return;
-  bb.innerHTML=BUTA.map((b,i)=>{
-    const {t1,t2}=parseTA(IK.cfg.ta); const thn=b>=7?t1:t2;
-    return `<option value="${i}"${b===cb?' selected':''}>${BN[b]} ${thn}</option>`;
+  const bb = document.getElementById('ik-bb-bulan'); if (!bb) return;
+  bb.innerHTML = BUTA.map((b,i) => {
+    const {t1,t2} = parseTA(IK.cfg.ta); const thn = b >= 7 ? t1 : t2;
+    return `<option value="${i}"${b === cb ? ' selected' : ''}>${BN[b]} ${thn}</option>`;
   }).join('');
 }
 
 // ================================================================
 // SISWA
 // ================================================================
-window.ikTambahSiswa = function(){
-  const nama=document.getElementById('ik-inp-nama').value.trim();
-  const kelas=document.getElementById('ik-inp-kelas').value;
-  const ortu=document.getElementById('ik-inp-ortu').value.trim();
-  const hp=document.getElementById('ik-inp-hp').value.trim();
-  if(!nama||!kelas){ikToast('❗ Nama dan kelas wajib diisi','danger');return;}
-  const s={id:'S'+Date.now()+Math.floor(Math.random()*9999),nama,kelas,ortu,hp,tanggal:new Date().toLocaleDateString('id-ID')};
-  IK.siswa.push(s); ikSave();
-  ikSyncSheets('addSiswa',s);
+window.ikTambahSiswa = function() {
+  const nama = document.getElementById('ik-inp-nama').value.trim();
+  const kelas = document.getElementById('ik-inp-kelas').value;
+  const ortu = document.getElementById('ik-inp-ortu').value.trim();
+  const hp = document.getElementById('ik-inp-hp').value.trim();
+  if (!nama || !kelas) { ikToast('❗ Nama dan kelas wajib diisi', 'danger'); return; }
+  const s = { id: 'S' + Date.now() + Math.floor(Math.random()*9999), nama, kelas, ortu, hp, tanggal: new Date().toLocaleDateString('id-ID') };
+  IK.siswa.push(s);
+  ikSave();
+  // PUSH ke Sheets
+  ikPushSiswa(s);
   ikRenderSiswa(); ikPopulateSiswaSelect(); ikRenderDashboard(); ikRenderKartu(); ikRebuildKelasSelects();
-  ['ik-inp-nama','ik-inp-kelas','ik-inp-ortu','ik-inp-hp'].forEach(id=>document.getElementById(id).value='');
-  ikToast('✅ Siswa '+nama+' ditambahkan!');
+  ['ik-inp-nama','ik-inp-kelas','ik-inp-ortu','ik-inp-hp'].forEach(id => document.getElementById(id).value = '');
+  ikToast('✅ Siswa ' + nama + ' ditambahkan!');
 };
 
-function ikRenderSiswa(){
-  const fk=document.getElementById('ik-flt-kelas-siswa').value;
-  const cari=document.getElementById('ik-cari-siswa').value.toLowerCase();
-  const data=IK.siswa.filter(s=>(!fk||s.kelas===fk)&&(!cari||s.nama.toLowerCase().includes(cari)));
-  document.getElementById('ik-jml-tag').textContent=data.length+' siswa';
-  const tb=document.getElementById('ik-tb-siswa');
-  if(!data.length){tb.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:20px;color:#94a3b8">Tidak ada data</td></tr>`;return;}
-  tb.innerHTML=data.sort((a,b)=>a.kelas.localeCompare(b.kelas)||a.nama.localeCompare(b.nama)).map((s,i)=>`
+function ikRenderSiswa() {
+  const fk = document.getElementById('ik-flt-kelas-siswa')?.value || '';
+  const cari = document.getElementById('ik-cari-siswa')?.value.toLowerCase() || '';
+  const data = IK.siswa.filter(s => (!fk || s.kelas === fk) && (!cari || s.nama.toLowerCase().includes(cari)));
+  document.getElementById('ik-jml-tag').textContent = data.length + ' siswa';
+  const tb = document.getElementById('ik-tb-siswa');
+  if (!data.length) { tb.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;color:#94a3b8">Tidak ada data</td></tr>`; return; }
+  tb.innerHTML = data.sort((a,b) => a.kelas.localeCompare(b.kelas) || a.nama.localeCompare(b.nama)).map((s,i) => `
     <tr>
       <td style="color:#94a3b8">${i+1}</td>
       <td><strong>${s.nama}</strong></td>
@@ -1465,166 +1699,182 @@ function ikRenderSiswa(){
 }
 window.ikRenderSiswa = ikRenderSiswa;
 
-window.ikHapusSiswa = function(id,nama){
-  IK.hapusId=id;
-  document.getElementById('ik-modal-nama').textContent=nama;
+window.ikHapusSiswa = function(id, nama) {
+  IK.hapusId = id;
+  document.getElementById('ik-modal-nama').textContent = nama;
   document.getElementById('ik-modal-hapus').classList.add('open');
 };
-window.ikKonfirmHapus = function(){
-  if(!IK.hapusId)return;
-  IK.siswa=IK.siswa.filter(s=>s.id!==IK.hapusId);
-  ikSave(); ikRenderSiswa(); ikPopulateSiswaSelect(); ikRenderDashboard(); ikRenderKartu(); ikRebuildKelasSelects();
-  ikCloseModal('ik-modal-hapus'); IK.hapusId=null;
+
+window.ikKonfirmHapus = function() {
+  if (!IK.hapusId) return;
+  const id = IK.hapusId;
+  IK.siswa = IK.siswa.filter(s => s.id !== id);
+  ikSave();
+  // HAPUS dari Sheets
+  ikDeleteSiswaSheets(id);
+  ikRenderSiswa(); ikPopulateSiswaSelect(); ikRenderDashboard(); ikRenderKartu(); ikRebuildKelasSelects();
+  ikCloseModal('ik-modal-hapus'); IK.hapusId = null;
   ikToast('🗑️ Siswa dihapus');
 };
 
 // ================================================================
 // KELAS
 // ================================================================
-window.ikTambahKelas = function(){
-  const v=document.getElementById('ik-inp-kelas-baru').value.trim();
-  if(!v){ikToast('❗ Nama kelas tidak boleh kosong','danger');return;}
-  if(IK.kelasList.includes(v)){ikToast('❗ Kelas sudah ada','danger');return;}
+window.ikTambahKelas = function() {
+  const v = document.getElementById('ik-inp-kelas-baru').value.trim();
+  if (!v) { ikToast('❗ Nama kelas tidak boleh kosong', 'danger'); return; }
+  if (IK.kelasList.includes(v)) { ikToast('❗ Kelas sudah ada', 'danger'); return; }
   IK.kelasList.push(v); ikSave(); ikRenderDaftarKelas(); ikRebuildKelasSelects();
-  document.getElementById('ik-inp-kelas-baru').value='';
-  ikToast('✅ Kelas '+v+' ditambahkan');
+  document.getElementById('ik-inp-kelas-baru').value = '';
+  ikToast('✅ Kelas ' + v + ' ditambahkan');
 };
 
-function ikRenderDaftarKelas(){
-  const el=document.getElementById('ik-daftar-kelas'); if(!el)return;
-  if(!IK.kelasList.length){el.innerHTML='<span style="font-size:0.78rem;color:#94a3b8">Belum ada kelas</span>';return;}
-  el.innerHTML=IK.kelasList.map(k=>`
+function ikRenderDaftarKelas() {
+  const el = document.getElementById('ik-daftar-kelas'); if (!el) return;
+  if (!IK.kelasList.length) { el.innerHTML = '<span style="font-size:0.78rem;color:#94a3b8">Belum ada kelas</span>'; return; }
+  el.innerHTML = IK.kelasList.map(k => `
     <div style="display:flex;align-items:center;gap:4px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px">
       <span style="font-weight:600;font-size:0.8rem">${k}</span>
-      <button onclick="ikEditKelas('${k}')" style="background:none;border:none;cursor:pointer;font-size:0.8rem;color:#475569;padding:0 2px" title="Ubah">✏️</button>
-      <button onclick="ikHapusKelas('${k}')" style="background:none;border:none;cursor:pointer;font-size:0.8rem;color:#b91c1c;padding:0 2px" title="Hapus">✕</button>
+      <button onclick="ikEditKelas('${k}')" style="background:none;border:none;cursor:pointer;font-size:0.8rem;color:#475569;padding:0 2px">✏️</button>
+      <button onclick="ikHapusKelas('${k}')" style="background:none;border:none;cursor:pointer;font-size:0.8rem;color:#b91c1c;padding:0 2px">✕</button>
     </div>`).join('');
 }
 window.ikRenderDaftarKelas = ikRenderDaftarKelas;
 
-window.ikEditKelas = function(nama){
-  document.getElementById('ik-edit-kelas-lama').textContent=nama;
-  document.getElementById('ik-edit-kelas-baru').value=nama;
-  IK._editKelasLama=nama;
+window.ikEditKelas = function(nama) {
+  document.getElementById('ik-edit-kelas-lama').textContent = nama;
+  document.getElementById('ik-edit-kelas-baru').value = nama;
+  IK._editKelasLama = nama;
   document.getElementById('ik-modal-edit-kelas').classList.add('open');
 };
-window.ikKonfirmEditKelas = function(){
-  const lama=IK._editKelasLama; const baru=document.getElementById('ik-edit-kelas-baru').value.trim();
-  if(!baru){ikToast('❗ Nama tidak boleh kosong','danger');return;}
-  if(baru!==lama&&IK.kelasList.includes(baru)){ikToast('❗ Nama kelas sudah ada','danger');return;}
-  IK.kelasList=IK.kelasList.map(k=>k===lama?baru:k);
-  IK.siswa=IK.siswa.map(s=>s.kelas===lama?{...s,kelas:baru}:s);
-  IK.pembayaran=IK.pembayaran.map(p=>p.kelas===lama?{...p,kelas:baru}:p);
+
+window.ikKonfirmEditKelas = function() {
+  const lama = IK._editKelasLama;
+  const baru = document.getElementById('ik-edit-kelas-baru').value.trim();
+  if (!baru) { ikToast('❗ Nama tidak boleh kosong', 'danger'); return; }
+  if (baru !== lama && IK.kelasList.includes(baru)) { ikToast('❗ Nama kelas sudah ada', 'danger'); return; }
+  IK.kelasList = IK.kelasList.map(k => k === lama ? baru : k);
+  IK.siswa = IK.siswa.map(s => s.kelas === lama ? {...s, kelas: baru} : s);
+  IK.pembayaran = IK.pembayaran.map(p => p.kelas === lama ? {...p, kelas: baru} : p);
   ikSave(); ikRenderDaftarKelas(); ikRebuildKelasSelects(); ikRenderSiswa(); ikRenderDashboard();
   ikCloseModal('ik-modal-edit-kelas');
-  ikToast('✅ Kelas '+lama+' → '+baru);
-};
-window.ikHapusKelas = function(nama){
-  if(IK.siswa.some(s=>s.kelas===nama)){ikToast('❌ Kelas masih berisi siswa','danger');return;}
-  if(!confirm('Hapus kelas '+nama+'?'))return;
-  IK.kelasList=IK.kelasList.filter(k=>k!==nama);
-  ikSave(); ikRenderDaftarKelas(); ikRebuildKelasSelects();
-  ikToast('🗑️ Kelas '+nama+' dihapus');
+  ikToast('✅ Kelas ' + lama + ' → ' + baru);
 };
 
-function ikRebuildKelasSelects(){
-  const ids=['ik-inp-kelas','ik-flt-kelas-siswa','ik-bayar-flt-kelas','ik-lap-kelas',
-             'ik-kartu-kelas','ik-bb-kelas','ik-riwayat-kelas','es-kelas'];
-  ids.forEach(id=>{
-    const el=document.getElementById(id); if(!el)return;
-    const cur=el.value;
-    const opts=IK.kelasList.map(k=>`<option value="${k}">${k}</option>`).join('');
-    el.innerHTML=(id==='ik-inp-kelas'?'<option value="">-- Pilih --</option>':'<option value="">Semua</option>')+opts;
-    if(cur&&IK.kelasList.includes(cur))el.value=cur;
+window.ikHapusKelas = function(nama) {
+  if (IK.siswa.some(s => s.kelas === nama)) { ikToast('❌ Kelas masih berisi siswa', 'danger'); return; }
+  if (!confirm('Hapus kelas ' + nama + '?')) return;
+  IK.kelasList = IK.kelasList.filter(k => k !== nama);
+  ikSave(); ikRenderDaftarKelas(); ikRebuildKelasSelects();
+  ikToast('🗑️ Kelas ' + nama + ' dihapus');
+};
+
+function ikRebuildKelasSelects() {
+  const ids = ['ik-inp-kelas','ik-flt-kelas-siswa','ik-bayar-flt-kelas','ik-lap-kelas',
+               'ik-kartu-kelas','ik-bb-kelas','ik-riwayat-kelas','es-kelas'];
+  ids.forEach(id => {
+    const el = document.getElementById(id); if (!el) return;
+    const cur = el.value;
+    const opts = IK.kelasList.map(k => `<option value="${k}">${k}</option>`).join('');
+    el.innerHTML = (id === 'ik-inp-kelas' ? '<option value="">-- Pilih --</option>' : '<option value="">Semua</option>') + opts;
+    if (cur && IK.kelasList.includes(cur)) el.value = cur;
   });
 }
 
 // ================================================================
-// PEMBAYARAN
+// PEMBAYARAN — CATAT (dari form)
 // ================================================================
-window.ikPopulateSiswaSelect = function(){
-  const fk=document.getElementById('ik-bayar-flt-kelas')?.value||'';
-  const data=IK.siswa.filter(s=>!fk||s.kelas===fk).sort((a,b)=>a.kelas.localeCompare(b.kelas)||a.nama.localeCompare(b.nama));
-  const sel=document.getElementById('ik-inp-siswa-bayar'); if(!sel)return;
-  sel.innerHTML='<option value="">-- Pilih Siswa --</option>'+data.map(s=>`<option value="${s.id}">${s.nama} (${s.kelas})</option>`).join('');
-  // riwayat kelas select
-  const rk=document.getElementById('ik-riwayat-kelas'); if(rk){
-    const cur=rk.value;
-    rk.innerHTML='<option value="">Semua</option>'+IK.kelasList.map(k=>`<option value="${k}">${k}</option>`).join('');
-    if(cur)rk.value=cur;
+window.ikPopulateSiswaSelect = function() {
+  const fk = document.getElementById('ik-bayar-flt-kelas')?.value || '';
+  const data = IK.siswa.filter(s => !fk || s.kelas === fk).sort((a,b) => a.kelas.localeCompare(b.kelas) || a.nama.localeCompare(b.nama));
+  const sel = document.getElementById('ik-inp-siswa-bayar'); if (!sel) return;
+  sel.innerHTML = '<option value="">-- Pilih Siswa --</option>' + data.map(s => `<option value="${s.id}">${s.nama} (${s.kelas})</option>`).join('');
+  const rk = document.getElementById('ik-riwayat-kelas');
+  if (rk) {
+    const cur = rk.value;
+    rk.innerHTML = '<option value="">Semua</option>' + IK.kelasList.map(k => `<option value="${k}">${k}</option>`).join('');
+    if (cur) rk.value = cur;
   }
-  // riwayat bulan
-  const rb=document.getElementById('ik-riwayat-bulan'); if(rb){
-    rb.innerHTML='<option value="">Semua Bulan</option>'+BUTA.map(b=>`<option value="${b}">${BN[b]}</option>`).join('');
-  }
+  const rb = document.getElementById('ik-riwayat-bulan');
+  if (rb) rb.innerHTML = '<option value="">Semua Bulan</option>' + BUTA.map(b => `<option value="${b}">${BN[b]}</option>`).join('');
 };
 
-window.ikFilterSiswaBayar = function(){ikPopulateSiswaSelect();ikCekStatusBayar();};
+window.ikFilterSiswaBayar = function() { ikPopulateSiswaSelect(); ikCekStatusBayar(); };
+window.ikCekStatusBayar = function() { ikRenderBulanCB(); };
 
-window.ikCekStatusBayar = function(){
-  ikRenderBulanCB();
-};
-
-function ikRenderBulanCB(){
-  const sid=document.getElementById('ik-inp-siswa-bayar')?.value||'';
-  const ta=document.getElementById('ik-inp-ta-bayar')?.value||IK.cfg.ta;
-  const paid=sid?sudahBayar(sid,ta):new Set();
-  const {t1,t2}=parseTA(ta);
-  const grid=document.getElementById('ik-bulan-grid'); if(!grid)return;
-  grid.innerHTML=BUTA.map(b=>{
-    const thn=b>=7?t1:t2; const k=bkey(b,thn);
-    const lunas=paid.has(k);
-    return `<div class="ik-bulan-item${lunas?' ik-lunas':''}">
-      ${lunas?'':`<input type="checkbox" id="bc-${b}-${thn}" value="${b}-${thn}">`}
-      <label class="ik-bulan-lbl" ${lunas?'':(`for="bc-${b}-${thn}"`)}>
+function ikRenderBulanCB() {
+  const sid = document.getElementById('ik-inp-siswa-bayar')?.value || '';
+  const ta = document.getElementById('ik-inp-ta-bayar')?.value || IK.cfg.ta;
+  const paid = sid ? sudahBayar(sid, ta) : new Set();
+  const {t1,t2} = parseTA(ta);
+  const grid = document.getElementById('ik-bulan-grid'); if (!grid) return;
+  grid.innerHTML = BUTA.map(b => {
+    const thn = b >= 7 ? t1 : t2;
+    const k = bkey(b, thn);
+    const lunas = paid.has(k);
+    return `<div class="ik-bulan-item${lunas ? ' ik-lunas' : ''}">
+      ${lunas ? '' : `<input type="checkbox" id="bc-${b}-${thn}" value="${b}-${thn}">`}
+      <label class="ik-bulan-lbl" ${lunas ? '' : `for="bc-${b}-${thn}"`}>
         ${BN[b].substring(0,3)}<small>${thn}</small>
       </label>
     </div>`;
   }).join('');
 }
 
-window.ikBayar = function(){
-  const sid=document.getElementById('ik-inp-siswa-bayar').value;
-  const ta=document.getElementById('ik-inp-ta-bayar').value;
-  const jumlah=+document.getElementById('ik-inp-jumlah').value||IK.cfg.iuran;
-  const catatan=document.getElementById('ik-inp-catatan').value.trim();
-  if(!sid){ikToast('❗ Pilih siswa dulu','danger');return;}
-  const checked=[...document.querySelectorAll('#ik-bulan-grid input:checked')].map(c=>c.value);
-  if(!checked.length){ikToast('❗ Pilih minimal satu bulan','danger');return;}
-  const siswa=IK.siswa.find(s=>s.id===sid);
-  let added=0;
-  checked.forEach(bv=>{
-    const [b,thn]=bv.split('-').map(Number);
-    const already=IK.pembayaran.find(p=>p.siswaId===sid&&p.bulan===b&&p.tahun===thn);
-    if(already)return;
-    const rec={id:'P'+Date.now()+Math.random(),siswaId:sid,namaSiswa:siswa.nama,kelas:siswa.kelas,
-      bulan:b,tahun:thn,ta,jumlah,tanggal:new Date().toLocaleDateString('id-ID'),catatan};
-    IK.pembayaran.push(rec); ikSyncSheets('addBayar',rec); added++;
+window.ikBayar = function() {
+  const sid = document.getElementById('ik-inp-siswa-bayar').value;
+  const ta = document.getElementById('ik-inp-ta-bayar').value;
+  const jumlah = +document.getElementById('ik-inp-jumlah').value || IK.cfg.iuran;
+  const catatan = document.getElementById('ik-inp-catatan').value.trim();
+  if (!sid) { ikToast('❗ Pilih siswa dulu', 'danger'); return; }
+  const checked = [...document.querySelectorAll('#ik-bulan-grid input:checked')].map(c => c.value);
+  if (!checked.length) { ikToast('❗ Pilih minimal satu bulan', 'danger'); return; }
+  const siswa = IK.siswa.find(s => s.id === sid);
+  let added = 0;
+  const newRecs = [];
+  checked.forEach(bv => {
+    const [b, thn] = bv.split('-').map(Number);
+    if (IK.pembayaran.find(p => p.siswaId === sid && p.bulan === b && p.tahun === thn)) return;
+    const rec = {
+      id: 'P' + Date.now() + Math.floor(Math.random()*99999),
+      siswaId: sid, namaSiswa: siswa.nama, kelas: siswa.kelas,
+      bulan: b, tahun: thn, ta, jumlah,
+      tanggal: new Date().toLocaleDateString('id-ID'), catatan
+    };
+    IK.pembayaran.push(rec);
+    newRecs.push(rec);
+    added++;
   });
-  if(!added){ikToast('ℹ️ Bulan yang dipilih sudah lunas semua','warn');return;}
-  ikSave(); ikRenderBulanCB(); ikRenderDashboard(); ikRenderRiwayat(); ikRenderBelum(); ikRenderBukasUmum();
-  ikToast(`✅ ${added} bulan pembayaran disimpan!`);
+  if (!added) { ikToast('ℹ️ Bulan yang dipilih sudah lunas semua', 'warn'); return; }
+  ikSave();
+  // PUSH setiap record ke Sheets
+  newRecs.forEach(rec => ikPushBayar(rec));
+  ikRenderBulanCB(); ikRenderDashboard(); ikRenderRiwayat(); ikRenderBelum(); ikRenderBukasUmum();
+  ikToast(`✅ ${added} bulan pembayaran disimpan dan dikirim ke Sheets!`);
 };
 
-window.ikHapusBayar = function(id){
-  if(!confirm('Hapus data pembayaran ini?'))return;
-  IK.pembayaran=IK.pembayaran.filter(p=>p.id!==id);
-  ikSave(); ikRenderRiwayat(); ikRenderDashboard(); ikRenderBulanCB(); ikRenderBelum(); ikRenderBukasUmum();
+window.ikHapusBayar = function(id) {
+  if (!confirm('Hapus data pembayaran ini?')) return;
+  IK.pembayaran = IK.pembayaran.filter(p => p.id !== id);
+  ikSave();
+  // HAPUS dari Sheets
+  ikDeleteBayarSheets(id);
+  ikRenderRiwayat(); ikRenderDashboard(); ikRenderBulanCB(); ikRenderBelum(); ikRenderBukasUmum();
   ikToast('🗑️ Pembayaran dihapus');
 };
 
-function ikRenderRiwayat(){
-  const fk=document.getElementById('ik-riwayat-kelas')?.value||'';
-  const fb=document.getElementById('ik-riwayat-bulan')?.value||'';
-  const cari=document.getElementById('ik-riwayat-cari')?.value.toLowerCase()||'';
-  let data=[...IK.pembayaran];
-  if(fk)data=data.filter(p=>p.kelas===fk);
-  if(fb)data=data.filter(p=>String(p.bulan)===fb);
-  if(cari)data=data.filter(p=>p.namaSiswa.toLowerCase().includes(cari));
-  data.sort((a,b)=>b.id.localeCompare(a.id));
-  const tb=document.getElementById('ik-tb-riwayat'); if(!tb)return;
-  if(!data.length){tb.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:20px;color:#94a3b8">Belum ada pembayaran</td></tr>`;return;}
-  tb.innerHTML=data.slice(0,100).map(p=>`
+function ikRenderRiwayat() {
+  const fk = document.getElementById('ik-riwayat-kelas')?.value || '';
+  const fb = document.getElementById('ik-riwayat-bulan')?.value || '';
+  const cari = document.getElementById('ik-riwayat-cari')?.value.toLowerCase() || '';
+  let data = [...IK.pembayaran];
+  if (fk) data = data.filter(p => p.kelas === fk);
+  if (fb) data = data.filter(p => String(p.bulan) === fb);
+  if (cari) data = data.filter(p => p.namaSiswa.toLowerCase().includes(cari));
+  data.sort((a,b) => b.id.localeCompare(a.id));
+  const tb = document.getElementById('ik-tb-riwayat'); if (!tb) return;
+  if (!data.length) { tb.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;color:#94a3b8">Belum ada pembayaran</td></tr>`; return; }
+  tb.innerHTML = data.slice(0,100).map(p => `
     <tr>
       <td style="font-size:0.72rem;color:#94a3b8">${p.tanggal||'—'}</td>
       <td><strong>${p.namaSiswa}</strong></td>
@@ -1638,51 +1888,43 @@ function ikRenderRiwayat(){
 // ================================================================
 // DASHBOARD
 // ================================================================
-function ikRenderDashboard(){
-  const now=new Date(); const cb=now.getMonth()+1; const cy=now.getFullYear();
-  const ta=IK.cfg.ta; const {t1,t2}=parseTA(ta);
-  const totalSiswa=IK.siswa.length;
-  // Bulan ini
-  const lunasSet=new Set(IK.pembayaran.filter(p=>p.bulan===cb&&p.tahun===cy).map(p=>p.siswaId));
-  const lunasCount=lunasSet.size;
-  const belumCount=Math.max(0,totalSiswa-lunasCount);
-  const incomeBln=IK.pembayaran.filter(p=>p.bulan===cb&&p.tahun===cy).reduce((s,p)=>s+(p.jumlah||0),0);
-  const incomeTA=IK.pembayaran.filter(p=>(p.tahun===t1&&p.bulan>=7)||(p.tahun===t2&&p.bulan<=6)).reduce((s,p)=>s+(p.jumlah||0),0);
-  const target=totalSiswa*12*IK.cfg.iuran||1;
-  const pct=Math.min(100,Math.round(incomeTA/target*100));
-  // Update UI
+function ikRenderDashboard() {
+  const now = new Date(); const cb = now.getMonth() + 1; const cy = now.getFullYear();
+  const ta = IK.cfg.ta; const {t1,t2} = parseTA(ta);
+  const totalSiswa = IK.siswa.length;
+  const lunasSet = new Set(IK.pembayaran.filter(p => p.bulan === cb && p.tahun === cy).map(p => p.siswaId));
+  const lunasCount = lunasSet.size;
+  const belumCount = Math.max(0, totalSiswa - lunasCount);
+  const incomeBln = IK.pembayaran.filter(p => p.bulan === cb && p.tahun === cy).reduce((s,p) => s + (p.jumlah||0), 0);
+  const incomeTA = IK.pembayaran.filter(p => (p.tahun === t1 && p.bulan >= 7) || (p.tahun === t2 && p.bulan <= 6)).reduce((s,p) => s + (p.jumlah||0), 0);
+  const target = totalSiswa * 12 * IK.cfg.iuran || 1;
+  const pct = Math.min(100, Math.round(incomeTA / target * 100));
   const $ = id => document.getElementById(id);
-  if($('ik-total-income'))$('ik-total-income').textContent='Rp '+incomeTA.toLocaleString('id-ID');
-  if($('ik-prog-fill'))$('ik-prog-fill').style.width=pct+'%';
-  if($('ik-prog-label'))$('ik-prog-label').textContent=lunasCount+' siswa lunas bulan ini';
-  if($('ik-prog-pct'))$('ik-prog-pct').textContent=pct+'%';
-  if($('ik-dash-ta'))$('ik-dash-ta').textContent=ta;
-  if($('kpi-total'))$('kpi-total').textContent=totalSiswa;
-  if($('kpi-lunas'))$('kpi-lunas').textContent=lunasCount;
-  if($('kpi-lunas-s'))$('kpi-lunas-s').textContent=totalSiswa?Math.round(lunasCount/totalSiswa*100)+'% dari total':'—';
-  if($('kpi-belum'))$('kpi-belum').textContent=belumCount;
-  if($('kpi-belum-s'))$('kpi-belum-s').textContent=belumCount>0?belumCount+' siswa perlu dibayar':'✅ Semua lunas';
-  if($('kpi-income'))$('kpi-income').textContent='Rp'+incomeBln.toLocaleString('id-ID');
-  if($('kpi-income-s'))$('kpi-income-s').textContent=BN[cb]+' '+cy;
-  // Rekap per kelas
-  const tb=$('ik-tb-kelas'); if(tb){
-    const kelMap={};
-    IK.siswa.forEach(s=>{if(!kelMap[s.kelas])kelMap[s.kelas]={total:0,lunas:0};kelMap[s.kelas].total++;});
-    IK.pembayaran.filter(p=>p.bulan===cb&&p.tahun===cy).forEach(p=>{
-      if(!kelMap[p.kelas])kelMap[p.kelas]={total:0,lunas:0};
-      const done=new Set(); if(!done.has(p.siswaId)){done.add(p.siswaId);kelMap[p.kelas].lunas=(kelMap[p.kelas].lunas||0)+1;}
-    });
-    // recount lunas per kelas properly
-    Object.keys(kelMap).forEach(k=>kelMap[k].lunas=0);
-    const lunasPerKelas={};
-    IK.pembayaran.filter(p=>p.bulan===cb&&p.tahun===cy).forEach(p=>{
-      if(!lunasPerKelas[p.kelas])lunasPerKelas[p.kelas]=new Set();
+  if ($('ik-total-income')) $('ik-total-income').textContent = 'Rp ' + incomeTA.toLocaleString('id-ID');
+  if ($('ik-prog-fill')) $('ik-prog-fill').style.width = pct + '%';
+  if ($('ik-prog-label')) $('ik-prog-label').textContent = lunasCount + ' siswa lunas bulan ini';
+  if ($('ik-prog-pct')) $('ik-prog-pct').textContent = pct + '%';
+  if ($('ik-dash-ta')) $('ik-dash-ta').textContent = ta;
+  if ($('kpi-total')) $('kpi-total').textContent = totalSiswa;
+  if ($('kpi-lunas')) $('kpi-lunas').textContent = lunasCount;
+  if ($('kpi-lunas-s')) $('kpi-lunas-s').textContent = totalSiswa ? Math.round(lunasCount/totalSiswa*100) + '% dari total' : '—';
+  if ($('kpi-belum')) $('kpi-belum').textContent = belumCount;
+  if ($('kpi-belum-s')) $('kpi-belum-s').textContent = belumCount > 0 ? belumCount + ' siswa perlu dibayar' : '✅ Semua lunas';
+  if ($('kpi-income')) $('kpi-income').textContent = 'Rp' + incomeBln.toLocaleString('id-ID');
+  if ($('kpi-income-s')) $('kpi-income-s').textContent = BN[cb] + ' ' + cy;
+  const tb = $('ik-tb-kelas');
+  if (tb) {
+    const kelMap = {};
+    IK.siswa.forEach(s => { if (!kelMap[s.kelas]) kelMap[s.kelas] = {total:0,lunas:0}; kelMap[s.kelas].total++; });
+    const lunasPerKelas = {};
+    IK.pembayaran.filter(p => p.bulan === cb && p.tahun === cy).forEach(p => {
+      if (!lunasPerKelas[p.kelas]) lunasPerKelas[p.kelas] = new Set();
       lunasPerKelas[p.kelas].add(p.siswaId);
     });
-    Object.keys(lunasPerKelas).forEach(k=>{if(kelMap[k])kelMap[k].lunas=lunasPerKelas[k].size;});
-    const rows=Object.keys(kelMap).sort().map(k=>{
-      const {total,lunas}=kelMap[k]; const blm=Math.max(0,total-lunas);
-      const p2=total?Math.round(lunas/total*100):0;
+    Object.keys(lunasPerKelas).forEach(k => { if (kelMap[k]) kelMap[k].lunas = lunasPerKelas[k].size; });
+    const rows = Object.keys(kelMap).sort().map(k => {
+      const {total,lunas} = kelMap[k]; const blm = Math.max(0,total-lunas);
+      const p2 = total ? Math.round(lunas/total*100) : 0;
       return `<tr>
         <td><span class="ik-badge ik-badge-kelas">${k}</span></td>
         <td>${total}</td><td style="color:#047857;font-weight:700">${lunas}</td>
@@ -1690,23 +1932,23 @@ function ikRenderDashboard(){
         <td><div class="ik-prog-wrap"><div class="ik-prog-bg"><div class="ik-prog-fill" style="width:${p2}%;background:${p2>=80?'#047857':p2>=50?'#d97706':'#b91c1c'}"></div></div><span class="ik-prog-pct">${p2}%</span></div></td>
       </tr>`;
     });
-    tb.innerHTML=rows.length?rows.join(''):`<tr><td colspan="5" style="text-align:center;padding:16px;color:#94a3b8">Belum ada data</td></tr>`;
+    tb.innerHTML = rows.length ? rows.join('') : `<tr><td colspan="5" style="text-align:center;padding:16px;color:#94a3b8">Belum ada data</td></tr>`;
   }
-  // Rekap per bulan
-  const tbr=$('ik-tb-rekap'); if(tbr){
-    const rows=BUTA.map(b=>{
-      const thn=b>=7?t1:t2;
-      const bpay=IK.pembayaran.filter(p=>p.bulan===b&&p.tahun===thn);
-      const lunasS=new Set(bpay.map(p=>p.siswaId)).size;
-      const total=bpay.reduce((s,p)=>s+(p.jumlah||0),0);
-      const isCur=(b===cb&&thn===cy);
-      return `<tr${isCur?' style="background:#fef2f2"':''}>
-        <td>${BN[b]} ${thn}${isCur?' <span class="ik-badge" style="background:#fbbf24;color:#92400e">Bln Ini</span>':''}</td>
-        <td>${lunasS>0?`<span class="ik-badge ik-badge-lunas">${lunasS} lunas</span>`:'—'}</td>
-        <td style="font-weight:700;color:${total>0?'#047857':'#94a3b8'}">${total>0?'Rp'+total.toLocaleString('id-ID'):'—'}</td>
+  const tbr = $('ik-tb-rekap');
+  if (tbr) {
+    const rows = BUTA.map(b => {
+      const thn = b >= 7 ? t1 : t2;
+      const bpay = IK.pembayaran.filter(p => p.bulan === b && p.tahun === thn);
+      const lunasS = new Set(bpay.map(p => p.siswaId)).size;
+      const total = bpay.reduce((s,p) => s+(p.jumlah||0), 0);
+      const isCur = (b === cb && thn === cy);
+      return `<tr${isCur ? ' style="background:#fef2f2"' : ''}>
+        <td>${BN[b]} ${thn}${isCur ? ' <span class="ik-badge" style="background:#fbbf24;color:#92400e">Bln Ini</span>' : ''}</td>
+        <td>${lunasS > 0 ? `<span class="ik-badge ik-badge-lunas">${lunasS} lunas</span>` : '—'}</td>
+        <td style="font-weight:700;color:${total>0?'#047857':'#94a3b8'}">${total>0 ? 'Rp'+total.toLocaleString('id-ID') : '—'}</td>
       </tr>`;
     });
-    tbr.innerHTML=rows.join('');
+    tbr.innerHTML = rows.join('');
   }
 }
 window.ikRenderDashboard = ikRenderDashboard;
@@ -1714,92 +1956,86 @@ window.ikRenderDashboard = ikRenderDashboard;
 // ================================================================
 // BELUM BAYAR
 // ================================================================
-function ikRenderBelum(){
-  const fk=document.getElementById('ik-bb-kelas')?.value||'';
-  const taEl=document.getElementById('ik-bb-ta'); const ta=taEl?taEl.value:IK.cfg.ta;
-  const bbEl=document.getElementById('ik-bb-bulan');
-  const bIdx=bbEl?+bbEl.value:0;
-  const b=BUTA[bIdx]||BUTA[0];
-  const {t1,t2}=parseTA(ta); const thn=b>=7?t1:t2;
-  let siswa=IK.siswa.filter(s=>!fk||s.kelas===fk);
-  const paid=new Set(IK.pembayaran.filter(p=>p.bulan===b&&p.tahun===thn).map(p=>p.siswaId));
-  const belum=siswa.filter(s=>!paid.has(s.id));
-  const info=document.getElementById('ik-belum-info');
-  if(info){
-    if(belum.length){info.style.display='flex';info.innerHTML=`⚠️ ${belum.length} siswa belum bayar iuran <strong>${BN[b]} ${thn}</strong>`;}
-    else{info.style.display='none';}
+function ikRenderBelum() {
+  const fk = document.getElementById('ik-bb-kelas')?.value || '';
+  const taEl = document.getElementById('ik-bb-ta'); const ta = taEl ? taEl.value : IK.cfg.ta;
+  const bbEl = document.getElementById('ik-bb-bulan');
+  const bIdx = bbEl ? +bbEl.value : 0;
+  const b = BUTA[bIdx] || BUTA[0];
+  const {t1,t2} = parseTA(ta); const thn = b >= 7 ? t1 : t2;
+  let siswa = IK.siswa.filter(s => !fk || s.kelas === fk);
+  const paid = new Set(IK.pembayaran.filter(p => p.bulan === b && p.tahun === thn).map(p => p.siswaId));
+  const belum = siswa.filter(s => !paid.has(s.id));
+  const info = document.getElementById('ik-belum-info');
+  if (info) {
+    if (belum.length) { info.style.display='flex'; info.innerHTML=`⚠️ ${belum.length} siswa belum bayar iuran <strong>${BN[b]} ${thn}</strong>`; }
+    else info.style.display = 'none';
   }
-  const list=document.getElementById('ik-belum-list'); if(!list)return;
-  if(!belum.length){list.innerHTML=`<div class="ik-empty"><div class="e-icon">✅</div><div class="e-text">Semua Lunas</div><div class="e-sub">Semua siswa sudah bayar bulan ini</div></div>`;return;}
-  list.innerHTML=`<div class="ik-belum-grid">${belum.map(s=>{
-    const tunggakan=BUTA.filter(bb=>{const yy=bb>=7?parseTA(ta).t1:parseTA(ta).t2;return!new Set(IK.pembayaran.filter(p=>p.siswaId===s.id&&p.bulan===bb&&p.tahun===yy).map(p=>p.siswaId)).has(s.id);}).length;
-    return `<div class="ik-belum-card"><div class="bc-nama">${s.nama}</div><div class="bc-info">Kelas ${s.kelas}${s.ortu?' · '+s.ortu:''}</div><div class="bc-tunggakan">Belum bayar ${BN[b]} ${thn}</div></div>`;
-  }).join('')}</div>`;
+  const list = document.getElementById('ik-belum-list'); if (!list) return;
+  if (!belum.length) { list.innerHTML=`<div class="ik-empty"><div class="e-icon">✅</div><div class="e-text">Semua Lunas</div><div class="e-sub">Semua siswa sudah bayar bulan ini</div></div>`; return; }
+  list.innerHTML=`<div class="ik-belum-grid">${belum.map(s=>
+    `<div class="ik-belum-card"><div class="bc-nama">${s.nama}</div><div class="bc-info">Kelas ${s.kelas}${s.ortu?' · '+s.ortu:''}</div><div class="bc-tunggakan">Belum bayar ${BN[b]} ${thn}</div></div>`
+  ).join('')}</div>`;
 }
 window.ikRenderBelum = ikRenderBelum;
 
 // ================================================================
 // LAPORAN
 // ================================================================
-window.ikGenLaporan = function(){
-  const ta=document.getElementById('ik-lap-ta')?.value||IK.cfg.ta;
-  const bIdx=+(document.getElementById('ik-lap-bulan')?.value||0);
-  const fk=document.getElementById('ik-lap-kelas')?.value||'';
-  const b=BUTA[bIdx]; const {t1,t2}=parseTA(ta); const thn=b>=7?t1:t2;
-  let siswa=IK.siswa.filter(s=>!fk||s.kelas===fk).sort((a,b2)=>a.kelas.localeCompare(b2.kelas)||a.nama.localeCompare(b2.nama));
-  const paid=new Set(IK.pembayaran.filter(p=>p.bulan===b&&p.tahun===thn).map(p=>p.siswaId));
-  const income=IK.pembayaran.filter(p=>p.bulan===b&&p.tahun===thn&&(!fk||p.kelas===fk)).reduce((s,p)=>s+(p.jumlah||0),0);
-  const lunas=siswa.filter(s=>paid.has(s.id)).length;
-  const out=document.getElementById('ik-laporan-out'); if(!out)return;
-  out.innerHTML=`
-    <div class="ik-card">
-      ${ikKopLaporan()}
-      <div class="ik-ljudul"><h3>LAPORAN IURAN KOMITE BULAN ${BN[b].toUpperCase()} ${thn}</h3>
-        <p>${fk?'Kelas '+fk:'Semua Kelas'} · Tahun Ajaran ${ta}</p></div>
-      <dl class="ik-lmeta">
-        <dt>Jumlah Siswa</dt><dd>${siswa.length}</dd>
-        <dt>Lunas</dt><dd>${lunas} siswa</dd>
-        <dt>Belum Bayar</dt><dd>${siswa.length-lunas} siswa</dd>
-        <dt>Total Pemasukan</dt><dd style="font-weight:700;color:#047857">Rp ${income.toLocaleString('id-ID')}</dd>
-      </dl>
-      <div class="ik-ltable">
-        <table>
-          <thead><tr><th>#</th><th>Nama Siswa</th><th>Kelas</th><th>Status</th><th>Jumlah</th></tr></thead>
-          <tbody>${siswa.map((s,i)=>{
-            const p=IK.pembayaran.find(pp=>pp.siswaId===s.id&&pp.bulan===b&&pp.tahun===thn);
-            return `<tr><td>${i+1}</td><td>${s.nama}</td><td>${s.kelas}</td>
-              <td>${p?'<span style="color:#047857;font-weight:700">✅ Lunas</span>':'<span style="color:#b91c1c;font-weight:700">❌ Belum</span>'}</td>
-              <td>${p?'Rp '+p.jumlah.toLocaleString('id-ID'):'—'}</td></tr>`;
-          }).join('')}
-          <tr class="ltr-total"><td colspan="4" style="text-align:right">Total Pemasukan:</td><td>Rp ${income.toLocaleString('id-ID')}</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="ik-lttd">
-        <div class="ttd-box"><div class="ttd-label">Mengetahui,<br>Kepala Sekolah</div><div class="ttd-name">${IK.cfg.kepsek||'_________________'}</div><div class="ttd-jabatan">${IK.cfg.nip?'NIP. '+IK.cfg.nip:''}</div></div>
-        <div class="ttd-box"><div class="ttd-label">Bendahara Komite</div><div class="ttd-name">${IK.cfg.ketua||'_________________'}</div><div class="ttd-jabatan">Bendahara</div></div>
-      </div>
-    </div>`;
+window.ikGenLaporan = function() {
+  const ta = document.getElementById('ik-lap-ta')?.value || IK.cfg.ta;
+  const bIdx = +(document.getElementById('ik-lap-bulan')?.value || 0);
+  const fk = document.getElementById('ik-lap-kelas')?.value || '';
+  const b = BUTA[bIdx]; const {t1,t2} = parseTA(ta); const thn = b >= 7 ? t1 : t2;
+  let siswa = IK.siswa.filter(s => !fk || s.kelas === fk).sort((a,b2) => a.kelas.localeCompare(b2.kelas) || a.nama.localeCompare(b2.nama));
+  const paid = new Set(IK.pembayaran.filter(p => p.bulan === b && p.tahun === thn).map(p => p.siswaId));
+  const income = IK.pembayaran.filter(p => p.bulan === b && p.tahun === thn && (!fk || p.kelas === fk)).reduce((s,p) => s+(p.jumlah||0), 0);
+  const lunas = siswa.filter(s => paid.has(s.id)).length;
+  const out = document.getElementById('ik-laporan-out'); if (!out) return;
+  out.innerHTML = `<div class="ik-card">
+    ${ikKopLaporan()}
+    <div class="ik-ljudul"><h3>LAPORAN IURAN KOMITE BULAN ${BN[b].toUpperCase()} ${thn}</h3>
+    <p>${fk?'Kelas '+fk:'Semua Kelas'} · Tahun Ajaran ${ta}</p></div>
+    <dl class="ik-lmeta">
+      <dt>Jumlah Siswa</dt><dd>${siswa.length}</dd>
+      <dt>Lunas</dt><dd>${lunas} siswa</dd>
+      <dt>Belum Bayar</dt><dd>${siswa.length-lunas} siswa</dd>
+      <dt>Total Pemasukan</dt><dd style="font-weight:700;color:#047857">Rp ${income.toLocaleString('id-ID')}</dd>
+    </dl>
+    <div class="ik-ltable"><table>
+      <thead><tr><th>#</th><th>Nama Siswa</th><th>Kelas</th><th>Status</th><th>Jumlah</th></tr></thead>
+      <tbody>${siswa.map((s,i)=>{
+        const p=IK.pembayaran.find(pp=>pp.siswaId===s.id&&pp.bulan===b&&pp.tahun===thn);
+        return `<tr><td>${i+1}</td><td>${s.nama}</td><td>${s.kelas}</td>
+          <td>${p?'<span style="color:#047857;font-weight:700">✅ Lunas</span>':'<span style="color:#b91c1c;font-weight:700">❌ Belum</span>'}</td>
+          <td>${p?'Rp '+p.jumlah.toLocaleString('id-ID'):'—'}</td></tr>`;
+      }).join('')}
+      <tr class="ltr-total"><td colspan="4" style="text-align:right">Total Pemasukan:</td><td>Rp ${income.toLocaleString('id-ID')}</td></tr>
+      </tbody></table></div>
+    <div class="ik-lttd">
+      <div class="ttd-box"><div class="ttd-label">Mengetahui,<br>Kepala Sekolah</div><div class="ttd-name">${IK.cfg.kepsek||'_________________'}</div><div class="ttd-jabatan">${IK.cfg.nip?'NIP. '+IK.cfg.nip:''}</div></div>
+      <div class="ttd-box"><div class="ttd-label">Bendahara Komite</div><div class="ttd-name">${IK.cfg.ketua||'_________________'}</div><div class="ttd-jabatan">Bendahara</div></div>
+    </div>
+  </div>`;
 };
-window.ikCetakLaporan = function(){
-  const out=document.getElementById('ik-laporan-out');
-  if(!out.innerHTML.trim()){ikGenLaporan();}
-  setTimeout(()=>window.print(),200);
+window.ikCetakLaporan = function() {
+  if (!document.getElementById('ik-laporan-out').innerHTML.trim()) ikGenLaporan();
+  setTimeout(() => window.print(), 200);
 };
-function ikKopLaporan(){
+function ikKopLaporan() {
   return `<div class="ik-lkop"><div class="lk-logo">🏫</div><div><h2>Laporan Iuran Komite Sekolah</h2><h3>${IK.cfg.sekolah.toUpperCase()}</h3><p>${IK.cfg.alamat||''}</p></div></div>`;
 }
 
 // ================================================================
 // KARTU SISWA
 // ================================================================
-function ikRenderKartu(){
-  const fk=document.getElementById('ik-kartu-kelas')?.value||'';
-  const cari=document.getElementById('ik-kartu-cari')?.value.toLowerCase()||'';
-  const data=IK.siswa.filter(s=>(!fk||s.kelas===fk)&&(!cari||s.nama.toLowerCase().includes(cari))).sort((a,b)=>a.kelas.localeCompare(b.kelas)||a.nama.localeCompare(b.nama));
-  const grid=document.getElementById('ik-kartu-grid'); if(!grid)return;
-  if(!data.length){grid.innerHTML=`<div class="ik-empty"><div class="e-icon">🪪</div><div class="e-text">Belum ada siswa</div></div>`;return;}
-  grid.innerHTML=data.map(s=>`
+function ikRenderKartu() {
+  const fk = document.getElementById('ik-kartu-kelas')?.value || '';
+  const cari = document.getElementById('ik-kartu-cari')?.value.toLowerCase() || '';
+  const data = IK.siswa.filter(s => (!fk||s.kelas===fk)&&(!cari||s.nama.toLowerCase().includes(cari))).sort((a,b)=>a.kelas.localeCompare(b.kelas)||a.nama.localeCompare(b.nama));
+  const grid = document.getElementById('ik-kartu-grid'); if (!grid) return;
+  if (!data.length) { grid.innerHTML = `<div class="ik-empty"><div class="e-icon">🪪</div><div class="e-text">Belum ada siswa</div></div>`; return; }
+  grid.innerHTML = data.map(s => `
     <div class="ik-kartu">
       <div class="kk-sekolah">${IK.cfg.sekolah}</div>
       <div class="kk-nama">${s.nama}</div>
@@ -1810,33 +2046,31 @@ function ikRenderKartu(){
         <div class="kk-iuran">Rp ${IK.cfg.iuran.toLocaleString('id-ID')}/bln</div>
       </div>
     </div>`).join('');
-  // Generate QR
-  data.forEach(s=>{
-    const el=document.getElementById('qr-'+s.id);
-    if(el&&!el.querySelector('canvas')){
-      try{new QRCode(el,{text:s.id,width:60,height:60,colorDark:'#7f1d1d',colorLight:'#fff'});}catch(e){}
+  data.forEach(s => {
+    const el = document.getElementById('qr-' + s.id);
+    if (el && !el.querySelector('canvas')) {
+      try { new QRCode(el, {text:s.id,width:60,height:60,colorDark:'#7f1d1d',colorLight:'#fff'}); } catch(e) {}
     }
   });
 }
 window.ikRenderKartu = ikRenderKartu;
-window.ikCetakKartu = function(){ setTimeout(()=>window.print(),200); };
+window.ikCetakKartu = function() { setTimeout(() => window.print(), 200); };
 
 // ================================================================
-// SCAN QR
+// SCAN QR — DENGAN PUSH KE SHEETS
 // ================================================================
-function ikRenderScanBulan(){
-  const ta=document.getElementById('ik-scan-ta')?.value||IK.cfg.ta;
-  const {t1,t2}=parseTA(ta);
-  const sid=IK.scanSiswa?.id||null;
-  const paid=sid?sudahBayar(sid,ta):new Set();
-  const grid=document.getElementById('scan-bulan-grid'); if(!grid)return;
-  grid.innerHTML=BUTA.map(b=>{
-    const thn=b>=7?t1:t2; const k=bkey(b,thn);
-    const sudah=paid.has(k);
-    const dipilih=IK._scanPilih&&IK._scanPilih.has(k);
+function ikRenderScanBulan() {
+  const ta = document.getElementById('ik-scan-ta')?.value || IK.cfg.ta;
+  const {t1,t2} = parseTA(ta);
+  const sid = IK.scanSiswa?.id || null;
+  const paid = sid ? sudahBayar(sid, ta) : new Set();
+  const grid = document.getElementById('scan-bulan-grid'); if (!grid) return;
+  grid.innerHTML = BUTA.map(b => {
+    const thn = b >= 7 ? t1 : t2; const k = bkey(b, thn);
+    const sudah = paid.has(k);
+    const dipilih = IK._scanPilih && IK._scanPilih.has(k);
     return `<div class="ik-sbb${sudah?' sudah':dipilih?' dipilih':''}"
-      onclick="ikToggleScanBulan(${b},${thn},'${k}')"
-      id="sbb-${b}-${thn}">
+      onclick="ikToggleScanBulan(${b},${thn},'${k}')" id="sbb-${b}-${thn}">
       ${BN[b].substring(0,3)}<br><small>${thn}</small>
     </div>`;
   }).join('');
@@ -1844,34 +2078,31 @@ function ikRenderScanBulan(){
 
 IK._scanPilih = new Set();
 
-window.ikToggleScanBulan = function(b,thn,k){
-  const ta=document.getElementById('ik-scan-ta')?.value||IK.cfg.ta;
-  const sid=IK.scanSiswa?.id||null;
-  const paid=sid?sudahBayar(sid,ta):new Set();
-  if(paid.has(k))return;
-  if(IK._scanPilih.has(k))IK._scanPilih.delete(k);
-  else IK._scanPilih.add(k);
+window.ikToggleScanBulan = function(b, thn, k) {
+  const ta = document.getElementById('ik-scan-ta')?.value || IK.cfg.ta;
+  const sid = IK.scanSiswa?.id || null;
+  const paid = sid ? sudahBayar(sid, ta) : new Set();
+  if (paid.has(k)) return;
+  if (IK._scanPilih.has(k)) IK._scanPilih.delete(k); else IK._scanPilih.add(k);
   ikRenderScanBulan();
 };
 
-window.ikScanManual = function(val,confirm2=false){
-  val=val.trim();
-  if(!val)return;
-  const s=IK.siswa.find(x=>x.id===val||x.nama.toLowerCase()===val.toLowerCase());
-  if(!s){
-    document.getElementById('scan-circle').className='ik-scan-circle sc-err';
-    document.getElementById('scan-status-text').textContent='Siswa tidak ditemukan';
-    const ra=document.getElementById('scan-result-area');
-    ra.innerHTML=`<div class="ik-scan-result"><span style="color:#f87171">❌ ID "${val}" tidak ditemukan.</span></div>`;
+window.ikScanManual = function(val, confirm2=false) {
+  val = val.trim();
+  if (!val) return;
+  const s = IK.siswa.find(x => x.id === val || x.nama.toLowerCase() === val.toLowerCase());
+  if (!s) {
+    document.getElementById('scan-circle').className = 'ik-scan-circle sc-err';
+    document.getElementById('scan-status-text').textContent = 'Siswa tidak ditemukan';
+    document.getElementById('scan-result-area').innerHTML = `<div class="ik-scan-result"><span style="color:#f87171">❌ ID "${val}" tidak ditemukan.</span></div>`;
     return;
   }
-  IK.scanSiswa=s; IK._scanPilih=new Set();
-  document.getElementById('scan-circle').className='ik-scan-circle sc-ok';
-  document.getElementById('scan-status-text').textContent='Siswa Ditemukan';
-  const ta=document.getElementById('ik-scan-ta')?.value||IK.cfg.ta;
-  const paid=sudahBayar(s.id,ta);
-  const ra=document.getElementById('scan-result-area');
-  ra.innerHTML=`<div class="ik-scan-result">
+  IK.scanSiswa = s; IK._scanPilih = new Set();
+  document.getElementById('scan-circle').className = 'ik-scan-circle sc-ok';
+  document.getElementById('scan-status-text').textContent = 'Siswa Ditemukan';
+  const ta = document.getElementById('ik-scan-ta')?.value || IK.cfg.ta;
+  const paid = sudahBayar(s.id, ta);
+  document.getElementById('scan-result-area').innerHTML = `<div class="ik-scan-result">
     <div style="font-weight:700;font-size:0.9rem">${s.nama}</div>
     <div style="font-size:0.75rem;opacity:0.7;margin-bottom:10px">Kelas ${s.kelas}${s.ortu?' · '+s.ortu:''}</div>
     <div style="font-size:0.75rem;margin-bottom:8px">Sudah bayar: <strong>${paid.size} bulan</strong></div>
@@ -1880,40 +2111,47 @@ window.ikScanManual = function(val,confirm2=false){
   ikRenderScanBulan();
 };
 
-window.ikScanBayar = function(){
-  if(!IK.scanSiswa){ikToast('❗ Scan siswa dulu','danger');return;}
-  if(!IK._scanPilih.size){ikToast('❗ Pilih bulan dulu','warn');return;}
-  const ta=document.getElementById('ik-scan-ta')?.value||IK.cfg.ta;
-  const s=IK.scanSiswa;
-  let added=0;
-  IK._scanPilih.forEach(k=>{
-    const [b,thn]=k.split('-').map(Number);
-    if(IK.pembayaran.find(p=>p.siswaId===s.id&&p.bulan===b&&p.tahun===thn))return;
-    const rec={id:'P'+Date.now()+Math.random(),siswaId:s.id,namaSiswa:s.nama,kelas:s.kelas,
-      bulan:b,tahun:thn,ta,jumlah:IK.cfg.iuran,tanggal:new Date().toLocaleDateString('id-ID'),catatan:'Scan QR'};
-    IK.pembayaran.push(rec); ikSyncSheets('addBayar',rec); added++;
+window.ikScanBayar = function() {
+  if (!IK.scanSiswa) { ikToast('❗ Scan siswa dulu', 'danger'); return; }
+  if (!IK._scanPilih.size) { ikToast('❗ Pilih bulan dulu', 'warn'); return; }
+  const ta = document.getElementById('ik-scan-ta')?.value || IK.cfg.ta;
+  const s = IK.scanSiswa;
+  const newRecs = [];
+  IK._scanPilih.forEach(k => {
+    const [b,thn] = k.split('-').map(Number);
+    if (IK.pembayaran.find(p => p.siswaId===s.id&&p.bulan===b&&p.tahun===thn)) return;
+    const rec = {
+      id: 'P' + Date.now() + Math.floor(Math.random()*99999),
+      siswaId: s.id, namaSiswa: s.nama, kelas: s.kelas,
+      bulan: b, tahun: thn, ta, jumlah: IK.cfg.iuran,
+      tanggal: new Date().toLocaleDateString('id-ID'), catatan: 'Scan QR'
+    };
+    IK.pembayaran.push(rec);
+    newRecs.push(rec);
   });
-  if(added){
-    ikSave(); ikRenderDashboard(); ikRenderRiwayat(); ikRenderBukasUmum();
-    IK.scanLog.unshift({nama:s.nama,kelas:s.kelas,bulan:added,waktu:new Date().toLocaleTimeString('id-ID')});
-    IK._scanPilih=new Set();
+  if (newRecs.length) {
+    ikSave();
+    // PUSH setiap record ke Sheets
+    newRecs.forEach(rec => ikPushBayar(rec));
+    ikRenderDashboard(); ikRenderRiwayat(); ikRenderBukasUmum();
+    IK.scanLog.unshift({nama:s.nama,kelas:s.kelas,bulan:newRecs.length,waktu:new Date().toLocaleTimeString('id-ID')});
+    IK._scanPilih = new Set();
     ikRenderScanBulan(); ikRenderScanLog();
-    const ra=document.getElementById('scan-result-area');
-    if(ra) ra.innerHTML=`<div class="ik-scan-result"><span style="color:#6ee7b7">✅ ${added} bulan berhasil disimpan untuk ${s.nama}!</span></div>`;
-    ikToast(`✅ ${added} bulan dibayar untuk ${s.nama}`);
-    document.getElementById('scan-manual-input').value='';
-    IK.scanSiswa=null;
+    document.getElementById('scan-result-area').innerHTML = `<div class="ik-scan-result"><span style="color:#6ee7b7">✅ ${newRecs.length} bulan berhasil disimpan & dikirim ke Sheets untuk ${s.nama}!</span></div>`;
+    ikToast(`✅ ${newRecs.length} bulan dibayar untuk ${s.nama}`);
+    document.getElementById('scan-manual-input').value = '';
+    IK.scanSiswa = null;
   } else {
-    ikToast('ℹ️ Bulan yang dipilih sudah lunas','warn');
+    ikToast('ℹ️ Bulan yang dipilih sudah lunas', 'warn');
   }
 };
 
-function ikRenderScanLog(){
-  const el=document.getElementById('scan-log-list'); if(!el)return;
-  const cnt=document.getElementById('scan-log-count');
-  if(cnt)cnt.textContent=IK.scanLog.length+' scan';
-  if(!IK.scanLog.length){el.innerHTML=`<div class="ik-empty"><div class="e-icon">📋</div><div class="e-sub">Belum ada scan</div></div>`;return;}
-  el.innerHTML=IK.scanLog.slice(0,20).map(l=>`
+function ikRenderScanLog() {
+  const el = document.getElementById('scan-log-list'); if (!el) return;
+  const cnt = document.getElementById('scan-log-count');
+  if (cnt) cnt.textContent = IK.scanLog.length + ' scan';
+  if (!IK.scanLog.length) { el.innerHTML=`<div class="ik-empty"><div class="e-icon">📋</div><div class="e-sub">Belum ada scan</div></div>`; return; }
+  el.innerHTML = IK.scanLog.slice(0,20).map(l => `
     <div class="ik-log-item">
       <span style="font-size:1.2rem">✅</span>
       <div>
@@ -1923,173 +2161,167 @@ function ikRenderScanLog(){
     </div>`).join('');
 }
 
-window.ikClearScanLog = function(){IK.scanLog=[];ikRenderScanLog();};
-window.ikResetScan = function(){
-  IK.scanSiswa=null; IK._scanPilih=new Set();
-  const c=document.getElementById('scan-circle');
-  if(c){c.className='ik-scan-circle sc-pulse'; c.textContent='📷';}
-  const st=document.getElementById('scan-status-text');
-  if(st)st.textContent='Mode Scan Aktif';
-  const ra=document.getElementById('scan-result-area');
-  if(ra)ra.innerHTML='';
-  const mi=document.getElementById('scan-manual-input');
-  if(mi)mi.value='';
+window.ikClearScanLog = function() { IK.scanLog = []; ikRenderScanLog(); };
+window.ikResetScan = function() {
+  IK.scanSiswa = null; IK._scanPilih = new Set();
+  const c = document.getElementById('scan-circle');
+  if (c) { c.className = 'ik-scan-circle sc-pulse'; c.textContent = '📷'; }
+  const st = document.getElementById('scan-status-text'); if (st) st.textContent = 'Mode Scan Aktif';
+  const ra = document.getElementById('scan-result-area'); if (ra) ra.innerHTML = '';
+  const mi = document.getElementById('scan-manual-input'); if (mi) mi.value = '';
   ikRenderScanBulan();
 };
 
-window.ikStartCamera = async function(){
-  const video=document.getElementById('scan-video');
-  const btnStart=document.getElementById('btn-cam-start');
-  const btnStop=document.getElementById('btn-cam-stop');
-  try{
-    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
-    video.srcObject=stream; video.play(); video.style.display='block';
-    if(btnStart)btnStart.style.display='none';
-    if(btnStop)btnStop.style.display='inline-flex';
-    const canvas=document.getElementById('scan-canvas');
-    const ctx=canvas.getContext('2d');
-    function tick(){
-      if(video.readyState===video.HAVE_ENOUGH_DATA){
-        canvas.height=video.videoHeight; canvas.width=video.videoWidth;
-        ctx.drawImage(video,0,0,canvas.width,canvas.height);
-        const img=ctx.getImageData(0,0,canvas.width,canvas.height);
-        const code=jsQR(img.data,img.width,img.height);
-        if(code&&code.data){
-          const inp=document.getElementById('scan-manual-input');
-          if(inp)inp.value=code.data;
-          ikScanManual(code.data,true);
+window.ikStartCamera = async function() {
+  const video = document.getElementById('scan-video');
+  const btnStart = document.getElementById('btn-cam-start');
+  const btnStop = document.getElementById('btn-cam-stop');
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+    video.srcObject = stream; video.play(); video.style.display = 'block';
+    if (btnStart) btnStart.style.display = 'none';
+    if (btnStop) btnStop.style.display = 'inline-flex';
+    const canvas = document.getElementById('scan-canvas');
+    const ctx = canvas.getContext('2d');
+    function tick() {
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        canvas.height = video.videoHeight; canvas.width = video.videoWidth;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(img.data, img.width, img.height);
+        if (code && code.data) {
+          const inp = document.getElementById('scan-manual-input');
+          if (inp) inp.value = code.data;
+          ikScanManual(code.data, true);
           ikStopCamera(); return;
         }
       }
-      scanTimer=requestAnimationFrame(tick);
+      scanTimer = requestAnimationFrame(tick);
     }
-    scanTimer=requestAnimationFrame(tick);
-  }catch(e){ikToast('❌ Kamera tidak bisa diakses: '+e.message,'danger');}
+    scanTimer = requestAnimationFrame(tick);
+  } catch(e) { ikToast('❌ Kamera tidak bisa diakses: ' + e.message, 'danger'); }
 };
 
-window.ikStopCamera = function(){
-  const video=document.getElementById('scan-video');
-  if(video&&video.srcObject){video.srcObject.getTracks().forEach(t=>t.stop());video.srcObject=null;video.style.display='none';}
-  const btnStart=document.getElementById('btn-cam-start');
-  const btnStop=document.getElementById('btn-cam-stop');
-  if(btnStart)btnStart.style.display='inline-flex';
-  if(btnStop)btnStop.style.display='none';
-  if(scanTimer){cancelAnimationFrame(scanTimer);scanTimer=null;}
+window.ikStopCamera = function() {
+  const video = document.getElementById('scan-video');
+  if (video && video.srcObject) { video.srcObject.getTracks().forEach(t => t.stop()); video.srcObject = null; video.style.display = 'none'; }
+  const btnStart = document.getElementById('btn-cam-start');
+  const btnStop = document.getElementById('btn-cam-stop');
+  if (btnStart) btnStart.style.display = 'inline-flex';
+  if (btnStop) btnStop.style.display = 'none';
+  if (scanTimer) { cancelAnimationFrame(scanTimer); scanTimer = null; }
 };
 
 // ================================================================
 // IMPORT/EXPORT
 // ================================================================
-window.ikDzOver = function(e){e.preventDefault();document.getElementById('ik-dz').classList.add('over');};
-window.ikDzLeave = function(){document.getElementById('ik-dz').classList.remove('over');};
-window.ikDzDrop = function(e){e.preventDefault();document.getElementById('ik-dz').classList.remove('over');const f=e.dataTransfer.files[0];if(f)ikReadFile(f);};
-window.ikImportSiswa = function(input){const f=input.files[0];if(f)ikReadFile(f);input.value='';};
+window.ikDzOver = function(e) { e.preventDefault(); document.getElementById('ik-dz').classList.add('over'); };
+window.ikDzLeave = function() { document.getElementById('ik-dz').classList.remove('over'); };
+window.ikDzDrop = function(e) { e.preventDefault(); document.getElementById('ik-dz').classList.remove('over'); const f = e.dataTransfer.files[0]; if(f) ikReadFile(f); };
+window.ikImportSiswa = function(input) { const f = input.files[0]; if(f) ikReadFile(f); input.value = ''; };
 
-function ikReadFile(f){
-  const r=new FileReader();
-  r.onload=e=>{
-    const txt=e.target.result;
-    if(f.name.endsWith('.json')){
-      try{const j=JSON.parse(txt);
-        if(Array.isArray(j)){const added=j.filter(s=>s.nama&&s.kelas&&!IK.siswa.find(x=>x.id===s.id));
-          added.forEach(s=>{if(!s.id)s.id='S'+Date.now()+Math.random();IK.siswa.push(s);});
-          ikSave();ikRenderSiswa();ikRenderDashboard();ikPopulateSiswaSelect();ikRebuildKelasSelects();
-          ikToast('✅ '+added.length+' siswa diimpor dari JSON');}
-      }catch(ex){ikToast('❌ File JSON tidak valid','danger');}
+function ikReadFile(f) {
+  const r = new FileReader();
+  r.onload = e => {
+    const txt = e.target.result;
+    if (f.name.endsWith('.json')) {
+      try {
+        const j = JSON.parse(txt);
+        if (Array.isArray(j)) {
+          const added = j.filter(s => s.nama && s.kelas && !IK.siswa.find(x => x.id === s.id));
+          added.forEach(s => { if(!s.id) s.id='S'+Date.now()+Math.random(); IK.siswa.push(s); ikPushSiswa(s); });
+          ikSave(); ikRenderSiswa(); ikRenderDashboard(); ikPopulateSiswaSelect(); ikRebuildKelasSelects();
+          ikToast('✅ ' + added.length + ' siswa diimpor dari JSON');
+        }
+      } catch(ex) { ikToast('❌ File JSON tidak valid','danger'); }
     } else {
-      const lines=txt.split('\n').filter(l=>l.trim());
-      let added=0;
-      lines.forEach((line,i)=>{
-        if(i===0&&line.toLowerCase().includes('nama'))return;
-        const [nama,kelas,ortu,hp]=(line.includes('\t')?line.split('\t'):line.split(',')).map(s=>s.trim().replace(/^"|"$/g,''));
-        if(!nama||!kelas)return;
-        if(IK.siswa.find(s=>s.nama===nama&&s.kelas===kelas))return;
-        IK.siswa.push({id:'S'+Date.now()+Math.floor(Math.random()*9999),nama,kelas,ortu:ortu||'',hp:hp||'',tanggal:new Date().toLocaleDateString('id-ID')});
-        added++;
+      const lines = txt.split('\n').filter(l => l.trim());
+      let added = 0;
+      lines.forEach((line,i) => {
+        if (i===0 && line.toLowerCase().includes('nama')) return;
+        const [nama,kelas,ortu,hp] = (line.includes('\t') ? line.split('\t') : line.split(',')).map(s=>s.trim().replace(/^"|"$/g,''));
+        if (!nama||!kelas) return;
+        if (IK.siswa.find(s=>s.nama===nama&&s.kelas===kelas)) return;
+        const s = {id:'S'+Date.now()+Math.floor(Math.random()*9999),nama,kelas,ortu:ortu||'',hp:hp||'',tanggal:new Date().toLocaleDateString('id-ID')};
+        IK.siswa.push(s); ikPushSiswa(s); added++;
       });
-      if(added){ikSave();ikRenderSiswa();ikRenderDashboard();ikPopulateSiswaSelect();ikRebuildKelasSelects();ikToast('✅ '+added+' siswa diimpor dari CSV');}
+      if (added) { ikSave(); ikRenderSiswa(); ikRenderDashboard(); ikPopulateSiswaSelect(); ikRebuildKelasSelects(); ikToast('✅ '+added+' siswa diimpor dari CSV'); }
       else ikToast('ℹ️ Tidak ada data baru dari CSV','warn');
     }
   };
   r.readAsText(f);
 }
 
-function dlCSV(filename,content){const b=new Blob(['\ufeff'+content],{type:'text/csv'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=filename;a.click();URL.revokeObjectURL(u);}
-function dlJSON(filename,data){const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=filename;a.click();URL.revokeObjectURL(u);}
+function dlCSV(filename,content) { const b=new Blob(['\ufeff'+content],{type:'text/csv'}); const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download=filename; a.click(); URL.revokeObjectURL(u); }
+function dlJSON(filename,data) { const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download=filename; a.click(); URL.revokeObjectURL(u); }
 
-window.ikExportCSV = function(){
-  const rows=['Nama,Kelas,OrangTua,NoHP,Tanggal',...IK.siswa.map(s=>`"${s.nama}","${s.kelas}","${s.ortu||''}","${s.hp||''}","${s.tanggal||''}"`)];
+window.ikExportCSV = function() {
+  const rows = ['Nama,Kelas,OrangTua,NoHP,Tanggal',...IK.siswa.map(s=>`"${s.nama}","${s.kelas}","${s.ortu||''}","${s.hp||''}","${s.tanggal||''}"`)];
   dlCSV('siswa.csv',rows.join('\n')); ikToast('✅ Ekspor CSV berhasil');
 };
-window.ikExportJSON = function(){dlJSON('siswa.json',IK.siswa);ikToast('✅ Ekspor JSON berhasil');};
-window.ikExportBayarCSV = function(){
-  const rows=['Tanggal,NamaSiswa,Kelas,Bulan,Tahun,Jumlah,Catatan',...IK.pembayaran.map(p=>`"${p.tanggal||''}","${p.namaSiswa}","${p.kelas}","${BN[p.bulan]}","${p.tahun}",${p.jumlah},"${p.catatan||''}"`)];
+window.ikExportJSON = function() { dlJSON('siswa.json',IK.siswa); ikToast('✅ Ekspor JSON berhasil'); };
+window.ikExportBayarCSV = function() {
+  const rows = ['Tanggal,NamaSiswa,Kelas,Bulan,Tahun,Jumlah,Catatan',...IK.pembayaran.map(p=>`"${p.tanggal||''}","${p.namaSiswa}","${p.kelas}","${BN[p.bulan]}","${p.tahun}",${p.jumlah},"${p.catatan||''}"`)];
   dlCSV('pembayaran.csv',rows.join('\n')); ikToast('✅ Ekspor pembayaran CSV');
 };
-window.ikExportPengeluaranCSV = function(){
-  const rows=['Tanggal,Keterangan,Kategori,Jumlah',...(IK.pengeluaran||[]).map(p=>`"${p.tanggal||''}","${p.ket}","${p.kategori||''}",${p.jumlah}`)];
+window.ikExportPengeluaranCSV = function() {
+  const rows = ['Tanggal,Keterangan,Kategori,Jumlah',...(IK.pengeluaran||[]).map(p=>`"${p.tanggal||''}","${p.ket}","${p.kategori||''}",${p.jumlah}`)];
   dlCSV('pengeluaran.csv',rows.join('\n')); ikToast('✅ Ekspor pengeluaran CSV');
 };
-window.ikBackupAll = function(){
+window.ikBackupAll = function() {
   dlJSON('backup_iuran_komite_'+Date.now()+'.json',{siswa:IK.siswa,pembayaran:IK.pembayaran,pengeluaran:IK.pengeluaran,cfg:IK.cfg,kelasList:IK.kelasList});
   ikToast('✅ Backup semua data berhasil');
 };
 
 // ================================================================
-// EDIT STATUS
+// EDIT STATUS — DENGAN PUSH KE SHEETS
 // ================================================================
-let esLog = [];
-
-window.ikInitEditStatus = function(){
-  const tEl=document.getElementById('es-ta'); if(!tEl)return;
-  if(!tEl.options.length){
-    const list=taList();
-    tEl.innerHTML=list.map(ta=>`<option value="${ta}"${ta===IK.cfg.ta?' selected':''}>${ta}</option>`).join('');
+window.ikInitEditStatus = function() {
+  const tEl = document.getElementById('es-ta'); if (!tEl) return;
+  if (!tEl.options.length) {
+    const list = taList();
+    tEl.innerHTML = list.map(ta => `<option value="${ta}"${ta===IK.cfg.ta?' selected':''}>${ta}</option>`).join('');
   }
   ikEsPopulateBulan(false);
-  // kelas
-  const kEl=document.getElementById('es-kelas'); if(kEl){
-    kEl.innerHTML='<option value="">Semua</option>'+IK.kelasList.map(k=>`<option value="${k}">${k}</option>`).join('');
-  }
+  const kEl = document.getElementById('es-kelas');
+  if (kEl) kEl.innerHTML = '<option value="">Semua</option>' + IK.kelasList.map(k => `<option value="${k}">${k}</option>`).join('');
   ikRenderEditStatus();
 };
 
-window.ikEsPopulateBulan = function(reset){
-  const ta=document.getElementById('es-ta')?.value||IK.cfg.ta;
-  const {t1,t2}=parseTA(ta);
-  const el=document.getElementById('es-bulan'); if(!el)return;
-  const now=new Date(); const cb=now.getMonth()+1;
-  const prev=reset?null:el.value;
-  el.innerHTML=BUTA.map((b,i)=>{
-    const thn=b>=7?t1:t2;
-    const sel=prev?String(i)===prev:b===cb;
+window.ikEsPopulateBulan = function(reset) {
+  const ta = document.getElementById('es-ta')?.value || IK.cfg.ta;
+  const {t1,t2} = parseTA(ta);
+  const el = document.getElementById('es-bulan'); if (!el) return;
+  const now = new Date(); const cb = now.getMonth() + 1;
+  const prev = reset ? null : el.value;
+  el.innerHTML = BUTA.map((b,i) => {
+    const thn = b >= 7 ? t1 : t2;
+    const sel = prev ? String(i) === prev : b === cb;
     return `<option value="${i}"${sel?' selected':''}>${BN[b]} ${thn}</option>`;
   }).join('');
 };
 
-window.ikRenderEditStatus = function(){
-  const ta=document.getElementById('es-ta')?.value||IK.cfg.ta;
-  const bIdx=+(document.getElementById('es-bulan')?.value||0);
-  const b=BUTA[bIdx]; const {t1,t2}=parseTA(ta); const thn=b>=7?t1:t2;
-  const fk=document.getElementById('es-kelas')?.value||'';
-  const fs=document.getElementById('es-status-filter')?.value||'';
-  const cari=document.getElementById('es-cari')?.value.toLowerCase()||'';
-  const paid=new Set(IK.pembayaran.filter(p=>p.bulan===b&&p.tahun===thn).map(p=>p.siswaId));
-  let siswa=IK.siswa.filter(s=>{
-    if(fk&&s.kelas!==fk)return false;
-    if(cari&&!s.nama.toLowerCase().includes(cari))return false;
-    if(fs==='lunas'&&!paid.has(s.id))return false;
-    if(fs==='belum'&&paid.has(s.id))return false;
+window.ikRenderEditStatus = function() {
+  const ta = document.getElementById('es-ta')?.value || IK.cfg.ta;
+  const bIdx = +(document.getElementById('es-bulan')?.value || 0);
+  const b = BUTA[bIdx]; const {t1,t2} = parseTA(ta); const thn = b >= 7 ? t1 : t2;
+  const fk = document.getElementById('es-kelas')?.value || '';
+  const fs = document.getElementById('es-status-filter')?.value || '';
+  const cari = document.getElementById('es-cari')?.value.toLowerCase() || '';
+  const paid = new Set(IK.pembayaran.filter(p => p.bulan===b && p.tahun===thn).map(p=>p.siswaId));
+  let siswa = IK.siswa.filter(s => {
+    if (fk && s.kelas !== fk) return false;
+    if (cari && !s.nama.toLowerCase().includes(cari)) return false;
+    if (fs === 'lunas' && !paid.has(s.id)) return false;
+    if (fs === 'belum' && paid.has(s.id)) return false;
     return true;
-  }).sort((a,z)=>a.kelas.localeCompare(z.kelas)||a.nama.localeCompare(z.nama));
-  const ct=document.getElementById('es-count-tag');
-  if(ct)ct.textContent=siswa.length+' siswa';
-  const cb2=document.getElementById('es-cb-all');
-  if(cb2)cb2.checked=false;
-  const tb=document.getElementById('es-tbody'); if(!tb)return;
-  if(!siswa.length){tb.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:16px;color:#94a3b8">Tidak ada data</td></tr>`;return;}
-  tb.innerHTML=siswa.map((s,i)=>{
-    const lunas=paid.has(s.id);
+  }).sort((a,z) => a.kelas.localeCompare(z.kelas) || a.nama.localeCompare(z.nama));
+  const ct = document.getElementById('es-count-tag'); if(ct) ct.textContent = siswa.length + ' siswa';
+  const cb2 = document.getElementById('es-cb-all'); if(cb2) cb2.checked = false;
+  const tb = document.getElementById('es-tbody'); if (!tb) return;
+  if (!siswa.length) { tb.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:16px;color:#94a3b8">Tidak ada data</td></tr>`; return; }
+  tb.innerHTML = siswa.map((s,i) => {
+    const lunas = paid.has(s.id);
     return `<tr>
       <td><input type="checkbox" class="es-cb" value="${s.id}"></td>
       <td style="color:#94a3b8">${i+1}</td>
@@ -2098,90 +2330,102 @@ window.ikRenderEditStatus = function(){
       <td><span class="ik-badge ${lunas?'ik-badge-lunas':'ik-badge-belum'}">${lunas?'✅ Lunas':'❌ Belum'}</span></td>
       <td>
         ${lunas
-          ?`<button class="ik-btn ik-btn-danger ik-btn-xs" onclick="ikEsSetStatus('${s.id}','belum',${b},${thn})">Batal Lunas</button>`
-          :`<button class="ik-btn ik-btn-success ik-btn-xs" onclick="ikEsSetStatus('${s.id}','lunas',${b},${thn})">Tandai Lunas</button>`
+          ? `<button class="ik-btn ik-btn-danger ik-btn-xs" onclick="ikEsSetStatus('${s.id}','belum',${b},${thn})">Batal Lunas</button>`
+          : `<button class="ik-btn ik-btn-success ik-btn-xs" onclick="ikEsSetStatus('${s.id}','lunas',${b},${thn})">Tandai Lunas</button>`
         }
       </td>
     </tr>`;
   }).join('');
 };
 
-window.ikEsToggleAll = function(cb){
-  document.querySelectorAll('.es-cb').forEach(c=>c.checked=cb.checked);
-};
-window.ikEsSelectAll = function(){
-  document.querySelectorAll('.es-cb').forEach(c=>c.checked=true);
-  const a=document.getElementById('es-cb-all'); if(a)a.checked=true;
-};
-window.ikEsDeselectAll = function(){
-  document.querySelectorAll('.es-cb').forEach(c=>c.checked=false);
-  const a=document.getElementById('es-cb-all'); if(a)a.checked=false;
-};
+window.ikEsToggleAll = function(cb) { document.querySelectorAll('.es-cb').forEach(c => c.checked = cb.checked); };
+window.ikEsSelectAll = function() { document.querySelectorAll('.es-cb').forEach(c => c.checked = true); const a=document.getElementById('es-cb-all');if(a)a.checked=true; };
+window.ikEsDeselectAll = function() { document.querySelectorAll('.es-cb').forEach(c => c.checked = false); const a=document.getElementById('es-cb-all');if(a)a.checked=false; };
 
-window.ikEsBulkAksi = function(aksi){
-  const checked=[...document.querySelectorAll('.es-cb:checked')].map(c=>c.value);
-  if(!checked.length){ikToast('❗ Pilih siswa dulu','danger');return;}
-  IK._esBulkTarget={ids:checked,aksi};
-  const ta=document.getElementById('es-ta')?.value||IK.cfg.ta;
-  const bIdx=+(document.getElementById('es-bulan')?.value||0);
-  const b=BUTA[bIdx]; const {t1,t2}=parseTA(ta); const thn=b>=7?t1:t2;
-  IK._esBulkTarget.b=b; IK._esBulkTarget.thn=thn;
-  document.getElementById('es-pw-info').innerHTML=`Akan <strong>${aksi==='lunas'?'menandai lunas':'membatalkan lunas'}</strong> <strong>${checked.length} siswa</strong> untuk bulan <strong>${BN[b]} ${thn}</strong>`;
-  document.getElementById('es-pw-input').value='';
-  document.getElementById('es-pw-error').style.display='none';
+window.ikEsBulkAksi = function(aksi) {
+  const checked = [...document.querySelectorAll('.es-cb:checked')].map(c => c.value);
+  if (!checked.length) { ikToast('❗ Pilih siswa dulu','danger'); return; }
+  IK._esBulkTarget = {ids: checked, aksi};
+  const ta = document.getElementById('es-ta')?.value || IK.cfg.ta;
+  const bIdx = +(document.getElementById('es-bulan')?.value || 0);
+  const b = BUTA[bIdx]; const {t1,t2} = parseTA(ta); const thn = b >= 7 ? t1 : t2;
+  IK._esBulkTarget.b = b; IK._esBulkTarget.thn = thn;
+  document.getElementById('es-pw-info').innerHTML = `Akan <strong>${aksi==='lunas'?'menandai lunas':'membatalkan lunas'}</strong> <strong>${checked.length} siswa</strong> untuk bulan <strong>${BN[b]} ${thn}</strong>`;
+  document.getElementById('es-pw-input').value = '';
+  document.getElementById('es-pw-error').style.display = 'none';
   document.getElementById('ik-modal-password').classList.add('open');
-  setTimeout(()=>document.getElementById('es-pw-input').focus(),100);
+  setTimeout(() => document.getElementById('es-pw-input').focus(), 100);
 };
 
-window.ikEsSetStatus = function(sid,aksi,b,thn){
-  IK._esBulkTarget={ids:[sid],aksi,b,thn};
-  document.getElementById('es-pw-info').innerHTML=`${aksi==='lunas'?'Tandai lunas':'Batal lunas'} untuk bulan <strong>${BN[b]} ${thn}</strong>`;
-  document.getElementById('es-pw-input').value='';
-  document.getElementById('es-pw-error').style.display='none';
+window.ikEsSetStatus = function(sid, aksi, b, thn) {
+  IK._esBulkTarget = {ids:[sid], aksi, b, thn};
+  document.getElementById('es-pw-info').innerHTML = `${aksi==='lunas'?'Tandai lunas':'Batal lunas'} untuk <strong>${BN[b]} ${thn}</strong>`;
+  document.getElementById('es-pw-input').value = '';
+  document.getElementById('es-pw-error').style.display = 'none';
   document.getElementById('ik-modal-password').classList.add('open');
-  setTimeout(()=>document.getElementById('es-pw-input').focus(),100);
+  setTimeout(() => document.getElementById('es-pw-input').focus(), 100);
 };
 
-window.ikEsKonfirmasiPassword = function(){
-  const pw=document.getElementById('es-pw-input').value;
-  if(pw!==IK.cfg.password){
-    document.getElementById('es-pw-error').style.display='block';
-    document.getElementById('es-pw-input').value='';
+window.ikEsKonfirmasiPassword = function() {
+  const pw = document.getElementById('es-pw-input').value;
+  if (pw !== IK.cfg.password) {
+    document.getElementById('es-pw-error').style.display = 'block';
+    document.getElementById('es-pw-input').value = '';
     return;
   }
   ikCloseModal('ik-modal-password');
-  const {ids,aksi,b,thn}=IK._esBulkTarget;
-  let changed=0;
-  const ta=document.getElementById('es-ta')?.value||IK.cfg.ta;
-  ids.forEach(sid=>{
-    const s=IK.siswa.find(x=>x.id===sid); if(!s)return;
-    if(aksi==='lunas'){
-      if(!IK.pembayaran.find(p=>p.siswaId===sid&&p.bulan===b&&p.tahun===thn)){
-        const rec={id:'P'+Date.now()+Math.random(),siswaId:sid,namaSiswa:s.nama,kelas:s.kelas,
-          bulan:b,tahun:thn,ta,jumlah:IK.cfg.iuran,tanggal:new Date().toLocaleDateString('id-ID'),catatan:'Edit Manual'};
-        IK.pembayaran.push(rec); changed++;
+  const {ids, aksi, b, thn} = IK._esBulkTarget;
+  let changed = 0;
+  const ta = document.getElementById('es-ta')?.value || IK.cfg.ta;
+  const newRecs = [];
+  const delIds = [];
+
+  ids.forEach(sid => {
+    const s = IK.siswa.find(x => x.id === sid); if (!s) return;
+    if (aksi === 'lunas') {
+      if (!IK.pembayaran.find(p => p.siswaId===sid && p.bulan===b && p.tahun===thn)) {
+        const rec = {
+          id: 'P' + Date.now() + Math.floor(Math.random()*99999),
+          siswaId: sid, namaSiswa: s.nama, kelas: s.kelas,
+          bulan: b, tahun: thn, ta, jumlah: IK.cfg.iuran,
+          tanggal: new Date().toLocaleDateString('id-ID'), catatan: 'Edit Manual'
+        };
+        IK.pembayaran.push(rec);
+        newRecs.push(rec);
+        changed++;
         esLog.unshift({waktu:new Date().toLocaleTimeString(),nama:s.nama,kelas:s.kelas,aksi:'Lunas',bulan:BN[b]+' '+thn});
       }
     } else {
-      const before=IK.pembayaran.length;
-      IK.pembayaran=IK.pembayaran.filter(p=>!(p.siswaId===sid&&p.bulan===b&&p.tahun===thn));
-      if(IK.pembayaran.length<before){changed++;
-        esLog.unshift({waktu:new Date().toLocaleTimeString(),nama:s.nama,kelas:s.kelas,aksi:'Dibatalkan',bulan:BN[b]+' '+thn});}
+      // Cari dan hapus record pembayaran
+      const toDelete = IK.pembayaran.filter(p => p.siswaId===sid && p.bulan===b && p.tahun===thn);
+      const before = IK.pembayaran.length;
+      IK.pembayaran = IK.pembayaran.filter(p => !(p.siswaId===sid && p.bulan===b && p.tahun===thn));
+      if (IK.pembayaran.length < before) {
+        toDelete.forEach(p => delIds.push(p.id));
+        changed++;
+        esLog.unshift({waktu:new Date().toLocaleTimeString(),nama:s.nama,kelas:s.kelas,aksi:'Dibatalkan',bulan:BN[b]+' '+thn});
+      }
     }
   });
-  if(changed){
-    ikSave(); ikRenderEditStatus(); ikRenderDashboard(); ikRenderRiwayat(); ikRenderBelum(); ikRenderBukasUmum();
-    ikToast(`✅ ${changed} status diperbarui`);
+
+  if (changed) {
+    ikSave();
+    // PUSH semua record baru ke Sheets
+    newRecs.forEach(rec => ikPushBayar(rec));
+    // HAPUS semua record yang dihapus dari Sheets
+    delIds.forEach(id => ikDeleteBayarSheets(id));
+    ikRenderEditStatus(); ikRenderDashboard(); ikRenderRiwayat(); ikRenderBelum(); ikRenderBukasUmum();
+    ikToast(`✅ ${changed} status diperbarui & disinkron ke Sheets`);
     ikRenderEsLog();
   } else {
-    ikToast('ℹ️ Tidak ada perubahan','warn');
+    ikToast('ℹ️ Tidak ada perubahan', 'warn');
   }
 };
 
-function ikRenderEsLog(){
-  const el=document.getElementById('es-log-container'); if(!el)return;
-  if(!esLog.length){el.innerHTML='<div class="ik-empty"><div class="e-icon">📋</div><div class="e-sub">Belum ada perubahan</div></div>';return;}
-  el.innerHTML=esLog.slice(0,30).map(l=>`
+function ikRenderEsLog() {
+  const el = document.getElementById('es-log-container'); if (!el) return;
+  if (!esLog.length) { el.innerHTML='<div class="ik-empty"><div class="e-icon">📋</div><div class="e-sub">Belum ada perubahan</div></div>'; return; }
+  el.innerHTML = esLog.slice(0,30).map(l => `
     <div class="ik-log-item">
       <span style="font-size:1rem">${l.aksi==='Lunas'?'✅':'❌'}</span>
       <div>
@@ -2190,86 +2434,85 @@ function ikRenderEsLog(){
       </div>
     </div>`).join('');
 }
-
-window.ikEsClearLog = function(){esLog=[];ikRenderEsLog();};
+window.ikEsClearLog = function() { esLog = []; ikRenderEsLog(); };
 
 // ================================================================
 // BU KAS UMUM
 // ================================================================
-function ikLoadBukas(){
-  try{const b=localStorage.getItem('ik_pengeluaran');if(b)IK.pengeluaran=JSON.parse(b);}catch(e){}
+function ikLoadBukas() {
+  try { const b = localStorage.getItem('ik_pengeluaran'); if(b) IK.pengeluaran = JSON.parse(b); } catch(e) {}
 }
-function ikSaveBukas(){
-  localStorage.setItem('ik_pengeluaran',JSON.stringify(IK.pengeluaran||[]));
+function ikSaveBukas() {
+  localStorage.setItem('ik_pengeluaran', JSON.stringify(IK.pengeluaran||[]));
 }
 
-function ikPopulateBukasTA(){
-  ['bukas-filter-ta','bukas-lap-ta'].forEach(id=>{
-    const el=document.getElementById(id); if(!el)return;
-    const list=taList();
-    el.innerHTML=list.map(ta=>`<option value="${ta}"${ta===IK.cfg.ta?' selected':''}>${ta}</option>`).join('');
+function ikPopulateBukasTA() {
+  ['bukas-filter-ta','bukas-lap-ta'].forEach(id => {
+    const el = document.getElementById(id); if (!el) return;
+    const list = taList();
+    el.innerHTML = list.map(ta => `<option value="${ta}"${ta===IK.cfg.ta?' selected':''}>${ta}</option>`).join('');
   });
 }
 
-window.ikTambahPengeluaran = function(){
-  const ket=document.getElementById('bukas-ket').value.trim();
-  const jml=+document.getElementById('bukas-jml').value;
-  const kat=document.getElementById('bukas-kat').value;
-  const tgl=document.getElementById('bukas-tgl').value||new Date().toLocaleDateString('id-ID');
-  if(!ket||!jml){ikToast('❗ Keterangan dan jumlah wajib diisi','danger');return;}
-  const rec={id:'E'+Date.now(),tanggal:tgl,ket,kategori:kat,jumlah:jml};
-  IK.pengeluaran.push(rec); ikSaveBukas(); ikRenderBukasUmum();
-  document.getElementById('bukas-ket').value='';
-  document.getElementById('bukas-jml').value='';
-  ikToast('✅ Pengeluaran dicatat');
+window.ikTambahPengeluaran = function() {
+  const ket = document.getElementById('bukas-ket').value.trim();
+  const jml = +document.getElementById('bukas-jml').value;
+  const kat = document.getElementById('bukas-kat').value;
+  const tgl = document.getElementById('bukas-tgl').value || new Date().toLocaleDateString('id-ID');
+  if (!ket || !jml) { ikToast('❗ Keterangan dan jumlah wajib diisi','danger'); return; }
+  const rec = {id:'E'+Date.now(), tanggal:tgl, ket, kategori:kat, jumlah:jml};
+  IK.pengeluaran.push(rec);
+  ikSaveBukas();
+  // PUSH ke Sheets
+  ikPushPengeluaran(rec);
+  ikRenderBukasUmum();
+  document.getElementById('bukas-ket').value = '';
+  document.getElementById('bukas-jml').value = '';
+  ikToast('✅ Pengeluaran dicatat dan dikirim ke Sheets');
 };
 
-window.ikHapusPengeluaran = function(id){
-  if(!confirm('Hapus data pengeluaran ini?'))return;
-  IK.pengeluaran=IK.pengeluaran.filter(p=>p.id!==id);
-  ikSaveBukas(); ikRenderBukasUmum();
+window.ikHapusPengeluaran = function(id) {
+  if (!confirm('Hapus data pengeluaran ini?')) return;
+  IK.pengeluaran = IK.pengeluaran.filter(p => p.id !== id);
+  ikSaveBukas();
+  // HAPUS dari Sheets
+  ikDeletePengeluaranSheets(id);
+  ikRenderBukasUmum();
   ikToast('🗑️ Pengeluaran dihapus');
 };
 
-function ikRenderBukasUmum(){
-  const ta=document.getElementById('bukas-filter-ta')?.value||IK.cfg.ta;
-  // Pemasukan dari iuran
-  const {t1,t2}=parseTA(ta);
-  const bayarTA=IK.pembayaran.filter(p=>(p.tahun===t1&&p.bulan>=7)||(p.tahun===t2&&p.bulan<=6));
-  const totalMasuk=bayarTA.reduce((s,p)=>s+(p.jumlah||0),0);
-  const totalKeluar=(IK.pengeluaran||[]).reduce((s,p)=>s+(p.jumlah||0),0);
-  const saldo=totalMasuk-totalKeluar;
-
-  const $=id=>document.getElementById(id);
-  if($('bukas-total-masuk'))$('bukas-total-masuk').textContent='Rp '+totalMasuk.toLocaleString('id-ID');
-  if($('bukas-jml-transaksi'))$('bukas-jml-transaksi').textContent=bayarTA.length+' transaksi';
-  if($('bukas-total-keluar'))$('bukas-total-keluar').textContent='Rp '+totalKeluar.toLocaleString('id-ID');
-  if($('bukas-jml-pengeluaran'))$('bukas-jml-pengeluaran').textContent=(IK.pengeluaran||[]).length+' item';
-  if($('bukas-saldo'))$('bukas-saldo').textContent='Rp '+saldo.toLocaleString('id-ID');
-
-  // Rekap masuk per bulan
-  const tbm=$('bukas-tb-masuk'); if(tbm){
-    tbm.innerHTML=BUTA.map(b=>{
-      const thn=b>=7?t1:t2;
-      const bpay=bayarTA.filter(p=>p.bulan===b&&p.tahun===thn);
-      const lunas=new Set(bpay.map(p=>p.siswaId)).size;
-      const total=bpay.reduce((s,p)=>s+(p.jumlah||0),0);
-      return `<tr>
-        <td>${BN[b]} ${thn}</td>
-        <td>${bpay.length}</td>
-        <td>${lunas}</td>
+function ikRenderBukasUmum() {
+  const ta = document.getElementById('bukas-filter-ta')?.value || IK.cfg.ta;
+  const {t1,t2} = parseTA(ta);
+  const bayarTA = IK.pembayaran.filter(p => (p.tahun===t1&&p.bulan>=7)||(p.tahun===t2&&p.bulan<=6));
+  const totalMasuk = bayarTA.reduce((s,p)=>s+(p.jumlah||0), 0);
+  const totalKeluar = (IK.pengeluaran||[]).reduce((s,p)=>s+(p.jumlah||0), 0);
+  const saldo = totalMasuk - totalKeluar;
+  const $ = id => document.getElementById(id);
+  if ($('bukas-total-masuk')) $('bukas-total-masuk').textContent='Rp '+totalMasuk.toLocaleString('id-ID');
+  if ($('bukas-jml-transaksi')) $('bukas-jml-transaksi').textContent=bayarTA.length+' transaksi';
+  if ($('bukas-total-keluar')) $('bukas-total-keluar').textContent='Rp '+totalKeluar.toLocaleString('id-ID');
+  if ($('bukas-jml-pengeluaran')) $('bukas-jml-pengeluaran').textContent=(IK.pengeluaran||[]).length+' item';
+  if ($('bukas-saldo')) $('bukas-saldo').textContent='Rp '+saldo.toLocaleString('id-ID');
+  const tbm = $('bukas-tb-masuk');
+  if (tbm) {
+    tbm.innerHTML = BUTA.map(b => {
+      const thn = b>=7?t1:t2;
+      const bpay = bayarTA.filter(p=>p.bulan===b&&p.tahun===thn);
+      const lunas = new Set(bpay.map(p=>p.siswaId)).size;
+      const total = bpay.reduce((s,p)=>s+(p.jumlah||0),0);
+      return `<tr><td>${BN[b]} ${thn}</td><td>${bpay.length}</td><td>${lunas}</td>
         <td style="font-weight:700;color:${total>0?'#047857':'#94a3b8'}">${total>0?'Rp '+total.toLocaleString('id-ID'):'—'}</td>
       </tr>`;
     }).join('');
   }
-
-  // Riwayat pengeluaran
-  const tbk=$('bukas-tb-keluar-wrap'); if(tbk){
-    if(!(IK.pengeluaran||[]).length){
-      tbk.innerHTML='<div class="ik-empty"><div class="e-icon">📋</div><div class="e-sub">Belum ada pengeluaran</div></div>';
+  const tbk = $('bukas-tb-keluar-wrap');
+  if (tbk) {
+    if (!(IK.pengeluaran||[]).length) {
+      tbk.innerHTML = '<div class="ik-empty"><div class="e-icon">📋</div><div class="e-sub">Belum ada pengeluaran</div></div>';
     } else {
-      const sorted=[...(IK.pengeluaran||[])].sort((a,b)=>b.id.localeCompare(a.id));
-      tbk.innerHTML=`<div class="ik-table-wrap"><table>
+      const sorted = [...(IK.pengeluaran||[])].sort((a,b) => b.id.localeCompare(a.id));
+      tbk.innerHTML = `<div class="ik-table-wrap"><table>
         <thead><tr><th>Tanggal</th><th>Keterangan</th><th>Kategori</th><th>Jumlah</th><th>Aksi</th></tr></thead>
         <tbody>${sorted.map(p=>`<tr>
           <td style="font-size:0.72rem;color:#94a3b8">${p.tanggal||'—'}</td>
@@ -2284,228 +2527,132 @@ function ikRenderBukasUmum(){
 }
 window.ikRenderBukasUmum = ikRenderBukasUmum;
 
-window.ikGenLapKas = function(){
-  const ta=document.getElementById('bukas-lap-ta')?.value||IK.cfg.ta;
-  const {t1,t2}=parseTA(ta);
-  const bayarTA=IK.pembayaran.filter(p=>(p.tahun===t1&&p.bulan>=7)||(p.tahun===t2&&p.bulan<=6));
-  const totalMasuk=bayarTA.reduce((s,p)=>s+(p.jumlah||0),0);
-  const totalKeluar=(IK.pengeluaran||[]).reduce((s,p)=>s+(p.jumlah||0),0);
-  const saldo=totalMasuk-totalKeluar;
-  const out=document.getElementById('bukas-lap-out'); if(!out)return;
-  out.innerHTML=`
-    <div class="ik-card">
-      ${ikKopBukas()}
-      <div class="ik-ljudul"><h3>LAPORAN KAS UMUM KOMITE SEKOLAH</h3><p>Tahun Ajaran ${ta}</p></div>
-      <div class="ik-ltable" style="margin-bottom:14px">
-        <table>
-          <thead><tr><th>No</th><th>Bulan</th><th>Pemasukan</th><th>Pengeluaran</th><th>Saldo</th></tr></thead>
-          <tbody>
-            ${BUTA.map((b,i)=>{
-              const thn=b>=7?t1:t2;
-              const masuk=bayarTA.filter(p=>p.bulan===b&&p.tahun===thn).reduce((s,p)=>s+(p.jumlah||0),0);
-              const keluar=0;
-              return `<tr><td>${i+1}</td><td>${BN[b]} ${thn}</td>
-                <td style="color:#047857">${masuk>0?'Rp '+masuk.toLocaleString('id-ID'):'—'}</td>
-                <td style="color:#b91c1c">${keluar>0?'Rp '+keluar.toLocaleString('id-ID'):'—'}</td>
-                <td>Rp ${masuk.toLocaleString('id-ID')}</td>
-              </tr>`;
-            }).join('')}
-            <tr class="ltr-total">
-              <td colspan="2">TOTAL</td>
-              <td>Rp ${totalMasuk.toLocaleString('id-ID')}</td>
-              <td>Rp ${totalKeluar.toLocaleString('id-ID')}</td>
-              <td>Rp ${saldo.toLocaleString('id-ID')}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="ik-lttd">
-        <div class="ttd-box"><div class="ttd-label">Mengetahui,<br>Kepala Sekolah</div><div class="ttd-name">${IK.cfg.kepsek||'_________________'}</div><div class="ttd-jabatan">${IK.cfg.nip?'NIP. '+IK.cfg.nip:''}</div></div>
-        <div class="ttd-box"><div class="ttd-label">Bendahara Komite</div><div class="ttd-name">${IK.cfg.ketua||'_________________'}</div><div class="ttd-jabatan">Bendahara</div></div>
-      </div>
-    </div>`;
+window.ikGenLapKas = function() {
+  const ta = document.getElementById('bukas-lap-ta')?.value || IK.cfg.ta;
+  const {t1,t2} = parseTA(ta);
+  const bayarTA = IK.pembayaran.filter(p => (p.tahun===t1&&p.bulan>=7)||(p.tahun===t2&&p.bulan<=6));
+  const totalMasuk = bayarTA.reduce((s,p)=>s+(p.jumlah||0),0);
+  const totalKeluar = (IK.pengeluaran||[]).reduce((s,p)=>s+(p.jumlah||0),0);
+  const saldo = totalMasuk - totalKeluar;
+  const out = document.getElementById('bukas-lap-out'); if (!out) return;
+  out.innerHTML = `<div class="ik-card">
+    ${ikKopBukas()}
+    <div class="ik-ljudul"><h3>LAPORAN KAS UMUM KOMITE SEKOLAH</h3><p>Tahun Ajaran ${ta}</p></div>
+    <div class="ik-ltable" style="margin-bottom:14px"><table>
+      <thead><tr><th>No</th><th>Bulan</th><th>Pemasukan</th><th>Pengeluaran</th><th>Saldo</th></tr></thead>
+      <tbody>
+        ${BUTA.map((b,i)=>{
+          const thn=b>=7?t1:t2;
+          const masuk=bayarTA.filter(p=>p.bulan===b&&p.tahun===thn).reduce((s,p)=>s+(p.jumlah||0),0);
+          return `<tr><td>${i+1}</td><td>${BN[b]} ${thn}</td>
+            <td style="color:#047857">${masuk>0?'Rp '+masuk.toLocaleString('id-ID'):'—'}</td>
+            <td>—</td><td>Rp ${masuk.toLocaleString('id-ID')}</td>
+          </tr>`;
+        }).join('')}
+        <tr class="ltr-total">
+          <td colspan="2">TOTAL</td>
+          <td>Rp ${totalMasuk.toLocaleString('id-ID')}</td>
+          <td>Rp ${totalKeluar.toLocaleString('id-ID')}</td>
+          <td>Rp ${saldo.toLocaleString('id-ID')}</td>
+        </tr>
+      </tbody>
+    </table></div>
+    <div class="ik-lttd">
+      <div class="ttd-box"><div class="ttd-label">Mengetahui,<br>Kepala Sekolah</div><div class="ttd-name">${IK.cfg.kepsek||'_________________'}</div><div class="ttd-jabatan">${IK.cfg.nip?'NIP. '+IK.cfg.nip:''}</div></div>
+      <div class="ttd-box"><div class="ttd-label">Bendahara Komite</div><div class="ttd-name">${IK.cfg.ketua||'_________________'}</div><div class="ttd-jabatan">Bendahara</div></div>
+    </div>
+  </div>`;
 };
 
-window.ikCetakLapKas = function(){
-  const out=document.getElementById('bukas-lap-out');
-  if(!out.innerHTML.trim()){ikGenLapKas();}
-  setTimeout(()=>window.print(),200);
+window.ikCetakLapKas = function() {
+  const out = document.getElementById('bukas-lap-out');
+  if (!out.innerHTML.trim()) ikGenLapKas();
+  setTimeout(() => window.print(), 200);
 };
-
-function ikKopBukas(){
+function ikKopBukas() {
   return `<div class="ik-lkop"><div class="lk-logo">💰</div><div><h2>Pemerintah Kabupaten / Kota</h2><h3>${IK.cfg.sekolah.toUpperCase()}</h3><p>Bendahara Komite Sekolah${IK.cfg.alamat?' · '+IK.cfg.alamat:''}</p></div></div>`;
 }
 
 // ================================================================
-// GOOGLE SHEETS
-// ================================================================
-async function ikSyncSheets(action, data){
-  try{
-    await fetch(GAS_URL, {
-      method:'POST', mode:'no-cors',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({action, data, sid: SHEET_ID})
-    });
-  }catch(e){}
-}
-
-window.ikLoadSheets = async function(){
-  ikToast('📡 Memuat data dari Google Sheets...');
-  try{
-    const url = GAS_URL + '?action=getAll&sid=' + encodeURIComponent(SHEET_ID);
-    const res = await fetch(url, { method:'GET', redirect:'follow' });
-    if(!res.ok) throw new Error('HTTP ' + res.status);
-    const text = await res.text();
-    let j;
-    try{ j = JSON.parse(text); }catch(pe){ throw new Error('Respons bukan JSON. Cek deploy GAS.'); }
-    if(!j || j.ok === false) throw new Error(j && j.error ? j.error : 'Respons tidak valid');
-    if(j.siswa)       IK.siswa       = j.siswa;
-    if(j.pembayaran)  IK.pembayaran  = j.pembayaran;
-    if(j.pengeluaran) IK.pengeluaran = j.pengeluaran;
-    ikSave(); ikSaveBukas();
-    ikRenderDashboard(); ikRenderSiswa(); ikPopulateSiswaSelect();
-    ikRenderKartu(); ikRenderRiwayat(); ikRebuildKelasSelects();
-    ikUpdateSinkronStats(); ikRenderBukasUmum();
-    ikToast('✅ Data dimuat! (' + ((j.siswa||[]).length) + ' siswa, ' + ((j.pembayaran||[]).length) + ' transaksi, ' + ((j.pengeluaran||[]).length) + ' pengeluaran)');
-  }catch(e){
-    try{
-      const res2 = await fetch(GAS_URL, {
-        method: 'POST',
-        headers: {'Content-Type':'text/plain;charset=utf-8'},
-        body: JSON.stringify({action:'getAll', sid: SHEET_ID})
-      });
-      if(!res2.ok) throw new Error('HTTP ' + res2.status);
-      const text2 = await res2.text();
-      let j2;
-      try{ j2 = JSON.parse(text2); }catch(pe){ throw new Error('Respons bukan JSON'); }
-      if(!j2 || j2.ok === false) throw new Error(j2 && j2.error ? j2.error : 'Respons tidak valid');
-      if(j2.siswa)       IK.siswa       = j2.siswa;
-      if(j2.pembayaran)  IK.pembayaran  = j2.pembayaran;
-      if(j2.pengeluaran) IK.pengeluaran = j2.pengeluaran;
-      ikSave(); ikSaveBukas();
-      ikRenderDashboard(); ikRenderSiswa(); ikPopulateSiswaSelect();
-      ikRenderKartu(); ikRenderRiwayat(); ikRebuildKelasSelects();
-      ikUpdateSinkronStats(); ikRenderBukasUmum();
-      ikToast('✅ Data dimuat! (' + ((j2.siswa||[]).length) + ' siswa, ' + ((j2.pengeluaran||[]).length) + ' pengeluaran)');
-    }catch(e2){
-      ikToast('❌ ' + e2.message + ' — Pastikan GAS sudah di-deploy ulang (New Version).', 'danger');
-    }
-  }
-};
-
-window.ikSyncAllSheets = async function(){
-  if(!confirm('Kirim semua data lokal ke Google Sheets?\nData lama di Sheets akan ditimpa.')) return;
-  ikToast('Mengirim data ke Sheets...');
-  try{
-    const siswaMapped = IK.siswa.map(d => ({
-      id: d.id||'', nama: d.nama||'', kelas: d.kelas||'',
-      ortu: d.ortu||'', hp: d.hp||'', tanggal: d.tanggal||''
-    }));
-    const bayarMapped = IK.pembayaran.map(d => ({
-      id: d.id||'', siswaId: d.siswaId||'', namaSiswa: d.namaSiswa||'', kelas: d.kelas||'',
-      bulan: d.bulan||0, namaBulan: BN[d.bulan]||'',
-      ta: d.ta||String(d.tahun||''), jumlah: d.jumlah||0,
-      tanggal: d.tanggal||'', catatan: d.catatan||''
-    }));
-    const pengeluaranMapped = (IK.pengeluaran||[]).map(d => ({
-      id: d.id||'', tanggal: d.tanggal||'', ket: d.ket||'',
-      kategori: d.kategori||'', jumlah: d.jumlah||0
-    }));
-    await fetch(GAS_URL, {
-      method: 'POST', mode: 'no-cors',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({action:'syncAll', sid: SHEET_ID, data:{siswa: siswaMapped, pembayaran: bayarMapped, pengeluaran: pengeluaranMapped}})
-    });
-    ikToast('✅ Semua data (siswa, pembayaran, pengeluaran) dikirim ke Sheets!');
-  }catch(e){
-    ikToast('❌ Gagal kirim: ' + e.message, 'danger');
-  }
-};
-
-function ikUpdateSinkronStats(){
-  const $=id=>document.getElementById(id);
-  if($('sinkron-jml-siswa'))$('sinkron-jml-siswa').textContent=IK.siswa.length;
-  if($('sinkron-jml-bayar'))$('sinkron-jml-bayar').textContent=IK.pembayaran.length;
-  if($('sinkron-jml-kelas'))$('sinkron-jml-kelas').textContent=IK.kelasList.length;
-}
-window.ikUpdateSinkronStats = ikUpdateSinkronStats;
-
-// ================================================================
 // PENGATURAN
 // ================================================================
-window.ikSimpanKonfig = function(){
-  ikToast('ℹ️ URL dan Spreadsheet ID sudah tertanam di kode','warn');
-};
-window.ikSimpanCfg = function(){
-  IK.cfg.iuran=+document.getElementById('ik-cfg-iuran').value||25000;
-  IK.cfg.sekolah=document.getElementById('ik-cfg-sekolah').value;
-  IK.cfg.alamat=document.getElementById('ik-cfg-alamat').value;
-  IK.cfg.kepsek=document.getElementById('ik-cfg-kepsek').value;
-  IK.cfg.nip=document.getElementById('ik-cfg-nip').value;
-  IK.cfg.ketua=document.getElementById('ik-cfg-ketua').value;
-  const pw=document.getElementById('ik-cfg-password').value;
-  const pw2=document.getElementById('ik-cfg-password2').value;
-  if(pw){
-    if(pw.length<4){ikToast('❗ Password minimal 4 karakter','danger');return;}
-    if(pw!==pw2){ikToast('❗ Konfirmasi password tidak cocok','danger');return;}
-    IK.cfg.password=pw;
-    // Reset session saat password diganti
-    IK_SESSION.bendahara=false; IK_SESSION.admin=false;
-    document.getElementById('ik-cfg-password').value='';
-    document.getElementById('ik-cfg-password2').value='';
+window.ikSimpanCfg = function() {
+  IK.cfg.iuran = +document.getElementById('ik-cfg-iuran').value || 25000;
+  IK.cfg.sekolah = document.getElementById('ik-cfg-sekolah').value;
+  IK.cfg.alamat = document.getElementById('ik-cfg-alamat').value;
+  IK.cfg.kepsek = document.getElementById('ik-cfg-kepsek').value;
+  IK.cfg.nip = document.getElementById('ik-cfg-nip').value;
+  IK.cfg.ketua = document.getElementById('ik-cfg-ketua').value;
+  const pw = document.getElementById('ik-cfg-password').value;
+  const pw2 = document.getElementById('ik-cfg-password2').value;
+  if (pw) {
+    if (pw.length < 4) { ikToast('❗ Password minimal 4 karakter','danger'); return; }
+    if (pw !== pw2) { ikToast('❗ Konfirmasi password tidak cocok','danger'); return; }
+    IK.cfg.password = pw;
+    IK_SESSION.bendahara = false; IK_SESSION.admin = false;
+    document.getElementById('ik-cfg-password').value = '';
+    document.getElementById('ik-cfg-password2').value = '';
     ikToast('✅ Pengaturan & password disimpan! Silakan login ulang.');
   } else {
     ikToast('✅ Pengaturan disimpan!');
   }
   ikSave(); ikRenderDashboard();
 };
-window.ikClearAll = function(){
-  if(!confirm('Hapus semua data lokal? Tidak dapat dibatalkan!'))return;
-  IK.siswa=[]; IK.pembayaran=[];
+
+window.ikClearAll = function() {
+  if (!confirm('Hapus semua data lokal? Tidak dapat dibatalkan!')) return;
+  IK.siswa = []; IK.pembayaran = [];
   ikSave(); ikRenderSiswa(); ikRenderDashboard(); ikPopulateSiswaSelect(); ikRenderRiwayat(); ikRenderKartu(); ikRebuildKelasSelects(); ikUpdateSinkronStats();
   ikToast('🗑️ Semua data dihapus');
 };
-window.ikSampleData = function(){
-  const kls=IK.kelasList.length?IK.kelasList:['1','2','3','4','5','6'];
-  const dep=['Ahmad','Budi','Citra','Dewi','Eko','Fitri','Gilang','Hana','Ilham','Juwita'];
-  const bel=['Santoso','Wijaya','Putri','Sari','Prasetyo','Rahayu','Setiawan','Kusuma'];
-  IK.siswa=[]; IK.pembayaran=[];
-  const ta=IK.cfg.ta; const {t1,t2}=parseTA(ta);
-  kls.forEach(k=>{
-    for(let i=0;i<4;i++){
-      const s={id:'S'+Date.now()+Math.floor(Math.random()*9999),nama:dep[Math.floor(Math.random()*dep.length)]+' '+bel[Math.floor(Math.random()*bel.length)],kelas:k,ortu:'Bpk '+bel[Math.floor(Math.random()*bel.length)],hp:'0812'+Math.floor(10000000+Math.random()*89999999),tanggal:'01/07/'+t1};
+
+window.ikSampleData = function() {
+  const kls = IK.kelasList.length ? IK.kelasList : ['1','2','3','4','5','6'];
+  const dep = ['Ahmad','Budi','Citra','Dewi','Eko','Fitri','Gilang','Hana','Ilham','Juwita'];
+  const bel = ['Santoso','Wijaya','Putri','Sari','Prasetyo','Rahayu','Setiawan','Kusuma'];
+  IK.siswa = []; IK.pembayaran = [];
+  const ta = IK.cfg.ta; const {t1,t2} = parseTA(ta);
+  kls.forEach(k => {
+    for (let i=0;i<4;i++) {
+      const s = {id:'S'+Date.now()+Math.floor(Math.random()*9999),nama:dep[Math.floor(Math.random()*dep.length)]+' '+bel[Math.floor(Math.random()*bel.length)],kelas:k,ortu:'Bpk '+bel[Math.floor(Math.random()*bel.length)],hp:'0812'+Math.floor(10000000+Math.random()*89999999),tanggal:'01/07/'+t1};
       IK.siswa.push(s);
-      BUTA.slice(0,5).forEach((b)=>{
-        if(Math.random()>0.35){const thn=b>=7?t1:t2; IK.pembayaran.push({id:'P'+Date.now()+Math.random(),siswaId:s.id,namaSiswa:s.nama,kelas:k,bulan:b,tahun:thn,ta,jumlah:25000,tanggal:'01/'+String(b).padStart(2,'0')+'/'+thn,catatan:''});}
+      BUTA.slice(0,5).forEach(b => {
+        if (Math.random() > 0.35) {
+          const thn = b >= 7 ? t1 : t2;
+          IK.pembayaran.push({id:'P'+Date.now()+Math.floor(Math.random()*99999),siswaId:s.id,namaSiswa:s.nama,kelas:k,bulan:b,tahun:thn,ta,jumlah:25000,tanggal:'01/'+String(b).padStart(2,'0')+'/'+thn,catatan:''});
+        }
       });
     }
   });
   ikSave(); ikRenderSiswa(); ikRenderDashboard(); ikPopulateSiswaSelect(); ikRenderRiwayat(); ikRenderKartu(); ikRebuildKelasSelects(); ikUpdateSinkronStats();
-  ikToast('✅ '+IK.siswa.length+' data contoh dimuat!');
+  ikToast('✅ ' + IK.siswa.length + ' data contoh dimuat! Klik "Kirim Semua ke Sheets" untuk menyinkron.');
 };
 
-// ================================================================
-// MODAL
-// ================================================================
-window.ikCloseModal = function(id){
-  const m=document.getElementById(id); if(m)m.classList.remove('open');
-};
+function ikUpdateSinkronStats() {
+  const $ = id => document.getElementById(id);
+  if ($('sinkron-jml-siswa')) $('sinkron-jml-siswa').textContent = IK.siswa.length;
+  if ($('sinkron-jml-bayar')) $('sinkron-jml-bayar').textContent = IK.pembayaran.length;
+  if ($('sinkron-jml-kelas')) $('sinkron-jml-kelas').textContent = IK.kelasList.length;
+}
+window.ikUpdateSinkronStats = ikUpdateSinkronStats;
 
 // ================================================================
-// TOAST
+// MODAL & TOAST
 // ================================================================
-function ikToast(msg,type='ok'){
-  const t=document.getElementById('ik-toast-app');
-  t.textContent=msg;
-  t.style.background=type==='danger'?'#b91c1c':type==='warn'?'#d97706':'#0f172a';
+window.ikCloseModal = function(id) { const m = document.getElementById(id); if(m) m.classList.remove('open'); };
+
+function ikToast(msg, type='ok') {
+  const t = document.getElementById('ik-toast-app');
+  t.textContent = msg;
+  t.style.background = type==='danger'?'#b91c1c':type==='warn'?'#d97706':'#0f172a';
   t.classList.add('show');
-  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),3000);
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 3500);
 }
 
 // ================================================================
 // BOOT
 // ================================================================
-if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
 else init();
 
 })();
