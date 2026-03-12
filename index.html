@@ -1394,6 +1394,79 @@ function ikDeletePengeluaranSheets(id) {
 }
 
 // ================================================================
+// NORMALISASI DATA PEMBAYARAN DARI SHEETS
+// Masalah: kolom Sheets mengembalikan:
+//   - p.tahun → tidak ada (GAS simpan p.ta = "2025/2026", bukan p.tahun angka)
+//   - p.bulan → bisa jadi string "7" bukan number 7
+//   - p.jumlah → bisa jadi string atau "Rp 25.000" karena format currency Sheets
+//   - p.tanggal → bisa jadi "Tue Mar 03 2026 00:00:00 GMT+0700" (Date object dari Sheets)
+// ================================================================
+function normalizePembayaran(arr) {
+  if (!Array.isArray(arr)) return [];
+  return arr.map(p => {
+    // 1. Normalisasi bulan → number
+    const bulan = parseInt(p.bulan) || 0;
+
+    // 2. Normalisasi jumlah → hapus "Rp", titik, spasi → number
+    let jumlah = p.jumlah;
+    if (typeof jumlah === 'string') {
+      jumlah = Number(jumlah.replace(/[^0-9]/g, '')) || 0;
+    } else {
+      jumlah = Number(jumlah) || 0;
+    }
+
+    // 3. Normalisasi tahun (angka) dari field ta ("2025/2026") + bulan
+    // Field p.tahun mungkin tidak ada karena GAS tidak menyimpannya
+    let tahun = Number(p.tahun) || 0;
+    if (!tahun && p.ta && p.ta.includes('/')) {
+      const parts = p.ta.split('/');
+      const t1 = parseInt(parts[0]); // misal 2025
+      const t2 = parseInt(parts[1]); // misal 2026
+      // bulan Juli(7)-Des(12) → tahun pertama TA, Jan(1)-Jun(6) → tahun kedua
+      tahun = bulan >= 7 ? t1 : t2;
+    }
+    // Jika masih 0, coba ambil dari namaBulan + tanggal (fallback)
+    if (!tahun && p.tanggal) {
+      // coba parse tahun dari string tanggal apapun formatnya
+      const m = String(p.tanggal).match(/\b(20\d{2})\b/);
+      if (m) tahun = parseInt(m[1]);
+    }
+
+    // 4. Normalisasi tanggal → string tanggal yang bersih
+    let tanggal = p.tanggal || '';
+    if (tanggal) {
+      // Kalau formatnya "Tue Mar 03 2026 00:00:00 GMT+0700" atau ISO, konversi ke lokal
+      try {
+        const d = new Date(tanggal);
+        if (!isNaN(d.getTime())) {
+          tanggal = d.toLocaleDateString('id-ID'); // → "3/3/2026"
+        }
+      } catch(e) {}
+    }
+
+    // 5. Pastikan ta ada (kalau tidak ada, reconstruct dari tahun)
+    let ta = p.ta || '';
+    if (!ta && tahun) {
+      // reconstruct TA dari bulan + tahun
+      ta = bulan >= 7 ? tahun + '/' + (tahun+1) : (tahun-1) + '/' + tahun;
+    }
+
+    return {
+      id:        p.id || '',
+      siswaId:   p.siswaId || '',
+      namaSiswa: p.namaSiswa || '',
+      kelas:     p.kelas || '',
+      bulan,
+      tahun,
+      ta,
+      jumlah,
+      tanggal,
+      catatan:   p.catatan || ''
+    };
+  }).filter(p => p.siswaId && p.bulan && p.tahun); // buang baris tidak valid
+}
+
+// ================================================================
 // AMBIL DATA DARI SHEETS (saat buka / manual refresh)
 // ================================================================
 window.ikLoadSheets = async function(showLoading) {
@@ -1424,7 +1497,7 @@ window.ikLoadSheets = async function(showLoading) {
     }
 
     if (j.siswa)        IK.siswa        = j.siswa;
-    if (j.pembayaran)   IK.pembayaran   = j.pembayaran;
+    if (j.pembayaran)   IK.pembayaran   = normalizePembayaran(j.pembayaran);
     if (j.pengeluaran)  IK.pengeluaran  = j.pengeluaran;
 
     ikSave(); ikSaveBukas();
