@@ -1,9 +1,7 @@
 <!-- 
 =======================================================
   IURAN KOMITE SD NEGERI-1 RAJA
-  Versi: Blogger Widget (Blog-friendly)
-  Cara pasang: Tempel seluruh kode ini di HTML/JavaScript
-  widget (Tata Letak > Tambah Gadget > HTML/JavaScript)
+  Versi: 3 TAB (Publik / Bendahara / Admin)
 =======================================================
 -->
 
@@ -27,10 +25,82 @@
   margin: 0; padding: 0;
 }
 
+/* ---- MAIN TAB BAR (3 besar) ---- */
+#ik-app .ik-main-tabs {
+  display: flex;
+  border-radius: 10px 10px 0 0;
+  overflow: hidden;
+  background: #0f172a;
+}
+#ik-app .ik-main-tab-btn {
+  flex: 1;
+  padding: 13px 10px;
+  font-family: inherit; font-size: 0.8rem; font-weight: 700;
+  border: none; background: transparent; color: rgba(255,255,255,0.5);
+  cursor: pointer; transition: all 0.18s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  border-bottom: 3px solid transparent;
+  letter-spacing: 0.2px;
+}
+#ik-app .ik-main-tab-btn:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.06); }
+#ik-app .ik-main-tab-btn.active { color: white; border-bottom-color: #fbbf24; background: rgba(255,255,255,0.1); }
+#ik-app .ik-main-tab-btn .mtb-icon { font-size: 1rem; }
+#ik-app .ik-main-tab-btn .mtb-lock {
+  font-size: 0.6rem; background: rgba(255,255,255,0.15);
+  border-radius: 3px; padding: 1px 5px; color: rgba(255,255,255,0.6);
+}
+#ik-app .ik-main-tab-btn.active .mtb-lock { background: rgba(251,191,36,0.2); color: #fbbf24; }
+
+/* ---- Pane wrapper ---- */
+#ik-app .ik-main-pane { display: none; }
+#ik-app .ik-main-pane.active { display: block; }
+
+/* ---- Lock screen ---- */
+#ik-app .ik-lock-screen {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  padding: 40px 20px;
+  text-align: center;
+}
+#ik-app .ik-lock-icon {
+  font-size: 3rem; margin-bottom: 12px;
+}
+#ik-app .ik-lock-title {
+  font-size: 1rem; font-weight: 700; color: #1e293b; margin-bottom: 4px;
+}
+#ik-app .ik-lock-sub {
+  font-size: 0.78rem; color: #64748b; margin-bottom: 20px;
+}
+#ik-app .ik-lock-form {
+  display: flex; flex-direction: column; align-items: center; gap: 10px; max-width: 280px; margin: 0 auto;
+}
+#ik-app .ik-lock-input {
+  width: 100%; padding: 10px 14px;
+  border: 1.5px solid #e2e8f0; border-radius: 8px;
+  font-family: inherit; font-size: 1rem;
+  letter-spacing: 4px; text-align: center;
+  background: white; color: #1e293b;
+  transition: border-color 0.2s;
+}
+#ik-app .ik-lock-input:focus { outline: none; border-color: #b91c1c; box-shadow: 0 0 0 2px rgba(185,28,28,0.1); }
+#ik-app .ik-lock-err { color: #b91c1c; font-size: 0.78rem; font-weight: 600; display: none; }
+#ik-app .ik-lock-btn {
+  width: 100%; padding: 10px 14px;
+  background: #b91c1c; color: white;
+  border: none; border-radius: 8px;
+  font-family: inherit; font-weight: 700; font-size: 0.85rem;
+  cursor: pointer; transition: background 0.15s;
+}
+#ik-app .ik-lock-btn:hover { background: #7f1d1d; }
+#ik-app .ik-lock-hint {
+  font-size: 0.68rem; color: #94a3b8; margin-top: 6px;
+}
+
 /* ---- Widget Header ---- */
 #ik-app .ik-widget-head {
   background: linear-gradient(135deg, #7f1d1d 0%, #c0392b 100%);
-  border-radius: 10px 10px 0 0;
   padding: 14px 18px;
   display: flex;
   align-items: center;
@@ -56,8 +126,15 @@
   color: white; font-size: 0.7rem; font-weight: 600;
   padding: 4px 10px; border-radius: 20px; white-space: nowrap;
 }
+#ik-app .ik-logout-btn {
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+  color: white; font-size: 0.7rem; font-weight: 600;
+  padding: 4px 10px; border-radius: 20px; white-space: nowrap;
+  cursor: pointer; font-family: inherit; transition: all 0.15s;
+}
+#ik-app .ik-logout-btn:hover { background: rgba(255,255,255,0.28); }
 
-/* ---- Nav Tabs ---- */
+/* ---- Nav Tabs (inner) ---- */
 #ik-app .ik-nav {
   background: #fff;
   border-left: 1px solid #e2e8f0;
@@ -410,6 +487,7 @@
 
 /* ---- Print ---- */
 @media print {
+  #ik-app .ik-main-tabs,
   #ik-app .ik-widget-head,
   #ik-app .ik-nav,
   #ik-app .ik-filter-bar,
@@ -425,634 +503,707 @@
 <!-- ==================== APP HTML ==================== -->
 <div id="ik-app">
 
-  <!-- Widget Header -->
-  <div class="ik-widget-head">
-    <div class="ik-widget-head-left">
-      <div class="ik-widget-icon">🏫</div>
-      <div>
-        <div class="ik-widget-title">Iuran Komite – SD Negeri-1 Raja</div>
-        <div class="ik-widget-sub">Rp 25.000 / siswa / bulan</div>
-      </div>
-    </div>
-    <div class="ik-ta-badge" id="ik-header-ta">TA 2025/2026</div>
+  <!-- ===== MAIN 3 TABS BAR ===== -->
+  <div class="ik-main-tabs">
+    <button class="ik-main-tab-btn active" id="mt-btn-publik" onclick="ikMainTab('publik',this)">
+      <span class="mtb-icon">🌐</span>
+      <span>Publik</span>
+    </button>
+    <button class="ik-main-tab-btn" id="mt-btn-bendahara" onclick="ikMainTab('bendahara',this)">
+      <span class="mtb-icon">💼</span>
+      <span>Bendahara</span>
+      <span class="mtb-lock" id="mt-lock-bendahara">🔒</span>
+    </button>
+    <button class="ik-main-tab-btn" id="mt-btn-admin" onclick="ikMainTab('admin',this)">
+      <span class="mtb-icon">⚙️</span>
+      <span>Admin</span>
+      <span class="mtb-lock" id="mt-lock-admin">🔒</span>
+    </button>
   </div>
 
-  <!-- Nav Tabs -->
-  <div class="ik-nav">
-    <button class="ik-nav-btn active" onclick="ikShow('dashboard',this)">📊 Dashboard</button>
-    <button class="ik-nav-btn" onclick="ikShow('siswa',this)">👨‍🎓 Siswa</button>
-    <button class="ik-nav-btn" onclick="ikShow('bayar',this)">💳 Pembayaran</button>
-    <button class="ik-nav-btn" onclick="ikShow('scan',this)">📷 Scan QR</button>
-    <button class="ik-nav-btn" onclick="ikShow('belum',this)">⚠️ Belum Bayar</button>
-    <button class="ik-nav-btn" onclick="ikShow('laporan',this)">📋 Laporan</button>
-    <button class="ik-nav-btn" onclick="ikShow('kartu',this)">🪪 Kartu</button>
-    <button class="ik-nav-btn" onclick="ikShow('editstatus',this)">✏️ Edit Status</button>
-    <button class="ik-nav-btn" onclick="ikShow('bukas',this)">💰 Bu Kas</button>
-    <button class="ik-nav-btn" onclick="ikShow('sinkron',this)">☁️ Sinkron</button>
-    <button class="ik-nav-btn" onclick="ikShow('setting',this)">⚙️ Pengaturan</button>
+  <!-- ===== PANE: PUBLIK ===== -->
+  <div class="ik-main-pane active" id="ik-pane-publik">
+    <!-- Widget Header -->
+    <div class="ik-widget-head">
+      <div class="ik-widget-head-left">
+        <div class="ik-widget-icon">🏫</div>
+        <div>
+          <div class="ik-widget-title">Iuran Komite – SD Negeri-1 Raja</div>
+          <div class="ik-widget-sub">Dashboard Publik · Informasi Iuran Komite</div>
+        </div>
+      </div>
+      <div class="ik-ta-badge" id="ik-header-ta">TA 2025/2026</div>
+    </div>
+    <!-- Body: Dashboard only -->
+    <div class="ik-body">
+      <div class="ik-section active" id="ik-section-dashboard">
+        <div id="ik-banner-setup" class="ik-alert ik-alert-warn" style="display:none">
+          ⚙️ <span>Google Sheets belum dikonfigurasi. Buka <strong>Pengaturan</strong>.</span>
+        </div>
+        <!-- Hero Progress -->
+        <div class="ik-hero-bar">
+          <div class="hb-label">Total Pemasukan Tahun Ajaran <span id="ik-dash-ta">2025/2026</span></div>
+          <div class="hb-val" id="ik-total-income">Rp 0</div>
+          <div class="ik-progress-bg"><div class="ik-progress-fill" id="ik-prog-fill" style="width:0%"></div></div>
+          <div class="ik-progress-meta"><span id="ik-prog-label">0 siswa lunas bulan ini</span><span id="ik-prog-pct">0%</span></div>
+        </div>
+        <!-- KPI 2x2 -->
+        <div class="ik-kpi-row">
+          <div class="ik-kpi k1">
+            <div class="ik-kpi-val" id="kpi-total">0</div>
+            <div class="ik-kpi-label">Total Siswa</div>
+            <div class="ik-kpi-sub">Terdaftar</div>
+          </div>
+          <div class="ik-kpi k2">
+            <div class="ik-kpi-val" id="kpi-lunas">0</div>
+            <div class="ik-kpi-label">Lunas Bln Ini</div>
+            <div class="ik-kpi-sub up" id="kpi-lunas-s">—</div>
+          </div>
+          <div class="ik-kpi k3">
+            <div class="ik-kpi-val" id="kpi-belum">0</div>
+            <div class="ik-kpi-label">Belum Bayar</div>
+            <div class="ik-kpi-sub dn" id="kpi-belum-s">—</div>
+          </div>
+          <div class="ik-kpi k4">
+            <div class="ik-kpi-val" id="kpi-income" style="font-size:1rem">Rp 0</div>
+            <div class="ik-kpi-label">Pemasukan Bln Ini</div>
+            <div class="ik-kpi-sub" id="kpi-income-s">—</div>
+          </div>
+        </div>
+        <!-- Rekap per Kelas -->
+        <div class="ik-card">
+          <div class="ik-card-title">🏫 Rekap Bulan Ini per Kelas</div>
+          <div class="ik-table-wrap">
+            <table>
+              <thead><tr><th>Kelas</th><th>Siswa</th><th>Lunas</th><th>Blm</th><th>Progress</th></tr></thead>
+              <tbody id="ik-tb-kelas"></tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Rekap TA -->
+        <div class="ik-card">
+          <div class="ik-card-title">📅 Rekap per Bulan TA</div>
+          <div class="ik-table-wrap">
+            <table>
+              <thead><tr><th>Bulan</th><th>Lunas</th><th>Pemasukan</th></tr></thead>
+              <tbody id="ik-tb-rekap"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- Body -->
-  <div class="ik-body">
-
-    <!-- ===== DASHBOARD ===== -->
-    <div class="ik-section active" id="ik-section-dashboard">
-      <div id="ik-banner-setup" class="ik-alert ik-alert-warn" style="display:none">
-        ⚙️ <span>Google Sheets belum dikonfigurasi. Buka <strong>Pengaturan</strong>.</span>
-      </div>
-
-      <!-- Hero Progress -->
-      <div class="ik-hero-bar">
-        <div class="hb-label">Total Pemasukan Tahun Ajaran <span id="ik-dash-ta">2025/2026</span></div>
-        <div class="hb-val" id="ik-total-income">Rp 0</div>
-        <div class="ik-progress-bg"><div class="ik-progress-fill" id="ik-prog-fill" style="width:0%"></div></div>
-        <div class="ik-progress-meta"><span id="ik-prog-label">0 siswa lunas bulan ini</span><span id="ik-prog-pct">0%</span></div>
-      </div>
-
-      <!-- KPI 2x2 -->
-      <div class="ik-kpi-row">
-        <div class="ik-kpi k1">
-          <div class="ik-kpi-val" id="kpi-total">0</div>
-          <div class="ik-kpi-label">Total Siswa</div>
-          <div class="ik-kpi-sub">Terdaftar</div>
-        </div>
-        <div class="ik-kpi k2">
-          <div class="ik-kpi-val" id="kpi-lunas">0</div>
-          <div class="ik-kpi-label">Lunas Bln Ini</div>
-          <div class="ik-kpi-sub up" id="kpi-lunas-s">—</div>
-        </div>
-        <div class="ik-kpi k3">
-          <div class="ik-kpi-val" id="kpi-belum">0</div>
-          <div class="ik-kpi-label">Belum Bayar</div>
-          <div class="ik-kpi-sub dn" id="kpi-belum-s">—</div>
-        </div>
-        <div class="ik-kpi k4">
-          <div class="ik-kpi-val" id="kpi-income" style="font-size:1rem">Rp 0</div>
-          <div class="ik-kpi-label">Pemasukan Bln Ini</div>
-          <div class="ik-kpi-sub" id="kpi-income-s">—</div>
-        </div>
-      </div>
-
-      <!-- Rekap per Kelas -->
-      <div class="ik-card">
-        <div class="ik-card-title">🏫 Rekap Bulan Ini per Kelas</div>
-        <div class="ik-table-wrap">
-          <table>
-            <thead><tr><th>Kelas</th><th>Siswa</th><th>Lunas</th><th>Blm</th><th>Progress</th></tr></thead>
-            <tbody id="ik-tb-kelas"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Rekap TA -->
-      <div class="ik-card">
-        <div class="ik-card-title">📅 Rekap per Bulan TA</div>
-        <div class="ik-table-wrap">
-          <table>
-            <thead><tr><th>Bulan</th><th>Lunas</th><th>Pemasukan</th></tr></thead>
-            <tbody id="ik-tb-rekap"></tbody>
-          </table>
-        </div>
+  <!-- ===== PANE: BENDAHARA ===== -->
+  <div class="ik-main-pane" id="ik-pane-bendahara">
+    <!-- Lock screen -->
+    <div class="ik-lock-screen" id="ik-lock-bendahara">
+      <div class="ik-lock-icon">💼</div>
+      <div class="ik-lock-title">Area Bendahara</div>
+      <div class="ik-lock-sub">Masukkan password untuk mengakses fitur bendahara</div>
+      <div class="ik-lock-form">
+        <input type="password" class="ik-lock-input" id="pw-bendahara" placeholder="••••••••"
+          onkeydown="if(event.key==='Enter')ikUnlock('bendahara')">
+        <div class="ik-lock-err" id="pw-err-bendahara">❌ Password salah, coba lagi</div>
+        <button class="ik-lock-btn" onclick="ikUnlock('bendahara')">🔓 Masuk</button>
+        <div class="ik-lock-hint">Default: <code>komite2025</code></div>
       </div>
     </div>
-
-    <!-- ===== SISWA ===== -->
-    <div class="ik-section" id="ik-section-siswa">
-      <div class="ik-card">
-        <div class="ik-card-title">➕ Tambah Siswa</div>
-        <div class="ik-form-row">
-          <div class="ik-fg" style="flex:2;min-width:150px"><label>Nama Lengkap *</label><input type="text" id="ik-inp-nama" placeholder="Nama siswa"></div>
-          <div class="ik-fg"><label>Kelas *</label>
-            <select id="ik-inp-kelas">
-              <option value="">-- Pilih --</option>
-            </select>
+    <!-- Content (hidden until unlocked) -->
+    <div id="ik-content-bendahara" style="display:none">
+      <!-- Widget Header -->
+      <div class="ik-widget-head">
+        <div class="ik-widget-head-left">
+          <div class="ik-widget-icon">💼</div>
+          <div>
+            <div class="ik-widget-title">Area Bendahara</div>
+            <div class="ik-widget-sub">Kelola pembayaran, laporan & kartu siswa</div>
           </div>
-          <div class="ik-fg"><label>Orang Tua</label><input type="text" id="ik-inp-ortu" placeholder="Opsional"></div>
-          <div class="ik-fg"><label>No. HP</label><input type="text" id="ik-inp-hp" placeholder="08xx..."></div>
         </div>
-        <div class="ik-btn-row">
-          <button class="ik-btn ik-btn-primary" onclick="ikTambahSiswa()">➕ Tambah Siswa</button>
-        </div>
+        <button class="ik-logout-btn" onclick="ikLock('bendahara')">🔒 Keluar</button>
       </div>
+      <!-- Sub Nav Tabs Bendahara -->
+      <div class="ik-nav" id="nav-bendahara">
+        <button class="ik-nav-btn active" onclick="ikShowBendahara('bayar',this)">💳 Pembayaran</button>
+        <button class="ik-nav-btn" onclick="ikShowBendahara('scan',this)">📷 Scan QR</button>
+        <button class="ik-nav-btn" onclick="ikShowBendahara('belum',this)">⚠️ Belum Bayar</button>
+        <button class="ik-nav-btn" onclick="ikShowBendahara('laporan',this)">📋 Laporan</button>
+        <button class="ik-nav-btn" onclick="ikShowBendahara('kartu',this)">🪪 Kartu</button>
+        <button class="ik-nav-btn" onclick="ikShowBendahara('bukas',this)">💰 Bu Kas</button>
+        <button class="ik-nav-btn" onclick="ikShowBendahara('siswa',this)">👨‍🎓 Siswa</button>
+      </div>
+      <!-- Body Bendahara -->
+      <div class="ik-body">
 
-      <!-- Import/Export -->
-      <div class="ik-card">
-        <div class="ik-card-title">📁 Import / Export Data Siswa</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div>
-            <div style="font-size:0.72rem;font-weight:700;color:#475569;text-transform:uppercase;margin-bottom:8px">Import (CSV/JSON)</div>
-            <div class="ik-dropzone" id="ik-dz" onclick="document.getElementById('ik-file-imp').click()" ondragover="ikDzOver(event)" ondragleave="ikDzLeave(event)" ondrop="ikDzDrop(event)">
-              <div class="dz-icon">📂</div>
-              <div class="dz-text">Klik atau seret file</div>
-              <div class="dz-sub">CSV: Nama,Kelas,OrangTua,NoHP</div>
+        <!-- ===== PEMBAYARAN ===== -->
+        <div class="ik-section active" id="ik-section-bayar">
+          <div class="ik-card">
+            <div class="ik-card-title">💳 Catat Pembayaran</div>
+            <div class="ik-alert ik-alert-info">💡 Satu siswa bisa bayar beberapa bulan sekaligus. Bulan hijau = sudah lunas.</div>
+            <div class="ik-form-row">
+              <div class="ik-fg"><label>Filter Kelas</label>
+                <select id="ik-bayar-flt-kelas" onchange="ikFilterSiswaBayar()">
+                  <option value="">Semua Kelas</option>
+                </select>
+              </div>
+              <div class="ik-fg" style="flex:2;min-width:180px"><label>Siswa *</label>
+                <select id="ik-inp-siswa-bayar" onchange="ikCekStatusBayar()"><option value="">-- Pilih Siswa --</option></select>
+              </div>
+              <div class="ik-fg"><label>Tahun Ajaran</label>
+                <select id="ik-inp-ta-bayar" onchange="ikCekStatusBayar()"></select>
+              </div>
             </div>
-            <input type="file" id="ik-file-imp" accept=".csv,.json" style="display:none" onchange="ikImportSiswa(this)">
+            <div class="ik-fg" style="margin-bottom:10px"><label>Pilih Bulan (klik untuk pilih, hijau = sudah lunas)</label>
+              <div class="ik-bulan-grid" id="ik-bulan-grid"></div>
+            </div>
+            <div class="ik-form-row">
+              <div class="ik-fg"><label>Jumlah/Bulan (Rp)</label>
+                <input type="number" id="ik-inp-jumlah" value="25000" min="0">
+              </div>
+              <div class="ik-fg" style="flex:2"><label>Catatan</label>
+                <input type="text" id="ik-inp-catatan" placeholder="Opsional">
+              </div>
+            </div>
+            <div class="ik-btn-row">
+              <button class="ik-btn ik-btn-success" onclick="ikBayar()">💾 Simpan Pembayaran</button>
+            </div>
           </div>
-          <div>
-            <div style="font-size:0.72rem;font-weight:700;color:#475569;text-transform:uppercase;margin-bottom:8px">Export</div>
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <button class="ik-btn ik-btn-success ik-btn-sm" onclick="ikExportCSV()">📄 Siswa → CSV</button>
-              <button class="ik-btn ik-btn-sky ik-btn-sm" onclick="ikExportJSON()">📦 Siswa → JSON</button>
-              <button class="ik-btn ik-btn-gold ik-btn-sm" onclick="ikExportBayarCSV()">💳 Pembayaran → CSV</button>
-              <button class="ik-btn ik-btn-ghost ik-btn-sm" onclick="ikBackupAll()">🗂️ Backup Semua</button>
+          <!-- Riwayat Pembayaran -->
+          <div class="ik-card">
+            <div class="ik-card-title-row">
+              <div class="ik-card-title">📜 Riwayat Pembayaran</div>
+              <button class="ik-btn ik-btn-ghost ik-btn-xs" onclick="ikExportBayarCSV()">📄 Export</button>
+            </div>
+            <div class="ik-filter-bar">
+              <div class="ik-fg"><label>Kelas</label>
+                <select id="ik-riwayat-kelas" onchange="ikRenderRiwayat()"><option value="">Semua</option></select>
+              </div>
+              <div class="ik-fg"><label>Bulan</label>
+                <select id="ik-riwayat-bulan" onchange="ikRenderRiwayat()">
+                  <option value="">Semua</option>
+                </select>
+              </div>
+              <div class="ik-fg"><label>Cari</label>
+                <input type="text" id="ik-riwayat-cari" placeholder="Nama..." oninput="ikRenderRiwayat()">
+              </div>
+            </div>
+            <div class="ik-table-wrap">
+              <table>
+                <thead><tr><th>Tgl</th><th>Nama</th><th>Kelas</th><th>Bulan</th><th>Jumlah</th><th>Aksi</th></tr></thead>
+                <tbody id="ik-tb-riwayat"></tbody>
+              </table>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Tabel Siswa -->
-      <div class="ik-card">
-        <div class="ik-card-title-row">
-          <div class="ik-card-title">📋 Daftar Siswa</div>
-          <span class="ik-tag" id="ik-jml-tag">0 siswa</span>
-        </div>
-        <div class="ik-filter-bar">
-          <div class="ik-fg"><label>Kelas</label>
-            <select id="ik-flt-kelas-siswa" onchange="ikRenderSiswa()">
-              <option value="">Semua</option>
-            </select>
+        <!-- ===== SCAN QR ===== -->
+        <div class="ik-section" id="ik-section-scan">
+          <div class="ik-scan-box">
+            <div class="ik-scan-circle sc-pulse" id="scan-circle">📷</div>
+            <div style="font-weight:700;font-size:0.9rem;margin-bottom:4px" id="scan-status-text">Mode Scan Aktif</div>
+            <div style="font-size:0.75rem;opacity:0.65;margin-bottom:12px">Arahkan QR code siswa ke kamera atau ketik ID di bawah</div>
+            <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:12px">
+              <div class="ik-fg" style="flex:0 1 150px;min-width:100px">
+                <label style="color:rgba(255,255,255,0.6);font-size:0.65rem;text-transform:uppercase">Tahun Ajaran</label>
+                <select id="ik-scan-ta" style="background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.2);color:white;font-size:0.78rem;padding:7px 10px;border-radius:6px;font-family:inherit"></select>
+              </div>
+            </div>
+            <input class="ik-scan-input" id="scan-manual-input" placeholder="Ketik atau scan ID siswa..."
+              oninput="ikScanManual(this.value)" onkeydown="if(event.key==='Enter'){ikScanManual(this.value,true);}">
+            <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:10px">
+              <button class="ik-btn ik-btn-gold" onclick="ikStartCamera()" id="btn-cam-start">📷 Kamera</button>
+              <button class="ik-btn ik-btn-ghost" onclick="ikStopCamera()" id="btn-cam-stop" style="display:none">⏹️ Stop</button>
+              <button class="ik-btn ik-btn-ghost" style="color:white;background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2)" onclick="ikClearScanLog()">🗑️ Hapus Log</button>
+            </div>
+            <video id="scan-video" style="width:100%;border-radius:8px;display:none;max-height:200px;object-fit:cover"></video>
+            <canvas id="scan-canvas" style="display:none"></canvas>
+            <div id="scan-result-area"></div>
           </div>
-          <div class="ik-fg"><label>Cari Nama</label>
-            <input type="text" id="ik-cari-siswa" placeholder="Nama..." oninput="ikRenderSiswa()">
+          <!-- Pilih bulan scan -->
+          <div class="ik-card">
+            <div class="ik-card-title">📅 Bulan yang Dibayar (Scan)</div>
+            <div class="ik-scan-bulan-grid" id="scan-bulan-grid"></div>
+            <div style="font-size:0.72rem;color:#64748b;margin-top:6px">💡 Hijau = sudah bayar. Klik kuning untuk pilih bulan yang akan dibayar.</div>
           </div>
-        </div>
-        <div class="ik-table-wrap">
-          <table>
-            <thead><tr><th>#</th><th>Nama</th><th>Kelas</th><th>Orang Tua</th><th>HP</th><th>Aksi</th></tr></thead>
-            <tbody id="ik-tb-siswa"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== PEMBAYARAN ===== -->
-    <div class="ik-section" id="ik-section-bayar">
-      <div class="ik-card">
-        <div class="ik-card-title">💳 Catat Pembayaran</div>
-        <div class="ik-alert ik-alert-info">💡 Satu siswa bisa bayar beberapa bulan sekaligus. Bulan hijau = sudah lunas.</div>
-        <div class="ik-form-row">
-          <div class="ik-fg"><label>Filter Kelas</label>
-            <select id="ik-bayar-flt-kelas" onchange="ikFilterSiswaBayar()">
-              <option value="">Semua Kelas</option>
-            </select>
-          </div>
-          <div class="ik-fg" style="flex:2;min-width:180px"><label>Siswa *</label>
-            <select id="ik-inp-siswa-bayar" onchange="ikCekStatusBayar()"><option value="">-- Pilih Siswa --</option></select>
-          </div>
-          <div class="ik-fg"><label>Tahun Ajaran *</label>
-            <select id="ik-inp-ta-bayar" onchange="ikCekStatusBayar()"></select>
-          </div>
-        </div>
-        <label style="font-size:0.68rem;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:0.4px;display:block;margin-bottom:7px">Pilih Bulan *</label>
-        <div class="ik-bulan-grid" id="ik-bulan-checkboxes"></div>
-        <div class="ik-form-row" style="margin-top:6px">
-          <div class="ik-fg"><label>Total</label>
-            <input type="text" id="ik-total-bayar" readonly value="Rp 0" style="font-weight:700;color:#047857;background:#ecfdf5;border-color:#a7f3d0">
-          </div>
-          <div class="ik-fg"><label>Catatan</label>
-            <input type="text" id="ik-catatan" placeholder="Opsional...">
-          </div>
-        </div>
-        <div class="ik-btn-row">
-          <button class="ik-btn ik-btn-success" onclick="ikSimpanBayar()">✅ Simpan Pembayaran</button>
-          <button class="ik-btn ik-btn-ghost" onclick="ikResetBayar()">🔄 Reset</button>
-        </div>
-      </div>
-
-      <div class="ik-card">
-        <div class="ik-card-title">📜 Riwayat 20 Terakhir</div>
-        <div class="ik-table-wrap">
-          <table>
-            <thead><tr><th>Tanggal</th><th>Nama</th><th>Kls</th><th>Bulan</th><th>TA</th><th>Jumlah</th></tr></thead>
-            <tbody id="ik-tb-riwayat"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== SCAN QR ===== -->
-    <div class="ik-section" id="ik-section-scan">
-      <div class="ik-card">
-        <div class="ik-card-title">⚙️ Setting Scan</div>
-        <div class="ik-form-row">
-          <div class="ik-fg"><label>Tahun Ajaran</label><select id="ik-scan-ta"></select></div>
-          <div class="ik-fg"><label>Bulan Dibayar</label><select id="ik-scan-bulan"></select></div>
-        </div>
-        <div class="ik-alert ik-alert-info">📷 Gunakan kamera untuk scan QR, atau ketik ID siswa secara manual di bawah.</div>
-      </div>
-
-      <div class="ik-scan-box">
-        <div class="ik-scan-circle sc-pulse" id="ik-scan-circle">📷</div>
-        <div style="font-weight:700;font-size:0.88rem;margin-bottom:4px" id="ik-scan-status">Siap Scan</div>
-        <div style="font-size:0.72rem;opacity:0.6;margin-bottom:10px" id="ik-scan-sub">Aktifkan kamera atau ketik ID siswa</div>
-
-        <!-- VIDEO KAMERA -->
-        <div id="ik-cam-wrap" style="display:none;margin-bottom:10px;position:relative">
-          <video id="ik-cam-video" style="width:100%;max-width:340px;border-radius:8px;border:2px solid rgba(255,255,255,0.3)" autoplay playsinline muted></video>
-          <canvas id="ik-cam-canvas" style="display:none"></canvas>
-          <div id="ik-cam-overlay" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:160px;height:160px;border:2px solid #fbbf24;border-radius:8px;pointer-events:none;box-shadow:0 0 0 2000px rgba(0,0,0,0.4)"></div>
-        </div>
-
-        <div style="display:flex;gap:8px;margin-bottom:10px;justify-content:center">
-          <button class="ik-btn ik-btn-gold" id="ik-cam-btn" onclick="ikToggleCamera()">📷 Aktifkan Kamera</button>
-        </div>
-
-        <input type="text" class="ik-scan-input" id="ik-scan-inp" placeholder="Scan QR atau ketik ID siswa..." autocomplete="off" onkeydown="if(event.key==='Enter')ikProsesScan()" oninput="ikDebounce()">
-        <button class="ik-btn ik-btn-gold" style="width:100%;justify-content:center" onclick="ikProsesScan()">🔍 Proses Manual</button>
-        <div id="ik-scan-result" style="display:none">
-          <div class="ik-scan-result">
-            <div style="font-size:1rem;font-weight:700;margin-bottom:2px" id="ik-scan-nama"></div>
-            <div style="font-size:0.75rem;opacity:0.7;margin-bottom:10px" id="ik-scan-kelas"></div>
-            <div style="font-size:0.68rem;opacity:0.6;margin-bottom:7px">Pilih bulan (🟡 = dipilih, 🟢 = sudah lunas):</div>
-            <div class="ik-scan-bulan-grid" id="ik-scan-bulan-check"></div>
-            <button class="ik-btn ik-btn-success" style="width:100%;justify-content:center;margin-top:6px" onclick="ikKonfirmasiScan()">✅ Konfirmasi Pembayaran</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="ik-card">
-        <div class="ik-card-title-row">
-          <div class="ik-card-title">📋 Log Scan Hari Ini</div>
-          <button class="ik-btn ik-btn-ghost ik-btn-xs no-print-ik" onclick="ikClearLog()">Hapus Log</button>
-        </div>
-        <div id="ik-scan-log">
-          <div class="ik-empty"><div class="e-icon">📋</div><div class="e-sub">Belum ada scan</div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== BELUM BAYAR ===== -->
-    <div class="ik-section" id="ik-section-belum">
-      <div class="ik-card">
-        <div class="ik-card-title">⚠️ Siswa Belum Bayar</div>
-        <div class="ik-filter-bar">
-          <div class="ik-fg"><label>Tahun Ajaran</label><select id="ik-bb-ta" onchange="ikRenderBelum()"></select></div>
-          <div class="ik-fg"><label>Bulan</label><select id="ik-bb-bulan" onchange="ikRenderBelum()"></select></div>
-          <div class="ik-fg"><label>Kelas</label>
-            <select id="ik-bb-kelas" onchange="ikRenderBelum()">
-              <option value="">Semua</option>
-            </select>
-          </div>
-        </div>
-        <div id="ik-bb-summary" style="display:none" class="ik-alert ik-alert-warn"></div>
-        <div id="ik-bb-container"><div class="ik-empty"><div class="e-icon">📋</div><div class="e-sub">Pilih tahun ajaran dan bulan</div></div></div>
-      </div>
-    </div>
-
-    <!-- ===== LAPORAN ===== -->
-    <div class="ik-section" id="ik-section-laporan">
-      <div class="ik-card no-print-ik">
-        <div class="ik-card-title-row">
-          <div class="ik-card-title">📋 Generate Laporan</div>
-          <button class="ik-btn ik-btn-ghost ik-btn-sm" onclick="window.print()">🖨️ Cetak/PDF</button>
-        </div>
-        <div class="ik-filter-bar">
-          <div class="ik-fg"><label>Jenis</label>
-            <select id="ik-lap-jenis" onchange="ikToggleLapJenis()">
-              <option value="bulan">Per Bulan</option>
-              <option value="tahun">Per Tahun Ajaran</option>
-            </select>
-          </div>
-          <div class="ik-fg" id="ik-lap-bw"><label>Bulan</label><select id="ik-lap-bulan"></select></div>
-          <div class="ik-fg"><label>Tahun Ajaran</label><select id="ik-lap-ta"></select></div>
-          <button class="ik-btn ik-btn-primary ik-btn-sm" onclick="ikGenLaporan()">📊 Tampilkan</button>
-        </div>
-      </div>
-      <div id="ik-laporan-out"></div>
-    </div>
-
-    <!-- ===== KARTU SISWA ===== -->
-    <div class="ik-section" id="ik-section-kartu">
-      <div class="ik-card no-print-ik">
-        <div class="ik-card-title-row">
-          <div class="ik-card-title">🪪 Kartu Iuran Siswa</div>
-          <button class="ik-btn ik-btn-primary ik-btn-sm" onclick="window.print()">🖨️ Cetak</button>
-        </div>
-        <div class="ik-filter-bar">
-          <div class="ik-fg"><label>Filter Kelas</label>
-            <select id="ik-kartu-kelas" onchange="ikRenderKartu()">
-              <option value="">Semua</option>
-            </select>
-          </div>
-        </div>
-        <div class="ik-alert ik-alert-info">🪪 Cetak kartu ini untuk dibagikan ke siswa. Saat bayar, admin scan QR pada kartu tersebut.</div>
-      </div>
-      <div class="ik-kartu-grid" id="ik-kartu-grid"></div>
-    </div>
-
-    <!-- ===== EDIT STATUS PEMBAYARAN ===== -->
-    <div class="ik-section" id="ik-section-editstatus">
-
-      <!-- Filter & Tabel Status -->
-      <div class="ik-card">
-        <div class="ik-card-title-row">
-          <div class="ik-card-title">✏️ Edit Status Pembayaran</div>
-          <div style="display:flex;gap:6px;align-items:center">
-            <span id="es-sel-count" style="font-size:0.72rem;font-weight:700;color:#047857;background:#ecfdf5;border:1px solid #a7f3d0;padding:3px 8px;border-radius:12px;display:none">0 dipilih</span>
-          </div>
-        </div>
-        <div class="ik-alert ik-alert-warn" style="margin-bottom:10px">
-          🔐 Setiap perubahan status memerlukan password. Perubahan dicatat di log.
-        </div>
-
-        <!-- Filter -->
-        <div class="ik-filter-bar" style="margin-bottom:10px">
-          <div class="ik-fg"><label>Tahun Ajaran</label>
-            <select id="es-ta" onchange="ikEsPopulateBulan(true);ikRenderEditStatus()"></select>
-          </div>
-          <div class="ik-fg"><label>Bulan</label>
-            <select id="es-bulan" onchange="ikRenderEditStatus()"></select>
-          </div>
-          <div class="ik-fg"><label>Kelas</label>
-            <select id="es-kelas" onchange="ikRenderEditStatus()">
-              <option value="">Semua</option>
-            </select>
-          </div>
-          <div class="ik-fg"><label>Status</label>
-            <select id="es-status-filter" onchange="ikRenderEditStatus()">
-              <option value="">Semua</option>
-              <option value="lunas">Lunas</option>
-              <option value="belum">Belum Bayar</option>
-            </select>
-          </div>
-          <div class="ik-fg"><label>Cari</label>
-            <input type="text" id="es-cari" placeholder="Nama siswa..." oninput="ikRenderEditStatus()">
+          <!-- Log scan -->
+          <div class="ik-card">
+            <div class="ik-card-title-row">
+              <div class="ik-card-title">📋 Log Scan Hari Ini</div>
+              <span class="ik-tag" id="scan-log-count">0 scan</span>
+            </div>
+            <div id="scan-log-list">
+              <div class="ik-empty"><div class="e-icon">📋</div><div class="e-sub">Belum ada scan</div></div>
+            </div>
           </div>
         </div>
 
-        <!-- Aksi Massal -->
-        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px;padding:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px">
-          <button class="ik-btn ik-btn-ghost ik-btn-xs" onclick="ikEsSelectAll()">☑️ Pilih Semua</button>
-          <button class="ik-btn ik-btn-ghost ik-btn-xs" onclick="ikEsDeselectAll()">⬜ Batal Pilih</button>
-          <div style="flex:1"></div>
-          <button class="ik-btn ik-btn-success ik-btn-sm" onclick="ikEsBulkAksi('lunas')">✅ Tandai Lunas</button>
-          <button class="ik-btn ik-btn-danger ik-btn-sm" onclick="ikEsBulkAksi('belum')">❌ Tandai Belum Bayar</button>
+        <!-- ===== BELUM BAYAR ===== -->
+        <div class="ik-section" id="ik-section-belum">
+          <div class="ik-card">
+            <div class="ik-card-title">⚠️ Siswa Belum Bayar</div>
+            <div class="ik-filter-bar">
+              <div class="ik-fg"><label>Kelas</label>
+                <select id="ik-bb-kelas" onchange="ikRenderBelum()"><option value="">Semua</option></select>
+              </div>
+              <div class="ik-fg"><label>Tahun Ajaran</label>
+                <select id="ik-bb-ta" onchange="ikRenderBelum()"></select>
+              </div>
+              <div class="ik-fg"><label>Bulan</label>
+                <select id="ik-bb-bulan" onchange="ikRenderBelum()"></select>
+              </div>
+            </div>
+            <div id="ik-belum-info" class="ik-alert ik-alert-warn" style="display:none"></div>
+            <div id="ik-belum-list"></div>
+          </div>
         </div>
 
-        <!-- Tabel Siswa+Status -->
-        <div class="ik-table-wrap">
-          <table id="es-tabel">
-            <thead>
-              <tr>
-                <th style="width:32px"><input type="checkbox" id="es-cb-all" onclick="ikEsToggleAll(this)" title="Pilih semua"></th>
-                <th>#</th><th>Nama Siswa</th><th>Kelas</th><th>Status</th><th>Aksi Cepat</th>
-              </tr>
-            </thead>
-            <tbody id="es-tbody"></tbody>
-          </table>
+        <!-- ===== LAPORAN ===== -->
+        <div class="ik-section" id="ik-section-laporan">
+          <div class="ik-card no-print-ik">
+            <div class="ik-card-title">📋 Cetak Laporan Bulanan</div>
+            <div class="ik-form-row">
+              <div class="ik-fg"><label>Tahun Ajaran</label>
+                <select id="ik-lap-ta" onchange="populateLapBulan()"></select>
+              </div>
+              <div class="ik-fg"><label>Bulan</label>
+                <select id="ik-lap-bulan"></select>
+              </div>
+              <div class="ik-fg"><label>Kelas</label>
+                <select id="ik-lap-kelas"><option value="">Semua Kelas</option></select>
+              </div>
+            </div>
+            <div class="ik-btn-row">
+              <button class="ik-btn ik-btn-primary" onclick="ikGenLaporan()">📊 Tampilkan</button>
+              <button class="ik-btn ik-btn-ghost" onclick="ikCetakLaporan()">🖨️ Cetak / PDF</button>
+            </div>
+          </div>
+          <div id="ik-laporan-out"></div>
         </div>
-      </div>
 
-      <!-- Log Perubahan -->
-      <div class="ik-card">
-        <div class="ik-card-title-row">
-          <div class="ik-card-title">📋 Log Perubahan Status</div>
-          <button class="ik-btn ik-btn-ghost ik-btn-xs" onclick="ikEsClearLog()">Hapus Log</button>
+        <!-- ===== KARTU ===== -->
+        <div class="ik-section" id="ik-section-kartu">
+          <div class="ik-card no-print-ik">
+            <div class="ik-card-title">🔍 Filter Kartu</div>
+            <div class="ik-filter-bar">
+              <div class="ik-fg"><label>Kelas</label>
+                <select id="ik-kartu-kelas" onchange="ikRenderKartu()"><option value="">Semua</option></select>
+              </div>
+              <div class="ik-fg"><label>Cari Nama</label>
+                <input type="text" id="ik-kartu-cari" placeholder="Nama..." oninput="ikRenderKartu()">
+              </div>
+            </div>
+            <div class="ik-btn-row">
+              <button class="ik-btn ik-btn-ghost" onclick="ikCetakKartu()">🖨️ Cetak Semua Kartu</button>
+            </div>
+          </div>
+          <div class="ik-kartu-grid" id="ik-kartu-grid"></div>
         </div>
-        <div id="es-log-container">
-          <div class="ik-empty"><div class="e-icon">📋</div><div class="e-sub">Belum ada perubahan</div></div>
-        </div>
-      </div>
 
-    </div>
+        <!-- ===== BU KAS ===== -->
+        <div class="ik-section" id="ik-section-bukas">
+          <!-- Ringkasan Kas -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+            <div class="ik-kpi k2" style="background:white;border:1px solid #e2e8f0;border-radius:8px;padding:12px;border-top:3px solid #047857">
+              <div class="ik-kpi-val" id="bukas-total-masuk" style="font-size:1.2rem">Rp 0</div>
+              <div class="ik-kpi-label">Total Pemasukan</div>
+              <div class="ik-kpi-sub up" id="bukas-jml-transaksi">0 transaksi</div>
+            </div>
+            <div class="ik-kpi k3" style="background:white;border:1px solid #e2e8f0;border-radius:8px;padding:12px;border-top:3px solid #d97706">
+              <div class="ik-kpi-val" id="bukas-total-keluar" style="font-size:1.2rem">Rp 0</div>
+              <div class="ik-kpi-label">Total Pengeluaran</div>
+              <div class="ik-kpi-sub dn" id="bukas-jml-pengeluaran">0 item</div>
+            </div>
+            <div class="ik-kpi k4" style="background:white;border:1px solid #e2e8f0;border-radius:8px;padding:12px;border-top:3px solid #0369a1;grid-column:1/-1">
+              <div class="ik-kpi-val" id="bukas-saldo" style="font-size:1.4rem">Rp 0</div>
+              <div class="ik-kpi-label">💰 Saldo Kas</div>
+            </div>
+          </div>
+          <!-- Catat Pengeluaran -->
+          <div class="ik-card">
+            <div class="ik-card-title">➖ Catat Pengeluaran</div>
+            <div class="ik-form-row">
+              <div class="ik-fg" style="flex:2"><label>Keterangan *</label>
+                <input type="text" id="bukas-ket" placeholder="Contoh: Beli ATK, Bayar listrik...">
+              </div>
+              <div class="ik-fg"><label>Jumlah (Rp) *</label>
+                <input type="number" id="bukas-jml" placeholder="50000">
+              </div>
+              <div class="ik-fg"><label>Kategori</label>
+                <select id="bukas-kat">
+                  <option value="ATK">ATK</option>
+                  <option value="Operasional">Operasional</option>
+                  <option value="Kegiatan">Kegiatan Siswa</option>
+                  <option value="Pemeliharaan">Pemeliharaan</option>
+                  <option value="Lain-lain">Lain-lain</option>
+                </select>
+              </div>
+              <div class="ik-fg"><label>Tanggal</label>
+                <input type="date" id="bukas-tgl">
+              </div>
+            </div>
+            <div class="ik-btn-row">
+              <button class="ik-btn ik-btn-danger" onclick="ikTambahPengeluaran()">➖ Catat Pengeluaran</button>
+            </div>
+          </div>
+          <!-- Pemasukan dari Iuran -->
+          <div class="ik-card">
+            <div class="ik-card-title-row">
+              <div class="ik-card-title">📥 Rekap Pemasukan Iuran</div>
+              <div class="ik-fg" style="flex:0;min-width:130px">
+                <select id="bukas-filter-ta" onchange="ikRenderBukasUmum()" style="font-size:0.75rem;padding:5px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#f8fafc"></select>
+              </div>
+            </div>
+            <div class="ik-table-wrap">
+              <table>
+                <thead><tr><th>Bulan</th><th>Transaksi</th><th>Siswa Lunas</th><th>Jumlah</th></tr></thead>
+                <tbody id="bukas-tb-masuk"></tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Riwayat Pengeluaran -->
+          <div class="ik-card">
+            <div class="ik-card-title-row">
+              <div class="ik-card-title">📤 Riwayat Pengeluaran</div>
+              <button class="ik-btn ik-btn-ghost ik-btn-xs" onclick="ikExportPengeluaranCSV()">📄 Export CSV</button>
+            </div>
+            <div id="bukas-tb-keluar-wrap">
+              <div class="ik-empty"><div class="e-icon">📋</div><div class="e-sub">Belum ada pengeluaran</div></div>
+            </div>
+          </div>
+          <!-- Laporan Kas -->
+          <div class="ik-card no-print-ik">
+            <div class="ik-card-title-row">
+              <div class="ik-card-title">📋 Laporan Kas Umum</div>
+              <button class="ik-btn ik-btn-ghost ik-btn-sm" onclick="ikCetakLapKas()">🖨️ Cetak</button>
+            </div>
+            <div class="ik-form-row">
+              <div class="ik-fg"><label>Tahun Ajaran</label><select id="bukas-lap-ta"></select></div>
+              <button class="ik-btn ik-btn-primary ik-btn-sm" style="align-self:flex-end" onclick="ikGenLapKas()">📊 Tampilkan</button>
+            </div>
+          </div>
+          <div id="bukas-lap-out"></div>
+        </div>
 
-    <!-- Modal Password Konfirmasi -->
-    <div class="ik-modal-overlay" id="ik-modal-password">
-      <div class="ik-modal" style="max-width:380px">
-        <div class="ik-modal-hd">
-          <div class="ik-modal-title">🔐 Konfirmasi Password</div>
-          <button class="ik-modal-close" onclick="ikCloseModal('ik-modal-password')">✕</button>
+        <!-- ===== SISWA (di tab bendahara) ===== -->
+        <div class="ik-section" id="ik-section-siswa">
+          <div class="ik-card">
+            <div class="ik-card-title">➕ Tambah Siswa</div>
+            <div class="ik-form-row">
+              <div class="ik-fg" style="flex:2;min-width:150px"><label>Nama Lengkap *</label><input type="text" id="ik-inp-nama" placeholder="Nama siswa"></div>
+              <div class="ik-fg"><label>Kelas *</label>
+                <select id="ik-inp-kelas">
+                  <option value="">-- Pilih --</option>
+                </select>
+              </div>
+              <div class="ik-fg"><label>Orang Tua</label><input type="text" id="ik-inp-ortu" placeholder="Opsional"></div>
+              <div class="ik-fg"><label>No. HP</label><input type="text" id="ik-inp-hp" placeholder="08xx..."></div>
+            </div>
+            <div class="ik-btn-row">
+              <button class="ik-btn ik-btn-primary" onclick="ikTambahSiswa()">➕ Tambah Siswa</button>
+            </div>
+          </div>
+          <!-- Import/Export -->
+          <div class="ik-card">
+            <div class="ik-card-title">📁 Import / Export Data Siswa</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div>
+                <div style="font-size:0.72rem;font-weight:700;color:#475569;text-transform:uppercase;margin-bottom:8px">Import (CSV/JSON)</div>
+                <div class="ik-dropzone" id="ik-dz" onclick="document.getElementById('ik-file-imp').click()" ondragover="ikDzOver(event)" ondragleave="ikDzLeave(event)" ondrop="ikDzDrop(event)">
+                  <div class="dz-icon">📂</div>
+                  <div class="dz-text">Klik atau seret file</div>
+                  <div class="dz-sub">CSV: Nama,Kelas,OrangTua,NoHP</div>
+                </div>
+                <input type="file" id="ik-file-imp" accept=".csv,.json" style="display:none" onchange="ikImportSiswa(this)">
+              </div>
+              <div>
+                <div style="font-size:0.72rem;font-weight:700;color:#475569;text-transform:uppercase;margin-bottom:8px">Export</div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <button class="ik-btn ik-btn-success ik-btn-sm" onclick="ikExportCSV()">📄 Siswa → CSV</button>
+                  <button class="ik-btn ik-btn-sky ik-btn-sm" onclick="ikExportJSON()">📦 Siswa → JSON</button>
+                  <button class="ik-btn ik-btn-gold ik-btn-sm" onclick="ikExportBayarCSV()">💳 Pembayaran → CSV</button>
+                  <button class="ik-btn ik-btn-ghost ik-btn-sm" onclick="ikBackupAll()">🗂️ Backup Semua</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Tabel Siswa -->
+          <div class="ik-card">
+            <div class="ik-card-title-row">
+              <div class="ik-card-title">📋 Daftar Siswa</div>
+              <span class="ik-tag" id="ik-jml-tag">0 siswa</span>
+            </div>
+            <div class="ik-filter-bar">
+              <div class="ik-fg"><label>Kelas</label>
+                <select id="ik-flt-kelas-siswa" onchange="ikRenderSiswa()">
+                  <option value="">Semua</option>
+                </select>
+              </div>
+              <div class="ik-fg"><label>Cari Nama</label>
+                <input type="text" id="ik-cari-siswa" placeholder="Nama..." oninput="ikRenderSiswa()">
+              </div>
+            </div>
+            <div class="ik-table-wrap">
+              <table>
+                <thead><tr><th>#</th><th>Nama</th><th>Kelas</th><th>Orang Tua</th><th>HP</th><th>Aksi</th></tr></thead>
+                <tbody id="ik-tb-siswa"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
-        <div id="es-pw-info" style="background:#fffbeb;border:1px solid #fde68a;border-radius:7px;padding:10px 12px;font-size:0.82rem;color:#92400e;margin-bottom:14px"></div>
-        <div class="ik-fg" style="margin-bottom:14px">
-          <label>Password Bendahara</label>
-          <input type="password" id="es-pw-input" placeholder="Masukkan password..."
-            onkeydown="if(event.key==='Enter')ikEsKonfirmasiPassword()"
-            style="letter-spacing:3px;font-size:1rem">
-        </div>
-        <div id="es-pw-error" style="color:#b91c1c;font-size:0.78rem;margin-bottom:10px;display:none">❌ Password salah. Coba lagi.</div>
-        <div class="ik-btn-row">
-          <button class="ik-btn ik-btn-primary" onclick="ikEsKonfirmasiPassword()">🔓 Konfirmasi</button>
-          <button class="ik-btn ik-btn-ghost" onclick="ikCloseModal('ik-modal-password')">Batal</button>
-        </div>
+
+      </div><!-- /ik-body bendahara -->
+    </div><!-- /ik-content-bendahara -->
+  </div><!-- /ik-pane-bendahara -->
+
+  <!-- ===== PANE: ADMIN ===== -->
+  <div class="ik-main-pane" id="ik-pane-admin">
+    <!-- Lock screen -->
+    <div class="ik-lock-screen" id="ik-lock-admin">
+      <div class="ik-lock-icon">⚙️</div>
+      <div class="ik-lock-title">Area Admin</div>
+      <div class="ik-lock-sub">Masukkan password untuk mengakses panel administrasi</div>
+      <div class="ik-lock-form">
+        <input type="password" class="ik-lock-input" id="pw-admin" placeholder="••••••••"
+          onkeydown="if(event.key==='Enter')ikUnlock('admin')">
+        <div class="ik-lock-err" id="pw-err-admin">❌ Password salah, coba lagi</div>
+        <button class="ik-lock-btn" onclick="ikUnlock('admin')">🔓 Masuk</button>
+        <div class="ik-lock-hint">Default: <code>komite2025</code></div>
       </div>
     </div>
-
-
-    <!-- ===== BU KAS UMUM ===== -->
-    <div class="ik-section" id="ik-section-bukas">
-
-      <!-- Ringkasan Kas -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
-        <div class="ik-kpi k2" style="background:white;border:1px solid #e2e8f0;border-radius:8px;padding:12px;border-top:3px solid #047857">
-          <div class="ik-kpi-val" id="bukas-total-masuk" style="font-size:1.2rem">Rp 0</div>
-          <div class="ik-kpi-label">Total Pemasukan</div>
-          <div class="ik-kpi-sub up" id="bukas-jml-transaksi">0 transaksi</div>
-        </div>
-        <div class="ik-kpi k3" style="background:white;border:1px solid #e2e8f0;border-radius:8px;padding:12px;border-top:3px solid #d97706">
-          <div class="ik-kpi-val" id="bukas-total-keluar" style="font-size:1.2rem">Rp 0</div>
-          <div class="ik-kpi-label">Total Pengeluaran</div>
-          <div class="ik-kpi-sub dn" id="bukas-jml-pengeluaran">0 item</div>
-        </div>
-        <div class="ik-kpi k4" style="background:white;border:1px solid #e2e8f0;border-radius:8px;padding:12px;border-top:3px solid #0369a1;grid-column:1/-1">
-          <div class="ik-kpi-val" id="bukas-saldo" style="font-size:1.4rem">Rp 0</div>
-          <div class="ik-kpi-label">💰 Saldo Kas</div>
-        </div>
-      </div>
-
-      <!-- Catat Pengeluaran -->
-      <div class="ik-card">
-        <div class="ik-card-title">➖ Catat Pengeluaran</div>
-        <div class="ik-form-row">
-          <div class="ik-fg" style="flex:2"><label>Keterangan *</label>
-            <input type="text" id="bukas-ket" placeholder="Contoh: Beli ATK, Bayar listrik...">
-          </div>
-          <div class="ik-fg"><label>Jumlah (Rp) *</label>
-            <input type="number" id="bukas-jml" placeholder="50000">
-          </div>
-          <div class="ik-fg"><label>Kategori</label>
-            <select id="bukas-kat">
-              <option value="ATK">ATK</option>
-              <option value="Operasional">Operasional</option>
-              <option value="Kegiatan">Kegiatan Siswa</option>
-              <option value="Pemeliharaan">Pemeliharaan</option>
-              <option value="Lain-lain">Lain-lain</option>
-            </select>
-          </div>
-          <div class="ik-fg"><label>Tanggal</label>
-            <input type="date" id="bukas-tgl">
+    <!-- Content admin -->
+    <div id="ik-content-admin" style="display:none">
+      <!-- Widget Header -->
+      <div class="ik-widget-head">
+        <div class="ik-widget-head-left">
+          <div class="ik-widget-icon">⚙️</div>
+          <div>
+            <div class="ik-widget-title">Panel Admin</div>
+            <div class="ik-widget-sub">Sinkronisasi, pengaturan & edit status</div>
           </div>
         </div>
-        <div class="ik-btn-row">
-          <button class="ik-btn ik-btn-danger" onclick="ikTambahPengeluaran()">➖ Catat Pengeluaran</button>
-        </div>
+        <button class="ik-logout-btn" onclick="ikLock('admin')">🔒 Keluar</button>
       </div>
+      <!-- Sub Nav Tabs Admin -->
+      <div class="ik-nav" id="nav-admin">
+        <button class="ik-nav-btn active" onclick="ikShowAdmin('sinkron',this)">☁️ Sinkron</button>
+        <button class="ik-nav-btn" onclick="ikShowAdmin('setting',this)">⚙️ Pengaturan</button>
+        <button class="ik-nav-btn" onclick="ikShowAdmin('editstatus',this)">✏️ Edit Status</button>
+      </div>
+      <!-- Body Admin -->
+      <div class="ik-body">
 
-      <!-- Pemasukan dari Iuran -->
-      <div class="ik-card">
-        <div class="ik-card-title-row">
-          <div class="ik-card-title">📥 Rekap Pemasukan Iuran</div>
-          <div class="ik-fg" style="flex:0;min-width:130px">
-            <select id="bukas-filter-ta" onchange="ikRenderBukasUmum()" style="font-size:0.75rem;padding:5px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#f8fafc"></select>
+        <!-- ===== SINKRON ===== -->
+        <div class="ik-section active" id="ik-section-sinkron">
+          <div class="ik-card">
+            <div class="ik-card-title">☁️ Sinkronisasi Google Sheets</div>
+            <div class="ik-alert ik-alert-success" style="margin-bottom:10px">
+              ✅ URL Apps Script dan Spreadsheet ID sudah tertanam di aplikasi. Tidak perlu konfigurasi tambahan.
+            </div>
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:12px;margin-bottom:12px;font-size:0.78rem">
+              <div style="font-weight:700;color:#475569;margin-bottom:6px;text-transform:uppercase;font-size:0.68rem;letter-spacing:0.4px">Konfigurasi Aktif</div>
+              <div style="display:flex;gap:8px;align-items:flex-start;flex-direction:column">
+                <div><span style="color:#94a3b8">Apps Script URL:</span> <code style="font-size:0.68rem;background:#e2e8f0;padding:2px 6px;border-radius:4px;word-break:break-all">...AKfycbzy...BacmA/exec</code></div>
+                <div><span style="color:#94a3b8">Spreadsheet ID:</span> <code style="font-size:0.68rem;background:#e2e8f0;padding:2px 6px;border-radius:4px">1v0eI1F_Sy...NjCy2H_o_BacmA</code></div>
+              </div>
+            </div>
+            <div class="ik-btn-row">
+              <button class="ik-btn ik-btn-primary" onclick="ikSyncAllSheets()">⬆️ Kirim Semua Data ke Sheets</button>
+              <button class="ik-btn ik-btn-sky" onclick="ikLoadSheets()">⬇️ Ambil Data dari Sheets</button>
+            </div>
+            <div style="margin-top:12px;padding:10px;background:#fffbeb;border:1px solid #fde68a;border-radius:7px;font-size:0.75rem;color:#92400e">
+              <strong>⚠️ Perhatian:</strong> "Kirim ke Sheets" akan mengirim data lokal ke Google Sheets. "Ambil dari Sheets" akan mengambil data dari Sheets dan menimpa data lokal.
+            </div>
+          </div>
+          <div class="ik-card">
+            <div class="ik-card-title">📊 Status Data</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+              <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:12px;text-align:center">
+                <div style="font-size:1.4rem;font-weight:700;color:#b91c1c" id="sinkron-jml-siswa">0</div>
+                <div style="font-size:0.68rem;color:#64748b;text-transform:uppercase;font-weight:600">Siswa Lokal</div>
+              </div>
+              <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:12px;text-align:center">
+                <div style="font-size:1.4rem;font-weight:700;color:#047857" id="sinkron-jml-bayar">0</div>
+                <div style="font-size:0.68rem;color:#64748b;text-transform:uppercase;font-weight:600">Data Bayar</div>
+              </div>
+              <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:12px;text-align:center">
+                <div style="font-size:1.4rem;font-weight:700;color:#0369a1" id="sinkron-jml-kelas">0</div>
+                <div style="font-size:0.68rem;color:#64748b;text-transform:uppercase;font-weight:600">Kelas Aktif</div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="ik-table-wrap">
-          <table>
-            <thead><tr><th>Bulan</th><th>Transaksi</th><th>Siswa Lunas</th><th>Jumlah</th></tr></thead>
-            <tbody id="bukas-tb-masuk"></tbody>
-          </table>
-        </div>
-      </div>
 
-      <!-- Riwayat Pengeluaran -->
-      <div class="ik-card">
-        <div class="ik-card-title-row">
-          <div class="ik-card-title">📤 Riwayat Pengeluaran</div>
-          <button class="ik-btn ik-btn-ghost ik-btn-xs" onclick="ikExportPengeluaranCSV()">📄 Export CSV</button>
-        </div>
-        <div id="bukas-tb-keluar-wrap">
-          <div class="ik-empty"><div class="e-icon">📋</div><div class="e-sub">Belum ada pengeluaran</div></div>
-        </div>
-      </div>
+        <!-- ===== PENGATURAN ===== -->
+        <div class="ik-section" id="ik-section-setting">
+          <div class="ik-card">
+            <div class="ik-card-title">🏫 Manajemen Kelas</div>
+            <div class="ik-alert ik-alert-info" style="margin-bottom:10px">
+              Kelola daftar kelas. Klik ✏️ untuk ubah nama, ✕ untuk hapus (kelas berisi siswa tidak bisa dihapus).
+            </div>
+            <div class="ik-form-row" style="align-items:flex-end">
+              <div class="ik-fg" style="flex:2">
+                <label>Nama Kelas Baru</label>
+                <input type="text" id="ik-inp-kelas-baru" placeholder="Contoh: 1, 2, 3A, VIA...">
+              </div>
+              <div class="ik-fg" style="flex:0;min-width:auto">
+                <label style="opacity:0">-</label>
+                <button class="ik-btn ik-btn-primary" onclick="ikTambahKelas()">➕ Tambah</button>
+              </div>
+            </div>
+            <div id="ik-daftar-kelas" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"></div>
+          </div>
 
-      <!-- Laporan Kas -->
-      <div class="ik-card no-print-ik">
-        <div class="ik-card-title-row">
-          <div class="ik-card-title">📋 Laporan Kas Umum</div>
-          <button class="ik-btn ik-btn-ghost ik-btn-sm" onclick="ikCetakLapKas()">🖨️ Cetak</button>
-        </div>
-        <div class="ik-form-row">
-          <div class="ik-fg"><label>Tahun Ajaran</label><select id="bukas-lap-ta"></select></div>
-          <button class="ik-btn ik-btn-primary ik-btn-sm" style="align-self:flex-end" onclick="ikGenLapKas()">📊 Tampilkan</button>
-        </div>
-      </div>
-      <div id="bukas-lap-out"></div>
+          <!-- Modal Edit Kelas -->
+          <div class="ik-modal-overlay" id="ik-modal-edit-kelas">
+            <div class="ik-modal" style="max-width:340px">
+              <div class="ik-modal-hd">
+                <div class="ik-modal-title">✏️ Ubah Nama Kelas</div>
+                <button class="ik-modal-close" onclick="ikCloseModal('ik-modal-edit-kelas')">✕</button>
+              </div>
+              <div style="font-size:0.82rem;color:#475569;margin-bottom:12px">
+                Nama lama: <strong id="ik-edit-kelas-lama"></strong>
+              </div>
+              <div class="ik-fg" style="margin-bottom:14px">
+                <label>Nama Baru</label>
+                <input type="text" id="ik-edit-kelas-baru" placeholder="Nama kelas baru..."
+                  onkeydown="if(event.key==='Enter')ikKonfirmEditKelas()">
+              </div>
+              <div class="ik-btn-row">
+                <button class="ik-btn ik-btn-primary" onclick="ikKonfirmEditKelas()">💾 Simpan</button>
+                <button class="ik-btn ik-btn-ghost" onclick="ikCloseModal('ik-modal-edit-kelas')">Batal</button>
+              </div>
+            </div>
+          </div>
 
+          <div class="ik-card">
+            <div class="ik-card-title">⚙️ Pengaturan Umum</div>
+            <div class="ik-form-row">
+              <div class="ik-fg"><label>Nama Sekolah</label><input type="text" id="ik-cfg-sekolah" value="SD Negeri-1 Raja"></div>
+              <div class="ik-fg"><label>Alamat</label><input type="text" id="ik-cfg-alamat" placeholder="Jl. ..."></div>
+              <div class="ik-fg"><label>Iuran (Rp)</label><input type="number" id="ik-cfg-iuran" value="25000"></div>
+            </div>
+            <div class="ik-form-row">
+              <div class="ik-fg"><label>Kepala Sekolah</label><input type="text" id="ik-cfg-kepsek" placeholder="Nama Kepsek"></div>
+              <div class="ik-fg"><label>NIP Kepsek</label><input type="text" id="ik-cfg-nip" placeholder="NIP..."></div>
+              <div class="ik-fg"><label>Ketua Komite</label><input type="text" id="ik-cfg-ketua" placeholder="Nama Ketua"></div>
+            </div>
+            <div class="ik-form-row">
+              <div class="ik-fg" style="max-width:280px">
+                <label>🔐 Password Bendahara & Admin</label>
+                <input type="password" id="ik-cfg-password" placeholder="Password baru..." autocomplete="new-password">
+                <div style="font-size:0.68rem;color:#94a3b8;margin-top:3px">Default: <code>komite2025</code> — Segera ganti!</div>
+              </div>
+              <div class="ik-fg" style="max-width:280px">
+                <label>🔐 Konfirmasi Password</label>
+                <input type="password" id="ik-cfg-password2" placeholder="Ulangi password..." autocomplete="new-password">
+              </div>
+            </div>
+            <div class="ik-btn-row">
+              <button class="ik-btn ik-btn-primary" onclick="ikSimpanCfg()">💾 Simpan Pengaturan</button>
+            </div>
+          </div>
+
+          <div class="ik-card">
+            <div class="ik-card-title">🗃️ Data Lokal</div>
+            <div class="ik-alert ik-alert-warn">Data tersimpan di localStorage browser sebagai cadangan offline.</div>
+            <div class="ik-btn-row">
+              <button class="ik-btn ik-btn-ghost" onclick="ikSampleData()">📋 Muat Data Contoh</button>
+              <button class="ik-btn ik-btn-danger" onclick="ikClearAll()">🗑️ Hapus Semua</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== EDIT STATUS ===== -->
+        <div class="ik-section" id="ik-section-editstatus">
+          <div class="ik-card">
+            <div class="ik-card-title-row">
+              <div class="ik-card-title">✏️ Edit Status Pembayaran</div>
+              <span class="ik-tag" id="es-count-tag">0 siswa</span>
+            </div>
+            <div class="ik-alert ik-alert-warn" style="margin-bottom:10px">
+              ⚠️ Fitur ini mengubah status pembayaran secara langsung. Perubahan tidak bisa dibatalkan.
+            </div>
+            <div class="ik-filter-bar">
+              <div class="ik-fg"><label>Tahun Ajaran</label>
+                <select id="es-ta" onchange="ikEsPopulateBulan(true);ikRenderEditStatus()"></select>
+              </div>
+              <div class="ik-fg"><label>Bulan</label>
+                <select id="es-bulan" onchange="ikRenderEditStatus()"></select>
+              </div>
+              <div class="ik-fg"><label>Kelas</label>
+                <select id="es-kelas" onchange="ikRenderEditStatus()">
+                  <option value="">Semua</option>
+                </select>
+              </div>
+              <div class="ik-fg"><label>Status</label>
+                <select id="es-status-filter" onchange="ikRenderEditStatus()">
+                  <option value="">Semua</option>
+                  <option value="lunas">Lunas</option>
+                  <option value="belum">Belum Bayar</option>
+                </select>
+              </div>
+              <div class="ik-fg"><label>Cari</label>
+                <input type="text" id="es-cari" placeholder="Nama siswa..." oninput="ikRenderEditStatus()">
+              </div>
+            </div>
+            <!-- Aksi Massal -->
+            <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px;padding:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px">
+              <button class="ik-btn ik-btn-ghost ik-btn-xs" onclick="ikEsSelectAll()">☑️ Pilih Semua</button>
+              <button class="ik-btn ik-btn-ghost ik-btn-xs" onclick="ikEsDeselectAll()">⬜ Batal Pilih</button>
+              <div style="flex:1"></div>
+              <button class="ik-btn ik-btn-success ik-btn-sm" onclick="ikEsBulkAksi('lunas')">✅ Tandai Lunas</button>
+              <button class="ik-btn ik-btn-danger ik-btn-sm" onclick="ikEsBulkAksi('belum')">❌ Tandai Belum Bayar</button>
+            </div>
+            <!-- Tabel -->
+            <div class="ik-table-wrap">
+              <table id="es-tabel">
+                <thead>
+                  <tr>
+                    <th style="width:32px"><input type="checkbox" id="es-cb-all" onclick="ikEsToggleAll(this)" title="Pilih semua"></th>
+                    <th>#</th><th>Nama Siswa</th><th>Kelas</th><th>Status</th><th>Aksi Cepat</th>
+                  </tr>
+                </thead>
+                <tbody id="es-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Log Perubahan -->
+          <div class="ik-card">
+            <div class="ik-card-title-row">
+              <div class="ik-card-title">📋 Log Perubahan Status</div>
+              <button class="ik-btn ik-btn-ghost ik-btn-xs" onclick="ikEsClearLog()">Hapus Log</button>
+            </div>
+            <div id="es-log-container">
+              <div class="ik-empty"><div class="e-icon">📋</div><div class="e-sub">Belum ada perubahan</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /ik-body admin -->
+    </div><!-- /ik-content-admin -->
+  </div><!-- /ik-pane-admin -->
+
+  <!-- Modal Password Konfirmasi (untuk Edit Status) -->
+  <div class="ik-modal-overlay" id="ik-modal-password">
+    <div class="ik-modal" style="max-width:380px">
+      <div class="ik-modal-hd">
+        <div class="ik-modal-title">🔐 Konfirmasi Password</div>
+        <button class="ik-modal-close" onclick="ikCloseModal('ik-modal-password')">✕</button>
+      </div>
+      <div id="es-pw-info" style="background:#fffbeb;border:1px solid #fde68a;border-radius:7px;padding:10px 12px;font-size:0.82rem;color:#92400e;margin-bottom:14px"></div>
+      <div class="ik-fg" style="margin-bottom:14px">
+        <label>Password Bendahara</label>
+        <input type="password" id="es-pw-input" placeholder="Masukkan password..."
+          onkeydown="if(event.key==='Enter')ikEsKonfirmasiPassword()"
+          style="letter-spacing:3px;font-size:1rem">
+      </div>
+      <div id="es-pw-error" style="color:#b91c1c;font-size:0.78rem;margin-bottom:10px;display:none">❌ Password salah. Coba lagi.</div>
+      <div class="ik-btn-row">
+        <button class="ik-btn ik-btn-primary" onclick="ikEsKonfirmasiPassword()">🔓 Konfirmasi</button>
+        <button class="ik-btn ik-btn-ghost" onclick="ikCloseModal('ik-modal-password')">Batal</button>
+      </div>
     </div>
-
-
-    <!-- ===== SINKRON ===== -->
-    <div class="ik-section" id="ik-section-sinkron">
-      <div class="ik-card">
-        <div class="ik-card-title">☁️ Sinkronisasi Google Sheets</div>
-        <div class="ik-alert ik-alert-success" style="margin-bottom:10px">
-          ✅ URL Apps Script dan Spreadsheet ID sudah tertanam di aplikasi. Tidak perlu konfigurasi tambahan.
-        </div>
-        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:12px;margin-bottom:12px;font-size:0.78rem">
-          <div style="font-weight:700;color:#475569;margin-bottom:6px;text-transform:uppercase;font-size:0.68rem;letter-spacing:0.4px">Konfigurasi Aktif</div>
-          <div style="display:flex;gap:8px;align-items:flex-start;flex-direction:column">
-            <div><span style="color:#94a3b8">Apps Script URL:</span> <code style="font-size:0.68rem;background:#e2e8f0;padding:2px 6px;border-radius:4px;word-break:break-all">...AKfycbzy...BacmA/exec</code></div>
-            <div><span style="color:#94a3b8">Spreadsheet ID:</span> <code style="font-size:0.68rem;background:#e2e8f0;padding:2px 6px;border-radius:4px">1v0eI1F_Sy...NjCy2H_o_BacmA</code></div>
-          </div>
-        </div>
-        <div class="ik-btn-row">
-          <button class="ik-btn ik-btn-primary" onclick="ikSyncAllSheets()">⬆️ Kirim Semua Data ke Sheets</button>
-          <button class="ik-btn ik-btn-sky" onclick="ikLoadSheets()">⬇️ Ambil Data dari Sheets</button>
-        </div>
-        <div style="margin-top:12px;padding:10px;background:#fffbeb;border:1px solid #fde68a;border-radius:7px;font-size:0.75rem;color:#92400e">
-          <strong>⚠️ Perhatian:</strong> "Kirim ke Sheets" akan mengirim data lokal ke Google Sheets. "Ambil dari Sheets" akan mengambil data dari Sheets dan menimpa data lokal.
-        </div>
-      </div>
-      <div class="ik-card">
-        <div class="ik-card-title">📊 Status Data</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:12px;text-align:center">
-            <div style="font-size:1.4rem;font-weight:700;color:#b91c1c" id="sinkron-jml-siswa">0</div>
-            <div style="font-size:0.68rem;color:#64748b;text-transform:uppercase;font-weight:600">Siswa Lokal</div>
-          </div>
-          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:12px;text-align:center">
-            <div style="font-size:1.4rem;font-weight:700;color:#047857" id="sinkron-jml-bayar">0</div>
-            <div style="font-size:0.68rem;color:#64748b;text-transform:uppercase;font-weight:600">Data Bayar</div>
-          </div>
-          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:12px;text-align:center">
-            <div style="font-size:1.4rem;font-weight:700;color:#0369a1" id="sinkron-jml-kelas">0</div>
-            <div style="font-size:0.68rem;color:#64748b;text-transform:uppercase;font-weight:600">Kelas Aktif</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== PENGATURAN ===== -->
-    <div class="ik-section" id="ik-section-setting">
-      <div class="ik-card">
-        <div class="ik-card-title">🏫 Manajemen Kelas</div>
-        <div class="ik-alert ik-alert-info" style="margin-bottom:10px">
-          Kelola daftar kelas. Klik ✏️ untuk ubah nama, ✕ untuk hapus (kelas berisi siswa tidak bisa dihapus).
-        </div>
-        <div class="ik-form-row" style="align-items:flex-end">
-          <div class="ik-fg" style="flex:2">
-            <label>Nama Kelas Baru</label>
-            <input type="text" id="ik-inp-kelas-baru" placeholder="Contoh: 1, 2, 3A, VIA...">
-          </div>
-          <div class="ik-fg" style="flex:0;min-width:auto">
-            <label style="opacity:0">-</label>
-            <button class="ik-btn ik-btn-primary" onclick="ikTambahKelas()">➕ Tambah</button>
-          </div>
-        </div>
-        <div id="ik-daftar-kelas" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"></div>
-      </div>
-
-      <!-- Modal Edit Kelas -->
-      <div class="ik-modal-overlay" id="ik-modal-edit-kelas">
-        <div class="ik-modal" style="max-width:340px">
-          <div class="ik-modal-hd">
-            <div class="ik-modal-title">✏️ Ubah Nama Kelas</div>
-            <button class="ik-modal-close" onclick="ikCloseModal('ik-modal-edit-kelas')">✕</button>
-          </div>
-          <div style="font-size:0.82rem;color:#475569;margin-bottom:12px">
-            Nama lama: <strong id="ik-edit-kelas-lama"></strong>
-          </div>
-          <div class="ik-fg" style="margin-bottom:14px">
-            <label>Nama Baru</label>
-            <input type="text" id="ik-edit-kelas-baru" placeholder="Nama kelas baru..."
-              onkeydown="if(event.key==='Enter')ikKonfirmEditKelas()">
-          </div>
-          <div class="ik-btn-row">
-            <button class="ik-btn ik-btn-primary" onclick="ikKonfirmEditKelas()">💾 Simpan</button>
-            <button class="ik-btn ik-btn-ghost" onclick="ikCloseModal('ik-modal-edit-kelas')">Batal</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="ik-card">
-        <div class="ik-card-title">⚙️ Pengaturan Umum</div>
-        <div class="ik-form-row">
-          <div class="ik-fg"><label>Nama Sekolah</label><input type="text" id="ik-cfg-sekolah" value="SD Negeri-1 Raja"></div>
-          <div class="ik-fg"><label>Alamat</label><input type="text" id="ik-cfg-alamat" placeholder="Jl. ..."></div>
-          <div class="ik-fg"><label>Iuran (Rp)</label><input type="number" id="ik-cfg-iuran" value="25000"></div>
-        </div>
-        <div class="ik-form-row">
-          <div class="ik-fg"><label>Kepala Sekolah</label><input type="text" id="ik-cfg-kepsek" placeholder="Nama Kepsek"></div>
-          <div class="ik-fg"><label>NIP Kepsek</label><input type="text" id="ik-cfg-nip" placeholder="NIP..."></div>
-          <div class="ik-fg"><label>Ketua Komite</label><input type="text" id="ik-cfg-ketua" placeholder="Nama Ketua"></div>
-        </div>
-        <div class="ik-form-row">
-          <div class="ik-fg" style="max-width:280px">
-            <label>🔐 Password Edit Status</label>
-            <input type="password" id="ik-cfg-password" placeholder="Password bendahara..." autocomplete="new-password">
-            <div style="font-size:0.68rem;color:#94a3b8;margin-top:3px">Default: <code>komite2025</code> — Segera ganti!</div>
-          </div>
-          <div class="ik-fg" style="max-width:280px">
-            <label>🔐 Konfirmasi Password</label>
-            <input type="password" id="ik-cfg-password2" placeholder="Ulangi password..." autocomplete="new-password">
-          </div>
-        </div>
-        <div class="ik-btn-row">
-          <button class="ik-btn ik-btn-primary" onclick="ikSimpanCfg()">💾 Simpan Pengaturan</button>
-        </div>
-      </div>
-
-      <div class="ik-card">
-        <div class="ik-card-title">🗃️ Data Lokal</div>
-        <div class="ik-alert ik-alert-warn">Data tersimpan di localStorage browser sebagai cadangan offline.</div>
-        <div class="ik-btn-row">
-          <button class="ik-btn ik-btn-ghost" onclick="ikSampleData()">📋 Muat Data Contoh</button>
-          <button class="ik-btn ik-btn-danger" onclick="ikClearAll()">🗑️ Hapus Semua</button>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /ik-body -->
+  </div>
 
   <!-- Modal Hapus -->
   <div class="ik-modal-overlay" id="ik-modal-hapus">
@@ -1097,6 +1248,9 @@ const IK = {
   }
 };
 
+// Session state untuk login tab
+const IK_SESSION = { bendahara: false, admin: false };
+
 const BN = ['','Januari','Februari','Maret','April','Mei','Juni',
              'Juli','Agustus','September','Oktober','November','Desember'];
 const BUTA = [7,8,9,10,11,12,1,2,3,4,5,6]; // Jul→Jun
@@ -1112,6 +1266,96 @@ function sudahBayar(sid,ta){
   IK.pembayaran.forEach(p=>{ if(p.siswaId!==sid)return; if((p.tahun===t1&&p.bulan>=7)||(p.tahun===t2&&p.bulan<=6))s.add(bkey(p.bulan,p.tahun)); });
   return s;
 }
+
+// ================================================================
+// MAIN TABS (3 besar)
+// ================================================================
+window.ikMainTab = function(tab, btn){
+  // Switch pane
+  document.querySelectorAll('#ik-app .ik-main-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('#ik-app .ik-main-tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('ik-pane-'+tab).classList.add('active');
+  btn.classList.add('active');
+
+  if(tab === 'publik'){
+    ikRenderDashboard();
+  } else if(tab === 'bendahara'){
+    if(IK_SESSION.bendahara){
+      // already logged in
+    } else {
+      // show lock, hide content
+      document.getElementById('ik-lock-bendahara').style.display='block';
+      document.getElementById('ik-content-bendahara').style.display='none';
+    }
+  } else if(tab === 'admin'){
+    if(IK_SESSION.admin){
+      // already logged in
+    } else {
+      document.getElementById('ik-lock-admin').style.display='block';
+      document.getElementById('ik-content-admin').style.display='none';
+    }
+  }
+};
+
+window.ikUnlock = function(tab){
+  const pw = document.getElementById('pw-'+tab).value;
+  const err = document.getElementById('pw-err-'+tab);
+  if(pw === IK.cfg.password){
+    IK_SESSION[tab] = true;
+    document.getElementById('ik-lock-'+tab).style.display='none';
+    document.getElementById('ik-content-'+tab).style.display='block';
+    document.getElementById('mt-lock-'+tab).textContent='🔓';
+    document.getElementById('pw-'+tab).value='';
+    err.style.display='none';
+    if(tab==='bendahara'){ ikPopulateSiswaSelect(); ikRenderRiwayat(); ikRenderBelum(); ikRenderKartu(); ikRenderBukasUmum(); ikPopulateBukasTA(); }
+    if(tab==='admin'){ ikUpdateSinkronStats(); ikRenderDaftarKelas(); }
+    ikToast('✅ Selamat datang, '+(tab==='bendahara'?'Bendahara':'Admin')+'!');
+  } else {
+    err.style.display='block';
+    document.getElementById('pw-'+tab).value='';
+    document.getElementById('pw-'+tab).focus();
+  }
+};
+
+window.ikLock = function(tab){
+  IK_SESSION[tab] = false;
+  document.getElementById('ik-lock-'+tab).style.display='block';
+  document.getElementById('ik-content-'+tab).style.display='none';
+  document.getElementById('mt-lock-'+tab).textContent='🔒';
+  ikToast('🔒 Berhasil keluar dari area '+(tab==='bendahara'?'Bendahara':'Admin'));
+};
+
+// Sub-nav: Bendahara
+window.ikShowBendahara = function(id, btn){
+  document.querySelectorAll('#ik-content-bendahara .ik-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('#nav-bendahara .ik-nav-btn').forEach(b=>b.classList.remove('active'));
+  const sec = document.getElementById('ik-section-'+id);
+  if(sec){ sec.classList.add('active'); }
+  if(btn) btn.classList.add('active');
+  if(id==='bayar'){ikPopulateSiswaSelect();ikRenderRiwayat();}
+  if(id==='belum')ikRenderBelum();
+  if(id==='kartu')ikRenderKartu();
+  if(id==='scan'){ikRenderScanBulan();ikResetScan();}
+  if(id!=='scan'){ikStopCamera();}
+  if(id==='bukas'){ikRenderBukasUmum();ikPopulateBukasTA();}
+};
+
+// Sub-nav: Admin
+window.ikShowAdmin = function(id, btn){
+  document.querySelectorAll('#ik-content-admin .ik-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('#nav-admin .ik-nav-btn').forEach(b=>b.classList.remove('active'));
+  const sec = document.getElementById('ik-section-'+id);
+  if(sec){ sec.classList.add('active'); }
+  if(btn) btn.classList.add('active');
+  if(id==='editstatus'){ikInitEditStatus();}
+  if(id==='sinkron')ikUpdateSinkronStats();
+  if(id==='setting')ikRenderDaftarKelas();
+};
+
+// Backward compat stub (original code uses ikShow)
+window.ikShow = function(id, btn){
+  // Not used in new layout, just stub
+};
 
 // ================================================================
 // INIT
@@ -1132,7 +1376,6 @@ function init(){
   ikRenderBelum();
   ikRenderKartu();
   populateLapBulan();
-  // URL sudah tertanam, sembunyikan banner setup
   document.getElementById('ik-banner-setup').style.display='none';
   document.getElementById('ik-header-ta').textContent='TA '+IK.cfg.ta;
   ikUpdateSinkronStats();
@@ -1179,33 +1422,12 @@ function populateLapBulan(){
     const {t1,t2}=parseTA(IK.cfg.ta); const thn=b>=7?t1:t2;
     return `<option value="${i}"${b===cb?' selected':''}>${BN[b]} ${thn}</option>`;
   }).join('');
-  // bb-bulan
   const bb=document.getElementById('ik-bb-bulan'); if(!bb)return;
   bb.innerHTML=BUTA.map((b,i)=>{
     const {t1,t2}=parseTA(IK.cfg.ta); const thn=b>=7?t1:t2;
     return `<option value="${i}"${b===cb?' selected':''}>${BN[b]} ${thn}</option>`;
   }).join('');
 }
-
-// ================================================================
-// NAV
-// ================================================================
-window.ikShow = function(id, btn){
-  document.querySelectorAll('#ik-app .ik-section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('#ik-app .ik-nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('ik-section-'+id).classList.add('active');
-  if(btn)btn.classList.add('active');
-  if(id==='dashboard')ikRenderDashboard();
-  if(id==='bayar'){ikPopulateSiswaSelect();ikRenderRiwayat();}
-  if(id==='belum')ikRenderBelum();
-  if(id==='kartu')ikRenderKartu();
-  if(id==='scan'){ikRenderScanBulan();ikResetScan();}
-  if(id!=='scan'){ikStopCamera();}
-  if(id==='editstatus'){ikInitEditStatus();}
-  if(id==='bukas'){ikRenderBukasUmum();ikPopulateBukasTA();}
-  if(id==='sinkron')ikUpdateSinkronStats();
-  if(id==='setting')ikRenderDaftarKelas();
-};
 
 // ================================================================
 // SISWA
@@ -1249,457 +1471,243 @@ window.ikHapusSiswa = function(id,nama){
   document.getElementById('ik-modal-hapus').classList.add('open');
 };
 window.ikKonfirmHapus = function(){
+  if(!IK.hapusId)return;
   IK.siswa=IK.siswa.filter(s=>s.id!==IK.hapusId);
-  ikSave(); ikRenderSiswa(); ikPopulateSiswaSelect(); ikRenderDashboard(); ikRenderKartu();
-  ikCloseModal('ik-modal-hapus'); ikToast('🗑️ Siswa dihapus');
+  ikSave(); ikRenderSiswa(); ikPopulateSiswaSelect(); ikRenderDashboard(); ikRenderKartu(); ikRebuildKelasSelects();
+  ikCloseModal('ik-modal-hapus'); IK.hapusId=null;
+  ikToast('🗑️ Siswa dihapus');
 };
-window.ikCloseModal = function(id){ document.getElementById(id).classList.remove('open'); };
-
-function ikPopulateSiswaSelect(){
-  const sel=document.getElementById('ik-inp-siswa-bayar');
-  const sorted=[...IK.siswa].sort((a,b)=>a.kelas.localeCompare(b.kelas)||a.nama.localeCompare(b.nama));
-  sel.innerHTML='<option value="">-- Pilih Siswa --</option>'+sorted.map(s=>`<option value="${s.id}">${s.nama} – Kelas ${s.kelas}</option>`).join('');
-}
 
 // ================================================================
-// MANAJEMEN KELAS
+// KELAS
 // ================================================================
-function ikGetKelasOptions(selectedVal){
-  return [...IK.kelasList].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true})).map(k=>`<option value="${k}"${k===selectedVal?' selected':''}>${k}</option>`).join('');
-}
-function ikRebuildKelasSelects(){
-  // Rebuild all select dropdowns for kelas
-  const selects=[
-    {id:'ik-inp-kelas', prefix:'<option value="">-- Pilih --</option>'},
-    {id:'ik-flt-kelas-siswa', prefix:'<option value="">Semua</option>'},
-    {id:'ik-bb-kelas', prefix:'<option value="">Semua</option>'},
-    {id:'ik-kartu-kelas', prefix:'<option value="">Semua</option>'},
-    {id:'ik-bayar-flt-kelas', prefix:'<option value="">Semua Kelas</option>'},
-    {id:'es-kelas', prefix:'<option value="">Semua</option>'},
-  ];
-  selects.forEach(({id,prefix})=>{
-    const el=document.getElementById(id); if(!el)return;
-    const cur=el.value;
-    const sorted=[...IK.kelasList].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
-    el.innerHTML=prefix+sorted.map(k=>`<option value="${k}"${k===cur?' selected':''}>${k}</option>`).join('');
-  });
-}
-window.ikFilterSiswaBayar = function(){
-  const kelas=document.getElementById('ik-bayar-flt-kelas').value;
-  const sel=document.getElementById('ik-inp-siswa-bayar');
-  const sorted=[...IK.siswa].filter(s=>!kelas||s.kelas===kelas).sort((a,b)=>a.kelas.localeCompare(b.kelas)||a.nama.localeCompare(b.nama));
-  sel.innerHTML='<option value="">-- Pilih Siswa --</option>'+sorted.map(s=>`<option value="${s.id}">${s.nama} – Kelas ${s.kelas}</option>`).join('');
-  sel.value=''; ikRenderBulanCB();
-};
-let _editKelasLama = null;
-
 window.ikTambahKelas = function(){
-  const inp = document.getElementById('ik-inp-kelas-baru');
-  const nama = inp.value.trim();
-  if(!nama){ikToast('❗ Nama kelas tidak boleh kosong','danger');return;}
-  // Cek duplikat case-insensitive
-  if(IK.kelasList.some(k=>k.toLowerCase()===nama.toLowerCase())){
-    ikToast('❗ Kelas "'+nama+'" sudah ada','warn'); return;
-  }
-  IK.kelasList.push(nama);
-  IK.kelasList.sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
-  ikSave(); ikRenderDaftarKelas(); ikRebuildKelasSelects();
-  inp.value='';
-  ikToast('✅ Kelas '+nama+' ditambahkan!');
+  const v=document.getElementById('ik-inp-kelas-baru').value.trim();
+  if(!v){ikToast('❗ Nama kelas tidak boleh kosong','danger');return;}
+  if(IK.kelasList.includes(v)){ikToast('❗ Kelas sudah ada','danger');return;}
+  IK.kelasList.push(v); ikSave(); ikRenderDaftarKelas(); ikRebuildKelasSelects();
+  document.getElementById('ik-inp-kelas-baru').value='';
+  ikToast('✅ Kelas '+v+' ditambahkan');
 };
+
+function ikRenderDaftarKelas(){
+  const el=document.getElementById('ik-daftar-kelas'); if(!el)return;
+  if(!IK.kelasList.length){el.innerHTML='<span style="font-size:0.78rem;color:#94a3b8">Belum ada kelas</span>';return;}
+  el.innerHTML=IK.kelasList.map(k=>`
+    <div style="display:flex;align-items:center;gap:4px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px">
+      <span style="font-weight:600;font-size:0.8rem">${k}</span>
+      <button onclick="ikEditKelas('${k}')" style="background:none;border:none;cursor:pointer;font-size:0.8rem;color:#475569;padding:0 2px" title="Ubah">✏️</button>
+      <button onclick="ikHapusKelas('${k}')" style="background:none;border:none;cursor:pointer;font-size:0.8rem;color:#b91c1c;padding:0 2px" title="Hapus">✕</button>
+    </div>`).join('');
+}
+window.ikRenderDaftarKelas = ikRenderDaftarKelas;
 
 window.ikEditKelas = function(nama){
-  _editKelasLama = nama;
-  document.getElementById('ik-edit-kelas-lama').textContent = nama;
-  const inp = document.getElementById('ik-edit-kelas-baru');
-  inp.value = nama;
+  document.getElementById('ik-edit-kelas-lama').textContent=nama;
+  document.getElementById('ik-edit-kelas-baru').value=nama;
+  IK._editKelasLama=nama;
   document.getElementById('ik-modal-edit-kelas').classList.add('open');
-  setTimeout(()=>{inp.select();}, 80);
 };
-
 window.ikKonfirmEditKelas = function(){
-  const baru = document.getElementById('ik-edit-kelas-baru').value.trim();
+  const lama=IK._editKelasLama; const baru=document.getElementById('ik-edit-kelas-baru').value.trim();
   if(!baru){ikToast('❗ Nama tidak boleh kosong','danger');return;}
-  if(baru === _editKelasLama){ikCloseModal('ik-modal-edit-kelas');return;}
-  if(IK.kelasList.some(k=>k.toLowerCase()===baru.toLowerCase()&&k!==_editKelasLama)){
-    ikToast('❗ Nama "'+baru+'" sudah dipakai','warn'); return;
-  }
-  // Ganti nama di kelasList
-  const idx = IK.kelasList.indexOf(_editKelasLama);
-  if(idx>=0) IK.kelasList[idx] = baru;
-  // Ganti nama di semua siswa yang pakai kelas lama
-  IK.siswa.forEach(s=>{ if(s.kelas===_editKelasLama) s.kelas=baru; });
-  // Ganti nama di pembayaran
-  IK.pembayaran.forEach(p=>{ if(p.kelas===_editKelasLama) p.kelas=baru; });
-  IK.kelasList.sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
-  ikSave(); ikRenderDaftarKelas(); ikRebuildKelasSelects();
-  ikRenderSiswa(); ikPopulateSiswaSelect(); ikRenderDashboard();
+  if(baru!==lama&&IK.kelasList.includes(baru)){ikToast('❗ Nama kelas sudah ada','danger');return;}
+  IK.kelasList=IK.kelasList.map(k=>k===lama?baru:k);
+  IK.siswa=IK.siswa.map(s=>s.kelas===lama?{...s,kelas:baru}:s);
+  IK.pembayaran=IK.pembayaran.map(p=>p.kelas===lama?{...p,kelas:baru}:p);
+  ikSave(); ikRenderDaftarKelas(); ikRebuildKelasSelects(); ikRenderSiswa(); ikRenderDashboard();
   ikCloseModal('ik-modal-edit-kelas');
-  ikToast('✅ Kelas "'+_editKelasLama+'" diubah menjadi "'+baru+'"');
-  _editKelasLama = null;
+  ikToast('✅ Kelas '+lama+' → '+baru);
 };
-
 window.ikHapusKelas = function(nama){
-  const dipakai = IK.siswa.some(s=>s.kelas===nama);
-  if(dipakai){ikToast('❌ Kelas '+nama+' masih dipakai '+IK.siswa.filter(s=>s.kelas===nama).length+' siswa','danger');return;}
-  if(!confirm('Hapus kelas "'+nama+'"?'))return;
-  IK.kelasList = IK.kelasList.filter(k=>k!==nama);
+  if(IK.siswa.some(s=>s.kelas===nama)){ikToast('❌ Kelas masih berisi siswa','danger');return;}
+  if(!confirm('Hapus kelas '+nama+'?'))return;
+  IK.kelasList=IK.kelasList.filter(k=>k!==nama);
   ikSave(); ikRenderDaftarKelas(); ikRebuildKelasSelects();
   ikToast('🗑️ Kelas '+nama+' dihapus');
 };
 
-function ikRenderDaftarKelas(){
-  const con = document.getElementById('ik-daftar-kelas'); if(!con)return;
-  const sorted = [...IK.kelasList].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
-  if(!sorted.length){
-    con.innerHTML='<div class="ik-alert ik-alert-warn" style="width:100%">⚠️ Belum ada kelas. Tambahkan kelas di atas.</div>';
-    return;
-  }
-  con.innerHTML = sorted.map(k=>{
-    const n = IK.siswa.filter(s=>s.kelas===k).length;
-    const warna = n>0 ? '#ecfdf5;border-color:#a7f3d0' : 'white;border-color:#e2e8f0';
-    return `<div style="display:inline-flex;align-items:center;gap:5px;background:${warna};border:1px solid;border-radius:8px;padding:6px 8px 6px 12px;font-size:0.8rem;font-weight:700">
-      <span style="color:#0f172a">Kelas ${k}</span>
-      <span style="color:#94a3b8;font-size:0.68rem;font-weight:400">${n} siswa</span>
-      <button onclick="ikEditKelas('${k}')" style="background:#e0f2fe;border:none;cursor:pointer;color:#0369a1;font-size:0.7rem;padding:2px 5px;border-radius:4px;font-weight:700;margin-left:2px" title="Ubah nama">✏️</button>
-      <button onclick="ikHapusKelas('${k}')" style="background:${n>0?'#f1f5f9':'#fef2f2'};border:none;cursor:${n>0?'not-allowed':'pointer'};color:${n>0?'#cbd5e1':'#b91c1c'};font-size:0.7rem;padding:2px 5px;border-radius:4px;font-weight:700" title="${n>0?'Ada siswa, tidak bisa dihapus':'Hapus kelas'}">✕</button>
-    </div>`;
-  }).join('');
-}
-window.ikRenderDaftarKelas = ikRenderDaftarKelas;
-
-function ikUpdateSinkronStats(){
-  const el1=document.getElementById('sinkron-jml-siswa');
-  const el2=document.getElementById('sinkron-jml-bayar');
-  const el3=document.getElementById('sinkron-jml-kelas');
-  if(el1)el1.textContent=IK.siswa.length;
-  if(el2)el2.textContent=IK.pembayaran.length;
-  if(el3)el3.textContent=new Set(IK.siswa.map(s=>s.kelas)).size;
-}
-
-// ================================================================
-// IMPORT / EXPORT
-// ================================================================
-window.ikDzOver = function(e){ e.preventDefault(); document.getElementById('ik-dz').classList.add('over'); };
-window.ikDzLeave = function(){ document.getElementById('ik-dz').classList.remove('over'); };
-window.ikDzDrop = function(e){ e.preventDefault(); document.getElementById('ik-dz').classList.remove('over'); const f=e.dataTransfer.files[0]; if(f)ikProcFile(f); };
-window.ikImportSiswa = function(inp){ if(inp.files[0])ikProcFile(inp.files[0]); inp.value=''; };
-
-function ikProcFile(file){
-  const r=new FileReader();
-  r.onload=e=>{
-    const txt=e.target.result;
-    if(file.name.endsWith('.json')){
-      try{ const d=JSON.parse(txt); ikMerge(Array.isArray(d)?d:d.siswa||[]); } catch(err){ ikToast('❌ JSON tidak valid','danger'); }
-    } else {
-      const lines=txt.split('\n').filter(l=>l.trim()).slice(1);
-      const list=lines.map(row=>{const c=row.split(',').map(v=>v.trim().replace(/^"|"$/g,'')); return{nama:c[0]||'',kelas:c[1]||'',ortu:c[2]||'',hp:c[3]||''};}).filter(s=>s.nama&&s.kelas);
-      ikMerge(list);
-    }
-  };
-  r.readAsText(file);
-}
-function ikMerge(list){
-  let n=0;
-  list.forEach(s=>{
-    if(!s.nama||!s.kelas)return;
-    if(!IK.siswa.some(x=>x.nama.toLowerCase()===s.nama.toLowerCase()&&x.kelas===s.kelas)){
-      IK.siswa.push({id:s.id||('S'+Date.now()+Math.random()),nama:s.nama,kelas:s.kelas,ortu:s.ortu||'',hp:s.hp||'',tanggal:new Date().toLocaleDateString('id-ID')});
-      n++;
-    }
+function ikRebuildKelasSelects(){
+  const ids=['ik-inp-kelas','ik-flt-kelas-siswa','ik-bayar-flt-kelas','ik-lap-kelas',
+             'ik-kartu-kelas','ik-bb-kelas','ik-riwayat-kelas','es-kelas'];
+  ids.forEach(id=>{
+    const el=document.getElementById(id); if(!el)return;
+    const cur=el.value;
+    const opts=IK.kelasList.map(k=>`<option value="${k}">${k}</option>`).join('');
+    el.innerHTML=(id==='ik-inp-kelas'?'<option value="">-- Pilih --</option>':'<option value="">Semua</option>')+opts;
+    if(cur&&IK.kelasList.includes(cur))el.value=cur;
   });
-  ikSave(); ikRenderSiswa(); ikPopulateSiswaSelect(); ikRenderDashboard(); ikRenderKartu();
-  ikToast(`✅ Import selesai: ${n} siswa baru`);
 }
-function ikDl(name,content,type){ const b=new Blob([content],{type}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=name; a.click(); }
-window.ikExportCSV = function(){ ikDl('siswa.csv','ID,Nama,Kelas,OrangTua,NoHP\n'+IK.siswa.map(s=>[s.id,s.nama,s.kelas,s.ortu,s.hp].map(v=>`"${v||''}"`).join(',')).join('\n'),'text/csv'); ikToast('✅ Export CSV siswa'); };
-window.ikExportJSON = function(){ ikDl('siswa.json',JSON.stringify(IK.siswa,null,2),'application/json'); ikToast('✅ Export JSON siswa'); };
-window.ikExportBayarCSV = function(){ ikDl('pembayaran.csv','ID,SiswaID,Nama,Kelas,Bulan,TA,Jumlah,Tanggal\n'+IK.pembayaran.map(p=>[p.id,p.siswaId,p.namaSiswa,p.kelas,BN[p.bulan],p.ta||p.tahun,p.jumlah,p.tanggal].map(v=>`"${v||''}"`).join(',')).join('\n'),'text/csv'); ikToast('✅ Export pembayaran'); };
-window.ikBackupAll = function(){ ikDl('backup-ik.json',JSON.stringify({siswa:IK.siswa,pembayaran:IK.pembayaran,cfg:IK.cfg},null,2),'application/json'); ikToast('✅ Backup semua data'); };
 
 // ================================================================
 // PEMBAYARAN
 // ================================================================
-function ikRenderBulanCB(){
-  const wrap=document.getElementById('ik-bulan-checkboxes');
-  const ta=document.getElementById('ik-inp-ta-bayar')?.value||IK.cfg.ta;
-  const {t1,t2}=parseTA(ta);
-  wrap.innerHTML=BUTA.map((b,i)=>`
-    <div class="ik-bulan-item" id="ik-bi-${i}">
-      <input type="checkbox" id="ik-cb-${i}" name="ik-bulan-bayar" value="${i}" onchange="ikUpdateTotal()">
-      <label class="ik-bulan-lbl" for="ik-cb-${i}">${BN[b].substring(0,3)}<small>${b>=7?t1:t2}</small></label>
-    </div>`).join('');
-}
-window.ikRenderBulanCB = ikRenderBulanCB;
+window.ikPopulateSiswaSelect = function(){
+  const fk=document.getElementById('ik-bayar-flt-kelas')?.value||'';
+  const data=IK.siswa.filter(s=>!fk||s.kelas===fk).sort((a,b)=>a.kelas.localeCompare(b.kelas)||a.nama.localeCompare(b.nama));
+  const sel=document.getElementById('ik-inp-siswa-bayar'); if(!sel)return;
+  sel.innerHTML='<option value="">-- Pilih Siswa --</option>'+data.map(s=>`<option value="${s.id}">${s.nama} (${s.kelas})</option>`).join('');
+  // riwayat kelas select
+  const rk=document.getElementById('ik-riwayat-kelas'); if(rk){
+    const cur=rk.value;
+    rk.innerHTML='<option value="">Semua</option>'+IK.kelasList.map(k=>`<option value="${k}">${k}</option>`).join('');
+    if(cur)rk.value=cur;
+  }
+  // riwayat bulan
+  const rb=document.getElementById('ik-riwayat-bulan'); if(rb){
+    rb.innerHTML='<option value="">Semua Bulan</option>'+BUTA.map(b=>`<option value="${b}">${BN[b]}</option>`).join('');
+  }
+};
+
+window.ikFilterSiswaBayar = function(){ikPopulateSiswaSelect();ikCekStatusBayar();};
 
 window.ikCekStatusBayar = function(){
-  const sid=document.getElementById('ik-inp-siswa-bayar').value;
-  const ta=document.getElementById('ik-inp-ta-bayar').value;
   ikRenderBulanCB();
-  if(!sid||!ta)return;
-  const sb=sudahBayar(sid,ta);
-  BUTA.forEach((b,i)=>{
-    const thn=thnFromB(b,ta); const key=bkey(b,thn);
-    if(sb.has(key)){
-      const item=document.getElementById('ik-bi-'+i);
-      const cb=document.getElementById('ik-cb-'+i);
-      if(item){item.classList.add('ik-lunas'); cb.disabled=true;}
-    }
-  });
 };
 
-window.ikUpdateTotal = function(){
-  const n=document.querySelectorAll('input[name="ik-bulan-bayar"]:checked').length;
-  document.getElementById('ik-total-bayar').value='Rp '+(n*IK.cfg.iuran).toLocaleString('id-ID');
-};
+function ikRenderBulanCB(){
+  const sid=document.getElementById('ik-inp-siswa-bayar')?.value||'';
+  const ta=document.getElementById('ik-inp-ta-bayar')?.value||IK.cfg.ta;
+  const paid=sid?sudahBayar(sid,ta):new Set();
+  const {t1,t2}=parseTA(ta);
+  const grid=document.getElementById('ik-bulan-grid'); if(!grid)return;
+  grid.innerHTML=BUTA.map(b=>{
+    const thn=b>=7?t1:t2; const k=bkey(b,thn);
+    const lunas=paid.has(k);
+    return `<div class="ik-bulan-item${lunas?' ik-lunas':''}">
+      ${lunas?'':`<input type="checkbox" id="bc-${b}-${thn}" value="${b}-${thn}">`}
+      <label class="ik-bulan-lbl" ${lunas?'':(`for="bc-${b}-${thn}"`)}>
+        ${BN[b].substring(0,3)}<small>${thn}</small>
+      </label>
+    </div>`;
+  }).join('');
+}
 
-window.ikSimpanBayar = function(){
+window.ikBayar = function(){
   const sid=document.getElementById('ik-inp-siswa-bayar').value;
   const ta=document.getElementById('ik-inp-ta-bayar').value;
-  const cat=document.getElementById('ik-catatan').value;
-  const checked=[...document.querySelectorAll('input[name="ik-bulan-bayar"]:checked')].map(c=>+c.value);
-  if(!sid){ikToast('❗ Pilih siswa','danger');return;}
+  const jumlah=+document.getElementById('ik-inp-jumlah').value||IK.cfg.iuran;
+  const catatan=document.getElementById('ik-inp-catatan').value.trim();
+  if(!sid){ikToast('❗ Pilih siswa dulu','danger');return;}
+  const checked=[...document.querySelectorAll('#ik-bulan-grid input:checked')].map(c=>c.value);
   if(!checked.length){ikToast('❗ Pilih minimal satu bulan','danger');return;}
   const siswa=IK.siswa.find(s=>s.id===sid);
-  const {t1,t2}=parseTA(ta);
-  checked.forEach(idx=>{
-    const b=BUTA[idx]; const thn=b>=7?t1:t2;
-    const rec={id:'P'+Date.now()+Math.random(),siswaId:sid,namaSiswa:siswa.nama,kelas:siswa.kelas,bulan:b,namaBulan:BN[b]||'',tahun:thn,ta,jumlah:IK.cfg.iuran,tanggal:new Date().toLocaleDateString('id-ID'),catatan:cat};
-    IK.pembayaran.push(rec);
-    ikSyncSheets('addPembayaran',rec);
+  let added=0;
+  checked.forEach(bv=>{
+    const [b,thn]=bv.split('-').map(Number);
+    const already=IK.pembayaran.find(p=>p.siswaId===sid&&p.bulan===b&&p.tahun===thn);
+    if(already)return;
+    const rec={id:'P'+Date.now()+Math.random(),siswaId:sid,namaSiswa:siswa.nama,kelas:siswa.kelas,
+      bulan:b,tahun:thn,ta,jumlah,tanggal:new Date().toLocaleDateString('id-ID'),catatan};
+    IK.pembayaran.push(rec); ikSyncSheets('addBayar',rec); added++;
   });
-  ikSave(); ikRenderRiwayat(); ikRenderDashboard(); ikResetBayar(); ikUpdateSinkronStats();
-  ikToast(`✅ ${checked.length} bulan tersimpan!`);
+  if(!added){ikToast('ℹ️ Bulan yang dipilih sudah lunas semua','warn');return;}
+  ikSave(); ikRenderBulanCB(); ikRenderDashboard(); ikRenderRiwayat(); ikRenderBelum(); ikRenderBukasUmum();
+  ikToast(`✅ ${added} bulan pembayaran disimpan!`);
 };
 
-window.ikResetBayar = function(){
-  document.getElementById('ik-inp-siswa-bayar').value='';
-  document.getElementById('ik-catatan').value='';
-  document.getElementById('ik-total-bayar').value='Rp 0';
-  ikRenderBulanCB();
+window.ikHapusBayar = function(id){
+  if(!confirm('Hapus data pembayaran ini?'))return;
+  IK.pembayaran=IK.pembayaran.filter(p=>p.id!==id);
+  ikSave(); ikRenderRiwayat(); ikRenderDashboard(); ikRenderBulanCB(); ikRenderBelum(); ikRenderBukasUmum();
+  ikToast('🗑️ Pembayaran dihapus');
 };
 
 function ikRenderRiwayat(){
-  const tb=document.getElementById('ik-tb-riwayat');
-  const data=[...IK.pembayaran].sort((a,b)=>b.id.localeCompare(a.id)).slice(0,20);
-  if(!data.length){tb.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:20px;color:#94a3b8">Belum ada riwayat</td></tr>`;return;}
-  tb.innerHTML=data.map(p=>`<tr>
-    <td>${p.tanggal}</td><td><strong>${p.namaSiswa}</strong></td>
-    <td><span class="ik-badge ik-badge-kelas">${p.kelas}</span></td>
-    <td>${BN[p.bulan]}</td><td>${p.ta||p.tahun}</td>
-    <td style="color:#047857;font-weight:700">Rp ${p.jumlah.toLocaleString('id-ID')}</td>
-  </tr>`).join('');
+  const fk=document.getElementById('ik-riwayat-kelas')?.value||'';
+  const fb=document.getElementById('ik-riwayat-bulan')?.value||'';
+  const cari=document.getElementById('ik-riwayat-cari')?.value.toLowerCase()||'';
+  let data=[...IK.pembayaran];
+  if(fk)data=data.filter(p=>p.kelas===fk);
+  if(fb)data=data.filter(p=>String(p.bulan)===fb);
+  if(cari)data=data.filter(p=>p.namaSiswa.toLowerCase().includes(cari));
+  data.sort((a,b)=>b.id.localeCompare(a.id));
+  const tb=document.getElementById('ik-tb-riwayat'); if(!tb)return;
+  if(!data.length){tb.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:20px;color:#94a3b8">Belum ada pembayaran</td></tr>`;return;}
+  tb.innerHTML=data.slice(0,100).map(p=>`
+    <tr>
+      <td style="font-size:0.72rem;color:#94a3b8">${p.tanggal||'—'}</td>
+      <td><strong>${p.namaSiswa}</strong></td>
+      <td><span class="ik-badge ik-badge-kelas">${p.kelas}</span></td>
+      <td>${BN[p.bulan]} ${p.tahun}</td>
+      <td style="color:#047857;font-weight:700">Rp${(p.jumlah||0).toLocaleString('id-ID')}</td>
+      <td><button class="ik-btn ik-btn-danger ik-btn-xs" onclick="ikHapusBayar('${p.id}')">🗑️</button></td>
+    </tr>`).join('');
 }
-
-// ================================================================
-// SCAN QR
-// ================================================================
-function ikRenderScanBulan(){
-  const sel=document.getElementById('ik-scan-bulan'); if(!sel)return;
-  const now=new Date(); const cb=now.getMonth()+1;
-  const ta=document.getElementById('ik-scan-ta')?.value||IK.cfg.ta;
-  const {t1,t2}=parseTA(ta);
-  sel.innerHTML=BUTA.map((b,i)=>`<option value="${i}"${b===cb?' selected':''}>${BN[b]} ${b>=7?t1:t2}</option>`).join('');
-}
-window.ikRenderScanBulan = ikRenderScanBulan;
-
-function ikResetScan(){
-  const c=document.getElementById('ik-scan-circle');
-  c.textContent='📷'; c.className='ik-scan-circle';
-  document.getElementById('ik-scan-status').textContent='Siap Scan';
-  document.getElementById('ik-scan-sub').textContent='Arahkan scanner ke kartu siswa';
-  document.getElementById('ik-scan-inp').value='';
-  document.getElementById('ik-scan-result').style.display='none';
-  IK.scanSiswa=null;
-}
-window.ikResetScan = ikResetScan;
-
-// ================================================================
-// KAMERA QR SCAN
-// ================================================================
-let camStream = null;
-let camAnimFrame = null;
-
-window.ikToggleCamera = async function(){
-  const btn=document.getElementById('ik-cam-btn');
-  const wrap=document.getElementById('ik-cam-wrap');
-  if(camStream){
-    ikStopCamera();
-    return;
-  }
-  try{
-    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-      ikToast('❌ Browser tidak mendukung kamera','danger'); return;
-    }
-    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:640},height:{ideal:480}}});
-    camStream=stream;
-    const vid=document.getElementById('ik-cam-video');
-    vid.srcObject=stream;
-    await vid.play();
-    wrap.style.display='block';
-    btn.textContent='🛑 Stop Kamera';
-    btn.className='ik-btn ik-btn-danger';
-    document.getElementById('ik-scan-status').textContent='Kamera Aktif';
-    document.getElementById('ik-scan-sub').textContent='Arahkan QR kartu siswa ke kamera';
-    document.getElementById('ik-scan-circle').textContent='🎥';
-    document.getElementById('ik-scan-circle').className='ik-scan-circle sc-pulse';
-    ikScanFrame();
-    ikToast('📷 Kamera aktif – arahkan ke QR code');
-  }catch(e){
-    ikToast('❌ Gagal akses kamera: '+e.message,'danger');
-  }
-};
-
-function ikStopCamera(){
-  if(camStream){camStream.getTracks().forEach(t=>t.stop()); camStream=null;}
-  if(camAnimFrame){cancelAnimationFrame(camAnimFrame); camAnimFrame=null;}
-  const wrap=document.getElementById('ik-cam-wrap');
-  const btn=document.getElementById('ik-cam-btn');
-  if(wrap)wrap.style.display='none';
-  if(btn){btn.textContent='📷 Aktifkan Kamera'; btn.className='ik-btn ik-btn-gold';}
-  const c=document.getElementById('ik-scan-circle');
-  if(c){c.textContent='📷'; c.className='ik-scan-circle';}
-  document.getElementById('ik-scan-status').textContent='Siap Scan';
-  document.getElementById('ik-scan-sub').textContent='Aktifkan kamera atau ketik ID siswa';
-}
-
-function ikScanFrame(){
-  const vid=document.getElementById('ik-cam-video');
-  const canvas=document.getElementById('ik-cam-canvas');
-  if(!camStream||!vid||vid.readyState<2){camAnimFrame=requestAnimationFrame(ikScanFrame);return;}
-  canvas.width=vid.videoWidth; canvas.height=vid.videoHeight;
-  const ctx=canvas.getContext('2d');
-  ctx.drawImage(vid,0,0,canvas.width,canvas.height);
-  try{
-    const imgData=ctx.getImageData(0,0,canvas.width,canvas.height);
-    if(typeof jsQR !== 'undefined'){
-      const code=jsQR(imgData.data,imgData.width,imgData.height,{inversionAttempts:'dontInvert'});
-      if(code&&code.data){
-        document.getElementById('ik-scan-inp').value=code.data;
-        ikStopCamera();
-        ikProsesScan();
-        return;
-      }
-    }
-  }catch(e){}
-  camAnimFrame=requestAnimationFrame(ikScanFrame);
-}
-
-window.ikDebounce = function(){
-  clearTimeout(scanTimer);
-  const val=document.getElementById('ik-scan-inp').value;
-  if(val.length>3) scanTimer=setTimeout(ikProsesScan, 280);
-};
-
-window.ikProsesScan = function(){
-  const val=document.getElementById('ik-scan-inp').value.trim();
-  if(!val){ikToast('❗ Masukkan ID siswa','danger');return;}
-  const siswa=IK.siswa.find(s=>s.id===val||s.id.toLowerCase()===val.toLowerCase());
-  const c=document.getElementById('ik-scan-circle');
-  if(!siswa){
-    c.textContent='❌'; c.className='ik-scan-circle sc-err';
-    document.getElementById('ik-scan-status').textContent='Tidak Ditemukan';
-    document.getElementById('ik-scan-sub').textContent=`ID "${val}" tidak ada`;
-    document.getElementById('ik-scan-result').style.display='none';
-    ikToast('❌ Siswa tidak ditemukan','danger'); return;
-  }
-  IK.scanSiswa=siswa;
-  c.textContent='✅'; c.className='ik-scan-circle sc-ok';
-  document.getElementById('ik-scan-status').textContent='Siswa Ditemukan!';
-  document.getElementById('ik-scan-sub').textContent='Pilih bulan & konfirmasi';
-  document.getElementById('ik-scan-nama').textContent=siswa.nama;
-  document.getElementById('ik-scan-kelas').textContent='Kelas '+siswa.kelas;
-  const ta=document.getElementById('ik-scan-ta').value;
-  const bulanIdx=+document.getElementById('ik-scan-bulan').value;
-  const sb=sudahBayar(siswa.id,ta);
-  const {t1,t2}=parseTA(ta);
-  document.getElementById('ik-scan-bulan-check').innerHTML=BUTA.map((b,i)=>{
-    const thn=b>=7?t1:t2; const key=bkey(b,thn);
-    const isSudah=sb.has(key); const isDipilih=i===bulanIdx;
-    let cls='ik-sbb'+(isSudah?' sudah':(isDipilih?' dipilih':''));
-    return `<div class="${cls}" id="ik-sbb-${i}" onclick="${isSudah?'':'ikToggleScanBulan('+i+')'}">${BN[b].substring(0,3)}<div style="font-size:0.58rem;margin-top:2px">${isSudah?'✓':''}</div></div>`;
-  }).join('');
-  document.getElementById('ik-scan-result').style.display='block';
-};
-
-window.ikToggleScanBulan = function(i){ const el=document.getElementById('ik-sbb-'+i); if(el&&!el.classList.contains('sudah'))el.classList.toggle('dipilih'); };
-
-window.ikKonfirmasiScan = function(){
-  if(!IK.scanSiswa)return;
-  const ta=document.getElementById('ik-scan-ta').value;
-  const {t1,t2}=parseTA(ta);
-  const dipilih=[...document.querySelectorAll('#ik-scan-bulan-check .ik-sbb.dipilih')];
-  if(!dipilih.length){ikToast('❗ Pilih minimal satu bulan','danger');return;}
-  dipilih.forEach(el=>{
-    const i=+el.id.replace('ik-sbb-',''); const b=BUTA[i]; const thn=b>=7?t1:t2;
-    IK.pembayaran.push({id:'P'+Date.now()+Math.random(),siswaId:IK.scanSiswa.id,namaSiswa:IK.scanSiswa.nama,kelas:IK.scanSiswa.kelas,bulan:b,namaBulan:BN[b]||'',tahun:thn,ta,jumlah:IK.cfg.iuran,tanggal:new Date().toLocaleDateString('id-ID'),catatan:'Via Scan QR'});
-  });
-  IK.scanLog.unshift({nama:IK.scanSiswa.nama,kelas:IK.scanSiswa.kelas,bulan:dipilih.length,waktu:new Date().toLocaleTimeString('id-ID')});
-  ikSave(); ikRenderDashboard(); ikRenderRiwayat(); ikRenderScanLog();
-  ikToast(`✅ ${dipilih.length} bulan ${IK.scanSiswa.nama} tersimpan!`);
-  setTimeout(ikResetScan,1400);
-};
-
-function ikRenderScanLog(){
-  const el=document.getElementById('ik-scan-log');
-  if(!IK.scanLog.length){el.innerHTML='<div class="ik-empty"><div class="e-icon">📋</div><div class="e-sub">Belum ada scan</div></div>';return;}
-  el.innerHTML=IK.scanLog.slice(0,10).map(l=>`<div class="ik-log-item"><div style="flex:1"><strong>${l.nama}</strong><div style="font-size:0.7rem;color:#94a3b8">Kelas ${l.kelas} · ${l.bulan} bulan</div></div><span style="font-size:0.7rem;color:#94a3b8">${l.waktu}</span><span class="ik-badge ik-badge-lunas">✓</span></div>`).join('');
-}
-window.ikClearLog = function(){ IK.scanLog=[]; ikRenderScanLog(); };
 
 // ================================================================
 // DASHBOARD
 // ================================================================
 function ikRenderDashboard(){
-  const ta=IK.cfg.ta; const {t1,t2}=parseTA(ta);
   const now=new Date(); const cb=now.getMonth()+1; const cy=now.getFullYear();
-  document.getElementById('ik-dash-ta').textContent=ta;
-  document.getElementById('ik-header-ta').textContent='TA '+ta;
-
-  const totalTA=IK.pembayaran.filter(p=>p.ta===ta||((p.tahun===t1&&p.bulan>=7)||(p.tahun===t2&&p.bulan<=6))).reduce((a,p)=>a+p.jumlah,0);
-  document.getElementById('ik-total-income').textContent='Rp '+totalTA.toLocaleString('id-ID');
-
-  const pb=IK.pembayaran.filter(p=>p.bulan===cb&&p.tahun===cy);
-  const lunas=IK.siswa.filter(s=>pb.some(p=>p.siswaId===s.id));
-  const incomeB=pb.reduce((a,p)=>a+p.jumlah,0);
-  const pct=IK.siswa.length?Math.round(lunas.length/IK.siswa.length*100):0;
-
-  document.getElementById('ik-prog-fill').style.width=pct+'%';
-  document.getElementById('ik-prog-label').textContent=lunas.length+' dari '+IK.siswa.length+' siswa lunas bulan ini';
-  document.getElementById('ik-prog-pct').textContent=pct+'%';
-  document.getElementById('kpi-total').textContent=IK.siswa.length;
-  document.getElementById('kpi-lunas').textContent=lunas.length;
-  document.getElementById('kpi-belum').textContent=IK.siswa.length-lunas.length;
-  document.getElementById('kpi-income').textContent='Rp '+incomeB.toLocaleString('id-ID');
-  document.getElementById('kpi-lunas-s').textContent=pct+'% terpenuhi';
-  document.getElementById('kpi-belum-s').textContent=(IK.siswa.length-lunas.length)+' siswa menunggu';
-  document.getElementById('kpi-income-s').textContent=BN[cb]+' '+cy;
-
-  // Per kelas
-  const kls=[...new Set(IK.siswa.map(s=>s.kelas))].sort();
-  const tbK=document.getElementById('ik-tb-kelas');
-  tbK.innerHTML=kls.length?kls.map(k=>{
-    const sk=IK.siswa.filter(s=>s.kelas===k);
-    const lk=sk.filter(s=>pb.some(p=>p.siswaId===s.id));
-    const pp=sk.length?Math.round(lk.length/sk.length*100):0;
-    return `<tr><td><span class="ik-badge ik-badge-kelas">${k}</span></td><td>${sk.length}</td><td style="color:#047857;font-weight:600">${lk.length}</td><td style="color:#b91c1c;font-weight:600">${sk.length-lk.length}</td>
-      <td><div class="ik-prog-wrap"><div class="ik-prog-bg"><div class="ik-prog-fill" style="width:${pp}%;background:${pp===100?'#047857':'#b91c1c'}"></div></div><span class="ik-prog-pct" style="color:${pp===100?'#047857':'#b91c1c'}">${pp}%</span></div></td></tr>`;
-  }).join(''):`<tr><td colspan="5" style="text-align:center;padding:20px;color:#94a3b8">Belum ada data</td></tr>`;
-
-  // Rekap TA
-  const tbR=document.getElementById('ik-tb-rekap');
-  tbR.innerHTML=BUTA.map((b,i)=>{
-    const thn=b>=7?t1:t2;
-    const pbr=IK.pembayaran.filter(p=>p.bulan===b&&p.tahun===thn);
-    const lb=IK.siswa.filter(s=>pbr.some(p=>p.siswaId===s.id)).length;
-    const tot=pbr.reduce((a,p)=>a+p.jumlah,0);
-    const isnow=b===cb&&thn===cy;
-    return `<tr style="${isnow?'background:#fef2f2;font-weight:600':''}">
-      <td>${BN[b]} ${thn}${isnow?' <span class="ik-badge ik-badge-belum" style="font-size:0.6rem">ini</span>':''}</td>
-      <td>${lb}</td>
-      <td style="color:#047857;font-weight:${tot?'600':'400'}">${tot?'Rp '+tot.toLocaleString('id-ID'):'—'}</td>
-    </tr>`;
-  }).join('');
+  const ta=IK.cfg.ta; const {t1,t2}=parseTA(ta);
+  const totalSiswa=IK.siswa.length;
+  // Bulan ini
+  const lunasSet=new Set(IK.pembayaran.filter(p=>p.bulan===cb&&p.tahun===cy).map(p=>p.siswaId));
+  const lunasCount=lunasSet.size;
+  const belumCount=Math.max(0,totalSiswa-lunasCount);
+  const incomeBln=IK.pembayaran.filter(p=>p.bulan===cb&&p.tahun===cy).reduce((s,p)=>s+(p.jumlah||0),0);
+  const incomeTA=IK.pembayaran.filter(p=>(p.tahun===t1&&p.bulan>=7)||(p.tahun===t2&&p.bulan<=6)).reduce((s,p)=>s+(p.jumlah||0),0);
+  const target=totalSiswa*12*IK.cfg.iuran||1;
+  const pct=Math.min(100,Math.round(incomeTA/target*100));
+  // Update UI
+  const $ = id => document.getElementById(id);
+  if($('ik-total-income'))$('ik-total-income').textContent='Rp '+incomeTA.toLocaleString('id-ID');
+  if($('ik-prog-fill'))$('ik-prog-fill').style.width=pct+'%';
+  if($('ik-prog-label'))$('ik-prog-label').textContent=lunasCount+' siswa lunas bulan ini';
+  if($('ik-prog-pct'))$('ik-prog-pct').textContent=pct+'%';
+  if($('ik-dash-ta'))$('ik-dash-ta').textContent=ta;
+  if($('kpi-total'))$('kpi-total').textContent=totalSiswa;
+  if($('kpi-lunas'))$('kpi-lunas').textContent=lunasCount;
+  if($('kpi-lunas-s'))$('kpi-lunas-s').textContent=totalSiswa?Math.round(lunasCount/totalSiswa*100)+'% dari total':'—';
+  if($('kpi-belum'))$('kpi-belum').textContent=belumCount;
+  if($('kpi-belum-s'))$('kpi-belum-s').textContent=belumCount>0?belumCount+' siswa perlu dibayar':'✅ Semua lunas';
+  if($('kpi-income'))$('kpi-income').textContent='Rp'+incomeBln.toLocaleString('id-ID');
+  if($('kpi-income-s'))$('kpi-income-s').textContent=BN[cb]+' '+cy;
+  // Rekap per kelas
+  const tb=$('ik-tb-kelas'); if(tb){
+    const kelMap={};
+    IK.siswa.forEach(s=>{if(!kelMap[s.kelas])kelMap[s.kelas]={total:0,lunas:0};kelMap[s.kelas].total++;});
+    IK.pembayaran.filter(p=>p.bulan===cb&&p.tahun===cy).forEach(p=>{
+      if(!kelMap[p.kelas])kelMap[p.kelas]={total:0,lunas:0};
+      const done=new Set(); if(!done.has(p.siswaId)){done.add(p.siswaId);kelMap[p.kelas].lunas=(kelMap[p.kelas].lunas||0)+1;}
+    });
+    // recount lunas per kelas properly
+    Object.keys(kelMap).forEach(k=>kelMap[k].lunas=0);
+    const lunasPerKelas={};
+    IK.pembayaran.filter(p=>p.bulan===cb&&p.tahun===cy).forEach(p=>{
+      if(!lunasPerKelas[p.kelas])lunasPerKelas[p.kelas]=new Set();
+      lunasPerKelas[p.kelas].add(p.siswaId);
+    });
+    Object.keys(lunasPerKelas).forEach(k=>{if(kelMap[k])kelMap[k].lunas=lunasPerKelas[k].size;});
+    const rows=Object.keys(kelMap).sort().map(k=>{
+      const {total,lunas}=kelMap[k]; const blm=Math.max(0,total-lunas);
+      const p2=total?Math.round(lunas/total*100):0;
+      return `<tr>
+        <td><span class="ik-badge ik-badge-kelas">${k}</span></td>
+        <td>${total}</td><td style="color:#047857;font-weight:700">${lunas}</td>
+        <td style="color:#b91c1c;font-weight:700">${blm}</td>
+        <td><div class="ik-prog-wrap"><div class="ik-prog-bg"><div class="ik-prog-fill" style="width:${p2}%;background:${p2>=80?'#047857':p2>=50?'#d97706':'#b91c1c'}"></div></div><span class="ik-prog-pct">${p2}%</span></div></td>
+      </tr>`;
+    });
+    tb.innerHTML=rows.length?rows.join(''):`<tr><td colspan="5" style="text-align:center;padding:16px;color:#94a3b8">Belum ada data</td></tr>`;
+  }
+  // Rekap per bulan
+  const tbr=$('ik-tb-rekap'); if(tbr){
+    const rows=BUTA.map(b=>{
+      const thn=b>=7?t1:t2;
+      const bpay=IK.pembayaran.filter(p=>p.bulan===b&&p.tahun===thn);
+      const lunasS=new Set(bpay.map(p=>p.siswaId)).size;
+      const total=bpay.reduce((s,p)=>s+(p.jumlah||0),0);
+      const isCur=(b===cb&&thn===cy);
+      return `<tr${isCur?' style="background:#fef2f2"':''}>
+        <td>${BN[b]} ${thn}${isCur?' <span class="ik-badge" style="background:#fbbf24;color:#92400e">Bln Ini</span>':''}</td>
+        <td>${lunasS>0?`<span class="ik-badge ik-badge-lunas">${lunasS} lunas</span>`:'—'}</td>
+        <td style="font-weight:700;color:${total>0?'#047857':'#94a3b8'}">${total>0?'Rp'+total.toLocaleString('id-ID'):'—'}</td>
+      </tr>`;
+    });
+    tbr.innerHTML=rows.join('');
+  }
 }
 window.ikRenderDashboard = ikRenderDashboard;
 
@@ -1707,627 +1715,619 @@ window.ikRenderDashboard = ikRenderDashboard;
 // BELUM BAYAR
 // ================================================================
 function ikRenderBelum(){
-  const ta=document.getElementById('ik-bb-ta')?.value||IK.cfg.ta;
-  const bbB=document.getElementById('ik-bb-bulan');
-  if(bbB){
-    const cv=bbB.value;
-    const {t1,t2}=parseTA(ta);
-    bbB.innerHTML=BUTA.map((b,i)=>`<option value="${i}"${i==cv?' selected':''}>${BN[b]} ${b>=7?t1:t2}</option>`).join('');
+  const fk=document.getElementById('ik-bb-kelas')?.value||'';
+  const taEl=document.getElementById('ik-bb-ta'); const ta=taEl?taEl.value:IK.cfg.ta;
+  const bbEl=document.getElementById('ik-bb-bulan');
+  const bIdx=bbEl?+bbEl.value:0;
+  const b=BUTA[bIdx]||BUTA[0];
+  const {t1,t2}=parseTA(ta); const thn=b>=7?t1:t2;
+  let siswa=IK.siswa.filter(s=>!fk||s.kelas===fk);
+  const paid=new Set(IK.pembayaran.filter(p=>p.bulan===b&&p.tahun===thn).map(p=>p.siswaId));
+  const belum=siswa.filter(s=>!paid.has(s.id));
+  const info=document.getElementById('ik-belum-info');
+  if(info){
+    if(belum.length){info.style.display='flex';info.innerHTML=`⚠️ ${belum.length} siswa belum bayar iuran <strong>${BN[b]} ${thn}</strong>`;}
+    else{info.style.display='none';}
   }
-  const idx=+(document.getElementById('ik-bb-bulan')?.value||0);
-  const b=BUTA[idx]; const {t1,t2}=parseTA(ta); const thn=b>=7?t1:t2;
-  const kelas=document.getElementById('ik-bb-kelas')?.value||'';
-  const belum=IK.siswa.filter(s=>{
-    const ok=IK.pembayaran.some(p=>p.siswaId===s.id&&p.bulan===b&&p.tahun===thn);
-    return !ok&&(!kelas||s.kelas===kelas);
-  }).sort((a,c)=>a.kelas.localeCompare(c.kelas)||a.nama.localeCompare(c.nama));
-
-  const sum=document.getElementById('ik-bb-summary');
-  const con=document.getElementById('ik-bb-container');
-  if(!belum.length){
-    sum.style.display='none';
-    con.innerHTML='<div class="ik-empty"><div class="e-icon">🎉</div><div class="e-text">Semua sudah membayar!</div><div class="e-sub">'+BN[b]+' '+thn+'</div></div>';
-    return;
-  }
-  sum.style.display='flex';
-  sum.innerHTML=`⚠️ <strong>${belum.length} siswa</strong> belum bayar <strong>${BN[b]} ${thn}</strong> · Total: <strong>Rp ${(belum.length*IK.cfg.iuran).toLocaleString('id-ID')}</strong>`;
-  con.innerHTML='<div class="ik-belum-grid">'+belum.map(s=>`
-    <div class="ik-belum-card">
-      <div class="bc-nama">👤 ${s.nama}</div>
-      <div class="bc-info"><span class="ik-badge ik-badge-kelas">${s.kelas}</span></div>
-      ${s.hp?`<div class="bc-info">📱 ${s.hp}</div>`:''}
-      <div class="bc-tunggakan">Rp ${IK.cfg.iuran.toLocaleString('id-ID')}</div>
-    </div>`).join('')+'</div>';
+  const list=document.getElementById('ik-belum-list'); if(!list)return;
+  if(!belum.length){list.innerHTML=`<div class="ik-empty"><div class="e-icon">✅</div><div class="e-text">Semua Lunas</div><div class="e-sub">Semua siswa sudah bayar bulan ini</div></div>`;return;}
+  list.innerHTML=`<div class="ik-belum-grid">${belum.map(s=>{
+    const tunggakan=BUTA.filter(bb=>{const yy=bb>=7?parseTA(ta).t1:parseTA(ta).t2;return!new Set(IK.pembayaran.filter(p=>p.siswaId===s.id&&p.bulan===bb&&p.tahun===yy).map(p=>p.siswaId)).has(s.id);}).length;
+    return `<div class="ik-belum-card"><div class="bc-nama">${s.nama}</div><div class="bc-info">Kelas ${s.kelas}${s.ortu?' · '+s.ortu:''}</div><div class="bc-tunggakan">Belum bayar ${BN[b]} ${thn}</div></div>`;
+  }).join('')}</div>`;
 }
 window.ikRenderBelum = ikRenderBelum;
 
 // ================================================================
-// LAPORAN FORMAL
+// LAPORAN
 // ================================================================
-window.ikToggleLapJenis = function(){
-  const j=document.getElementById('ik-lap-jenis').value;
-  document.getElementById('ik-lap-bw').style.display=j==='bulan'?'':'none';
-};
 window.ikGenLaporan = function(){
-  const j=document.getElementById('ik-lap-jenis').value;
-  const ta=document.getElementById('ik-lap-ta').value;
-  const bi=+document.getElementById('ik-lap-bulan').value;
-  const out=document.getElementById('ik-laporan-out');
-  if(j==='bulan')ikLapBulan(ta,bi,out); else ikLapTahun(ta,out);
+  const ta=document.getElementById('ik-lap-ta')?.value||IK.cfg.ta;
+  const bIdx=+(document.getElementById('ik-lap-bulan')?.value||0);
+  const fk=document.getElementById('ik-lap-kelas')?.value||'';
+  const b=BUTA[bIdx]; const {t1,t2}=parseTA(ta); const thn=b>=7?t1:t2;
+  let siswa=IK.siswa.filter(s=>!fk||s.kelas===fk).sort((a,b2)=>a.kelas.localeCompare(b2.kelas)||a.nama.localeCompare(b2.nama));
+  const paid=new Set(IK.pembayaran.filter(p=>p.bulan===b&&p.tahun===thn).map(p=>p.siswaId));
+  const income=IK.pembayaran.filter(p=>p.bulan===b&&p.tahun===thn&&(!fk||p.kelas===fk)).reduce((s,p)=>s+(p.jumlah||0),0);
+  const lunas=siswa.filter(s=>paid.has(s.id)).length;
+  const out=document.getElementById('ik-laporan-out'); if(!out)return;
+  out.innerHTML=`
+    <div class="ik-card">
+      ${ikKopLaporan()}
+      <div class="ik-ljudul"><h3>LAPORAN IURAN KOMITE BULAN ${BN[b].toUpperCase()} ${thn}</h3>
+        <p>${fk?'Kelas '+fk:'Semua Kelas'} · Tahun Ajaran ${ta}</p></div>
+      <dl class="ik-lmeta">
+        <dt>Jumlah Siswa</dt><dd>${siswa.length}</dd>
+        <dt>Lunas</dt><dd>${lunas} siswa</dd>
+        <dt>Belum Bayar</dt><dd>${siswa.length-lunas} siswa</dd>
+        <dt>Total Pemasukan</dt><dd style="font-weight:700;color:#047857">Rp ${income.toLocaleString('id-ID')}</dd>
+      </dl>
+      <div class="ik-ltable">
+        <table>
+          <thead><tr><th>#</th><th>Nama Siswa</th><th>Kelas</th><th>Status</th><th>Jumlah</th></tr></thead>
+          <tbody>${siswa.map((s,i)=>{
+            const p=IK.pembayaran.find(pp=>pp.siswaId===s.id&&pp.bulan===b&&pp.tahun===thn);
+            return `<tr><td>${i+1}</td><td>${s.nama}</td><td>${s.kelas}</td>
+              <td>${p?'<span style="color:#047857;font-weight:700">✅ Lunas</span>':'<span style="color:#b91c1c;font-weight:700">❌ Belum</span>'}</td>
+              <td>${p?'Rp '+p.jumlah.toLocaleString('id-ID'):'—'}</td></tr>`;
+          }).join('')}
+          <tr class="ltr-total"><td colspan="4" style="text-align:right">Total Pemasukan:</td><td>Rp ${income.toLocaleString('id-ID')}</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="ik-lttd">
+        <div class="ttd-box"><div class="ttd-label">Mengetahui,<br>Kepala Sekolah</div><div class="ttd-name">${IK.cfg.kepsek||'_________________'}</div><div class="ttd-jabatan">${IK.cfg.nip?'NIP. '+IK.cfg.nip:''}</div></div>
+        <div class="ttd-box"><div class="ttd-label">Bendahara Komite</div><div class="ttd-name">${IK.cfg.ketua||'_________________'}</div><div class="ttd-jabatan">Bendahara</div></div>
+      </div>
+    </div>`;
 };
-
-function ikKop(){ return `<div class="ik-lkop"><div class="lk-logo">🏫</div><div><h2>Pemerintah Kabupaten / Kota</h2><h3>${IK.cfg.sekolah.toUpperCase()}</h3><p>Komite Sekolah${IK.cfg.alamat?' · '+IK.cfg.alamat:''}</p></div></div>`; }
-function ikTtd(ta){
-  const tgl=new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
-  return `<div style="font-size:0.75rem;margin-top:20px;color:#475569">Dicetak: ${tgl}</div>
-  <div class="ik-lttd">
-    <div class="ttd-box"><div class="ttd-label">Mengetahui,<br>Kepala Sekolah</div><div class="ttd-name">${IK.cfg.kepsek||'................................'}</div><div class="ttd-jabatan">NIP. ${IK.cfg.nip||'................................'}</div></div>
-    <div class="ttd-box"><div class="ttd-label">Ketua Komite</div><div class="ttd-name">${IK.cfg.ketua||'................................'}</div><div class="ttd-jabatan">Ketua Komite Sekolah</div></div>
-  </div>`;
-}
-
-function ikLapBulan(ta,bi,out){
-  const b=BUTA[bi]; const {t1,t2}=parseTA(ta); const thn=b>=7?t1:t2;
-  const pb=IK.pembayaran.filter(p=>p.bulan===b&&p.tahun===thn);
-  const lunas=IK.siswa.filter(s=>pb.some(p=>p.siswaId===s.id));
-  const tot=pb.reduce((a,p)=>a+p.jumlah,0);
-  const pct=IK.siswa.length?Math.round(lunas.length/IK.siswa.length*100):0;
-  out.innerHTML=`<div class="ik-card" style="background:white">
-    ${ikKop()}
-    <div class="ik-ljudul"><h3>LAPORAN PENERIMAAN IURAN KOMITE SEKOLAH</h3><p>Bulan ${BN[b]} ${thn} &nbsp;|&nbsp; Tahun Ajaran ${ta}</p></div>
-    <dl class="ik-lmeta">
-      <dt>Nama Sekolah</dt><dd>: ${IK.cfg.sekolah}</dd>
-      <dt>Tahun Ajaran</dt><dd>: ${ta}</dd>
-      <dt>Bulan</dt><dd>: ${BN[b]} ${thn}</dd>
-      <dt>Siswa Terdaftar</dt><dd>: ${IK.siswa.length} siswa</dd>
-      <dt>Siswa Lunas</dt><dd>: ${lunas.length} siswa (${pct}%)</dd>
-      <dt>Siswa Belum Bayar</dt><dd>: ${IK.siswa.length-lunas.length} siswa</dd>
-      <dt>Besaran Iuran</dt><dd>: Rp ${IK.cfg.iuran.toLocaleString('id-ID')}/siswa/bulan</dd>
-      <dt>Total Penerimaan</dt><dd>: <strong>Rp ${tot.toLocaleString('id-ID')}</strong></dd>
-    </dl>
-    <div style="font-size:0.72rem;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px">Rincian Pembayaran</div>
-    <div class="ik-ltable"><table>
-      <thead><tr><th>No</th><th>Nama Siswa</th><th>Kelas</th><th>Status</th><th>Jumlah</th><th>Tgl Bayar</th><th>Ket.</th></tr></thead>
-      <tbody>
-        ${IK.siswa.sort((a,c)=>a.kelas.localeCompare(c.kelas)||a.nama.localeCompare(c.nama)).map((s,i)=>{
-          const bayar=pb.find(p=>p.siswaId===s.id);
-          return `<tr><td>${i+1}</td><td>${s.nama}</td><td>${s.kelas}</td>
-            <td><span class="ik-badge ${bayar?'ik-badge-lunas':'ik-badge-belum'}">${bayar?'LUNAS':'BELUM'}</span></td>
-            <td>${bayar?'Rp '+bayar.jumlah.toLocaleString('id-ID'):'—'}</td>
-            <td>${bayar?bayar.tanggal:'—'}</td>
-            <td>${bayar&&bayar.catatan?bayar.catatan:'—'}</td></tr>`;
-        }).join('')}
-        <tr class="ltr-total"><td colspan="4"><strong>TOTAL</strong></td><td colspan="3"><strong>Rp ${tot.toLocaleString('id-ID')}</strong></td></tr>
-      </tbody>
-    </table></div>
-    ${ikTtd(ta)}
-  </div>`;
-}
-
-function ikLapTahun(ta,out){
-  const {t1,t2}=parseTA(ta);
-  const rek=BUTA.map((b,i)=>{
-    const thn=b>=7?t1:t2;
-    const pb=IK.pembayaran.filter(p=>p.bulan===b&&p.tahun===thn);
-    const l=IK.siswa.filter(s=>pb.some(p=>p.siswaId===s.id)).length;
-    const tot=pb.reduce((a,p)=>a+p.jumlah,0);
-    return {b,thn,l,tot,n:pb.length};
-  });
-  const gt=rek.reduce((a,r)=>a+r.tot,0);
-  out.innerHTML=`<div class="ik-card" style="background:white">
-    ${ikKop()}
-    <div class="ik-ljudul"><h3>LAPORAN REKAPITULASI IURAN KOMITE SEKOLAH</h3><p>Tahun Ajaran ${ta}</p></div>
-    <dl class="ik-lmeta">
-      <dt>Nama Sekolah</dt><dd>: ${IK.cfg.sekolah}</dd>
-      <dt>Tahun Ajaran</dt><dd>: ${ta}</dd>
-      <dt>Total Siswa</dt><dd>: ${IK.siswa.length} siswa</dd>
-      <dt>Besaran Iuran</dt><dd>: Rp ${IK.cfg.iuran.toLocaleString('id-ID')}/siswa/bulan</dd>
-      <dt>Potensi Setahun</dt><dd>: Rp ${(IK.siswa.length*IK.cfg.iuran*12).toLocaleString('id-ID')}</dd>
-      <dt>Realisasi Total</dt><dd>: <strong>Rp ${gt.toLocaleString('id-ID')}</strong></dd>
-    </dl>
-    <div class="ik-ltable"><table>
-      <thead><tr><th>No</th><th>Bulan</th><th>Transaksi</th><th>Lunas</th><th>Belum</th><th>%</th><th>Total</th></tr></thead>
-      <tbody>
-        ${rek.map((r,i)=>{const pp=IK.siswa.length?Math.round(r.l/IK.siswa.length*100):0; return `<tr><td>${i+1}</td><td>${BN[r.b]} ${r.thn}</td><td>${r.n}</td><td>${r.l}</td><td>${IK.siswa.length-r.l}</td><td>${pp}%</td><td>${r.tot?'Rp '+r.tot.toLocaleString('id-ID'):'—'}</td></tr>`;}).join('')}
-        <tr class="ltr-total"><td colspan="2"><strong>TOTAL</strong></td><td>${rek.reduce((a,r)=>a+r.n,0)}</td><td></td><td></td><td></td><td><strong>Rp ${gt.toLocaleString('id-ID')}</strong></td></tr>
-      </tbody>
-    </table></div>
-    ${ikTtd(ta)}
-  </div>`;
+window.ikCetakLaporan = function(){
+  const out=document.getElementById('ik-laporan-out');
+  if(!out.innerHTML.trim()){ikGenLaporan();}
+  setTimeout(()=>window.print(),200);
+};
+function ikKopLaporan(){
+  return `<div class="ik-lkop"><div class="lk-logo">🏫</div><div><h2>Laporan Iuran Komite Sekolah</h2><h3>${IK.cfg.sekolah.toUpperCase()}</h3><p>${IK.cfg.alamat||''}</p></div></div>`;
 }
 
 // ================================================================
-// KARTU SISWA QR
+// KARTU SISWA
 // ================================================================
 function ikRenderKartu(){
   const fk=document.getElementById('ik-kartu-kelas')?.value||'';
-  const data=IK.siswa.filter(s=>!fk||s.kelas===fk).sort((a,b)=>a.kelas.localeCompare(b.kelas)||a.nama.localeCompare(b.nama));
-  const con=document.getElementById('ik-kartu-grid');
-  if(!data.length){con.innerHTML='<div class="ik-empty" style="grid-column:1/-1"><div class="e-icon">🪪</div><div class="e-text">Belum ada siswa</div></div>';return;}
-  con.innerHTML=data.map(s=>`
+  const cari=document.getElementById('ik-kartu-cari')?.value.toLowerCase()||'';
+  const data=IK.siswa.filter(s=>(!fk||s.kelas===fk)&&(!cari||s.nama.toLowerCase().includes(cari))).sort((a,b)=>a.kelas.localeCompare(b.kelas)||a.nama.localeCompare(b.nama));
+  const grid=document.getElementById('ik-kartu-grid'); if(!grid)return;
+  if(!data.length){grid.innerHTML=`<div class="ik-empty"><div class="e-icon">🪪</div><div class="e-text">Belum ada siswa</div></div>`;return;}
+  grid.innerHTML=data.map(s=>`
     <div class="ik-kartu">
       <div class="kk-sekolah">${IK.cfg.sekolah}</div>
       <div class="kk-nama">${s.nama}</div>
       <div class="kk-kelas">Kelas ${s.kelas}${s.ortu?' · '+s.ortu:''}</div>
-      <div class="kk-qr" id="ik-qr-${s.id}"></div>
+      <div class="kk-qr" id="qr-${s.id}"></div>
       <div class="kk-footer">
-        <div class="kk-id">ID: ${s.id}</div>
-        <div class="kk-iuran">Rp ${IK.cfg.iuran.toLocaleString('id-ID')}<span style="font-size:0.6rem;display:block;font-weight:400;opacity:0.75">/bulan</span></div>
+        <div class="kk-id">${s.id}</div>
+        <div class="kk-iuran">Rp ${IK.cfg.iuran.toLocaleString('id-ID')}/bln</div>
       </div>
     </div>`).join('');
-  setTimeout(()=>{
-    data.forEach(s=>{
-      const el=document.getElementById('ik-qr-'+s.id);
-      if(!el||el.querySelector('canvas'))return;
-      try{new QRCode(el,{text:s.id,width:80,height:80,colorDark:'#1e1e1e',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});}
-      catch(e){el.innerHTML=`<div style="width:80px;height:80px;background:#f0f0f0;font-size:0.55rem;display:flex;align-items:center;justify-content:center;border-radius:4px;color:#666">${s.id.substring(0,12)}</div>`;}
-    });
-  },120);
-}
-window.ikRenderKartu = ikRenderKartu;
-
-// ================================================================
-// EDIT STATUS PEMBAYARAN
-// ================================================================
-
-let _esLog = [];        // log perubahan sesi ini
-let _esPendingAksi = null; // { type:'single'|'bulk', data }
-
-function ikInitEditStatus(){
-  // Populate TA
-  const taList2 = taList();
-  const elTA = document.getElementById('es-ta');
-  if(elTA){
-    elTA.innerHTML = taList2.map(ta=>`<option value="${ta}"${ta===IK.cfg.ta?' selected':''}>${ta}</option>`).join('');
-  }
-  // Populate bulan dengan reset ke bulan saat ini (true = reset)
-  ikEsPopulateBulan(true);
-  ikRebuildKelasSelects();
-  ikRenderEditStatus();
-}
-
-function ikEsPopulateBulan(resetToCurrentMonth){
-  const ta = document.getElementById('es-ta')?.value || IK.cfg.ta;
-  const {t1,t2} = parseTA(ta);
-  const now = new Date(); const cb = now.getMonth()+1;
-  const el = document.getElementById('es-bulan'); if(!el)return;
-  // Simpan nilai yang sudah dipilih user (kecuali diminta reset)
-  const currentVal = resetToCurrentMonth ? null : el.value;
-  el.innerHTML = BUTA.map((b,i)=>{
-    const thn=b>=7?t1:t2;
-    return `<option value="${i}">${BN[b]} ${thn}</option>`;
-  }).join('');
-  // Kembalikan ke pilihan user, atau default ke bulan saat ini
-  if(currentVal !== null && currentVal !== '' && el.querySelector(`option[value="${currentVal}"]`)){
-    el.value = currentVal;
-  } else {
-    // Default: cari index bulan saat ini di BUTA
-    const defIdx = BUTA.indexOf(cb);
-    el.value = defIdx >= 0 ? String(defIdx) : '0';
-  }
-}
-
-function ikRenderEditStatus(){
-  // JANGAN panggil ikEsPopulateBulan() di sini — akan reset pilihan user!
-  const ta      = document.getElementById('es-ta')?.value || IK.cfg.ta;
-  const bulanIdx= +(document.getElementById('es-bulan')?.value ?? 0);
-  const kelas   = document.getElementById('es-kelas')?.value || '';
-  const sfil    = document.getElementById('es-status-filter')?.value || '';
-  const cari    = (document.getElementById('es-cari')?.value||'').toLowerCase();
-  const b       = BUTA[bulanIdx];
-  const {t1,t2} = parseTA(ta);
-  const thn     = b>=7?t1:t2;
-
-  // Filter siswa
-  let siswa = IK.siswa.filter(s=>{
-    if(kelas && s.kelas!==kelas) return false;
-    if(cari && !s.nama.toLowerCase().includes(cari)) return false;
-    return true;
-  }).sort((a,c)=>a.kelas.localeCompare(c.kelas,undefined,{numeric:true})||a.nama.localeCompare(c.nama));
-
-  // Tentukan status tiap siswa
-  const rows = siswa.map(s=>{
-    const bayar = IK.pembayaran.find(p=>p.siswaId===s.id&&p.bulan===b&&p.tahun===thn);
-    const lunas = !!bayar;
-    if(sfil==='lunas' && !lunas) return null;
-    if(sfil==='belum' && lunas) return null;
-    return {s, lunas, bayar};
-  }).filter(Boolean);
-
-  const tbody = document.getElementById('es-tbody');
-  if(!tbody) return;
-
-  if(!rows.length){
-    tbody.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:20px;color:#94a3b8">Tidak ada data untuk filter ini</td></tr>`;
-    document.getElementById('es-cb-all').checked=false;
-    ikEsUpdateSelCount();
-    return;
-  }
-
-  tbody.innerHTML = rows.map(({s,lunas,bayar},i)=>`
-    <tr id="es-row-${s.id}" data-id="${s.id}" data-lunas="${lunas}" data-bayarid="${bayar?bayar.id:''}">
-      <td style="text-align:center">
-        <input type="checkbox" class="es-cb" data-id="${s.id}" onchange="ikEsUpdateSelCount()">
-      </td>
-      <td style="color:#94a3b8;font-size:0.75rem">${i+1}</td>
-      <td>
-        <div style="font-weight:700;font-size:0.82rem">${s.nama}</div>
-        ${s.ortu?`<div style="font-size:0.68rem;color:#94a3b8">${s.ortu}</div>`:''}
-      </td>
-      <td><span class="ik-badge ik-badge-kelas">${s.kelas}</span></td>
-      <td>
-        <span class="ik-badge ${lunas?'ik-badge-lunas':'ik-badge-belum'}" id="es-badge-${s.id}">
-          ${lunas?'✅ LUNAS':'❌ BELUM'}
-        </span>
-        ${bayar?`<div style="font-size:0.65rem;color:#94a3b8;margin-top:2px">${bayar.tanggal||''}</div>`:''}
-      </td>
-      <td>
-        ${lunas
-          ? `<button class="ik-btn ik-btn-danger ik-btn-xs" onclick="ikEsAksiSingle('${s.id}','belum')">❌ Batalkan</button>`
-          : `<button class="ik-btn ik-btn-success ik-btn-xs" onclick="ikEsAksiSingle('${s.id}','lunas')">✅ Lunaskan</button>`
-        }
-      </td>
-    </tr>`).join('');
-
-  document.getElementById('es-cb-all').checked=false;
-  ikEsUpdateSelCount();
-}
-window.ikRenderEditStatus = ikRenderEditStatus;
-
-// ── Pilih semua / batal ──────────────────────────────────────
-window.ikEsToggleAll = function(cb){
-  document.querySelectorAll('.es-cb').forEach(c=>c.checked=cb.checked);
-  ikEsUpdateSelCount();
-};
-window.ikEsSelectAll   = function(){ document.querySelectorAll('.es-cb').forEach(c=>c.checked=true);  ikEsUpdateSelCount(); document.getElementById('es-cb-all').checked=true; };
-window.ikEsDeselectAll = function(){ document.querySelectorAll('.es-cb').forEach(c=>c.checked=false); ikEsUpdateSelCount(); document.getElementById('es-cb-all').checked=false; };
-
-function ikEsUpdateSelCount(){
-  const n = document.querySelectorAll('.es-cb:checked').length;
-  const el = document.getElementById('es-sel-count');
-  if(el){ el.textContent=n+' dipilih'; el.style.display=n?'inline':'none'; }
-}
-
-// ── Aksi single row ──────────────────────────────────────────
-window.ikEsAksiSingle = function(siswaId, aksi){
-  _esPendingAksi = { type:'single', siswaId, aksi };
-  ikEsShowPasswordModal(aksi==='lunas'
-    ? '1 siswa → ditandai <strong style="color:#047857">LUNAS</strong>'
-    : '1 siswa → status dikembalikan ke <strong style="color:#b91c1c">BELUM BAYAR</strong>');
-};
-
-// ── Aksi massal ──────────────────────────────────────────────
-window.ikEsBulkAksi = function(aksi){
-  const ids = [...document.querySelectorAll('.es-cb:checked')].map(c=>c.dataset.id);
-  if(!ids.length){ikToast('❗ Pilih siswa terlebih dahulu','warn');return;}
-  _esPendingAksi = { type:'bulk', ids, aksi };
-  const warna = aksi==='lunas' ? '#047857' : '#b91c1c';
-  const label = aksi==='lunas' ? 'LUNAS' : 'BELUM BAYAR';
-  ikEsShowPasswordModal(`<strong>${ids.length} siswa</strong> → ditandai <strong style="color:${warna}">${label}</strong>`);
-};
-
-// ── Modal password ───────────────────────────────────────────
-function ikEsShowPasswordModal(infoHtml){
-  document.getElementById('es-pw-info').innerHTML = '⚠️ Anda akan mengubah status: ' + infoHtml;
-  document.getElementById('es-pw-input').value = '';
-  document.getElementById('es-pw-error').style.display = 'none';
-  document.getElementById('ik-modal-password').classList.add('open');
-  setTimeout(()=>document.getElementById('es-pw-input').focus(), 120);
-}
-
-window.ikEsKonfirmasiPassword = function(){
-  const pw = document.getElementById('es-pw-input').value;
-  const errEl = document.getElementById('es-pw-error');
-  if(!pw){ errEl.style.display='block'; errEl.textContent='❌ Password tidak boleh kosong.'; return; }
-  if(pw !== (IK.cfg.password||'komite2025')){
-    errEl.style.display='block';
-    errEl.textContent='❌ Password salah. Coba lagi.';
-    document.getElementById('es-pw-input').value='';
-    document.getElementById('es-pw-input').focus();
-    return;
-  }
-  errEl.style.display='none';
-  ikCloseModal('ik-modal-password');
-  if(!_esPendingAksi) return;
-  if(_esPendingAksi.type==='single') ikEsEksekusiSingle(_esPendingAksi);
-  if(_esPendingAksi.type==='bulk')   ikEsEksekusiBulk(_esPendingAksi);
-  _esPendingAksi = null;
-};
-
-// ── Eksekusi perubahan single ────────────────────────────────
-function ikEsEksekusiSingle({siswaId, aksi}){
-  const ta      = document.getElementById('es-ta')?.value || IK.cfg.ta;
-  const bulanIdx= +(document.getElementById('es-bulan')?.value ?? 0);
-  const b       = BUTA[bulanIdx];
-  const {t1,t2} = parseTA(ta);
-  const thn     = b>=7?t1:t2;
-  const siswa   = IK.siswa.find(s=>s.id===siswaId);
-  if(!siswa) return;
-
-  let log = '';
-  if(aksi==='lunas'){
-    const sudah = IK.pembayaran.find(p=>p.siswaId===siswaId&&p.bulan===b&&p.tahun===thn);
-    if(sudah){ ikToast('ℹ️ '+siswa.nama+' sudah lunas','warn'); return; }
-    const rec = {
-      id:'P'+Date.now()+Math.random(), siswaId, namaSiswa:siswa.nama, kelas:siswa.kelas,
-      bulan:b, namaBulan:BN[b]||'', tahun:thn, ta,
-      jumlah:IK.cfg.iuran, tanggal:new Date().toLocaleDateString('id-ID'), catatan:'Edit manual'
-    };
-    IK.pembayaran.push(rec);
-    ikSyncSheets('addPembayaran', rec);
-    log = `✅ ${siswa.nama} (${siswa.kelas}) → LUNAS ${BN[b]} ${thn}`;
-  } else {
-    const idx = IK.pembayaran.findIndex(p=>p.siswaId===siswaId&&p.bulan===b&&p.tahun===thn);
-    if(idx===-1){ ikToast('ℹ️ '+siswa.nama+' memang belum bayar','warn'); return; }
-    const hapus = IK.pembayaran[idx];
-    ikSyncSheets('deletePembayaran', {id: hapus.id});
-    IK.pembayaran.splice(idx,1);
-    log = `❌ ${siswa.nama} (${siswa.kelas}) → BELUM BAYAR ${BN[b]} ${thn}`;
-  }
-
-  ikSave();
-  ikEsAddLog(log);
-  ikRenderEditStatus();
-  ikRenderDashboard();
-  ikToast(log.length>60 ? log.substring(0,60)+'…' : log);
-}
-
-// ── Eksekusi perubahan massal ────────────────────────────────
-function ikEsEksekusiBulk({ids, aksi}){
-  const ta      = document.getElementById('es-ta')?.value || IK.cfg.ta;
-  const bulanIdx= +(document.getElementById('es-bulan')?.value ?? 0);
-  const b       = BUTA[bulanIdx];
-  const {t1,t2} = parseTA(ta);
-  const thn     = b>=7?t1:t2;
-
-  let berhasil=0, dilewati=0;
-  ids.forEach(siswaId=>{
-    const siswa = IK.siswa.find(s=>s.id===siswaId); if(!siswa) return;
-    if(aksi==='lunas'){
-      const sudah = IK.pembayaran.find(p=>p.siswaId===siswaId&&p.bulan===b&&p.tahun===thn);
-      if(sudah){ dilewati++; return; }
-      const rec = {
-        id:'P'+Date.now()+Math.random(), siswaId, namaSiswa:siswa.nama, kelas:siswa.kelas,
-        bulan:b, namaBulan:BN[b]||'', tahun:thn, ta,
-        jumlah:IK.cfg.iuran, tanggal:new Date().toLocaleDateString('id-ID'), catatan:'Edit massal'
-      };
-      IK.pembayaran.push(rec);
-      ikSyncSheets('addPembayaran', rec);
-      berhasil++;
-    } else {
-      const idx = IK.pembayaran.findIndex(p=>p.siswaId===siswaId&&p.bulan===b&&p.tahun===thn);
-      if(idx===-1){ dilewati++; return; }
-      ikSyncSheets('deletePembayaran', {id: IK.pembayaran[idx].id});
-      IK.pembayaran.splice(idx,1);
-      berhasil++;
+  // Generate QR
+  data.forEach(s=>{
+    const el=document.getElementById('qr-'+s.id);
+    if(el&&!el.querySelector('canvas')){
+      try{new QRCode(el,{text:s.id,width:60,height:60,colorDark:'#7f1d1d',colorLight:'#fff'});}catch(e){}
     }
   });
+}
+window.ikRenderKartu = ikRenderKartu;
+window.ikCetakKartu = function(){ setTimeout(()=>window.print(),200); };
 
-  ikSave();
-  const label = aksi==='lunas'?'LUNAS':'BELUM BAYAR';
-  const logMsg = `${aksi==='lunas'?'✅':'❌'} Massal ${label}: ${berhasil} siswa diubah, ${dilewati} dilewati — ${BN[b]} ${thn}`;
-  ikEsAddLog(logMsg);
-  ikEsDeselectAll();
-  ikRenderEditStatus();
-  ikRenderDashboard();
-  ikToast(`✅ ${berhasil} siswa ditandai ${label}${dilewati?' ('+dilewati+' dilewati)':''}`);
+// ================================================================
+// SCAN QR
+// ================================================================
+function ikRenderScanBulan(){
+  const ta=document.getElementById('ik-scan-ta')?.value||IK.cfg.ta;
+  const {t1,t2}=parseTA(ta);
+  const sid=IK.scanSiswa?.id||null;
+  const paid=sid?sudahBayar(sid,ta):new Set();
+  const grid=document.getElementById('scan-bulan-grid'); if(!grid)return;
+  grid.innerHTML=BUTA.map(b=>{
+    const thn=b>=7?t1:t2; const k=bkey(b,thn);
+    const sudah=paid.has(k);
+    const dipilih=IK._scanPilih&&IK._scanPilih.has(k);
+    return `<div class="ik-sbb${sudah?' sudah':dipilih?' dipilih':''}"
+      onclick="ikToggleScanBulan(${b},${thn},'${k}')"
+      id="sbb-${b}-${thn}">
+      ${BN[b].substring(0,3)}<br><small>${thn}</small>
+    </div>`;
+  }).join('');
 }
 
-// ── Log ─────────────────────────────────────────────────────
-function ikEsAddLog(msg){
-  const waktu = new Date().toLocaleTimeString('id-ID');
-  _esLog.unshift({msg, waktu});
-  ikEsRenderLog();
-}
-function ikEsRenderLog(){
-  const el = document.getElementById('es-log-container'); if(!el) return;
-  if(!_esLog.length){
-    el.innerHTML='<div class="ik-empty"><div class="e-icon">📋</div><div class="e-sub">Belum ada perubahan</div></div>';
+IK._scanPilih = new Set();
+
+window.ikToggleScanBulan = function(b,thn,k){
+  const ta=document.getElementById('ik-scan-ta')?.value||IK.cfg.ta;
+  const sid=IK.scanSiswa?.id||null;
+  const paid=sid?sudahBayar(sid,ta):new Set();
+  if(paid.has(k))return;
+  if(IK._scanPilih.has(k))IK._scanPilih.delete(k);
+  else IK._scanPilih.add(k);
+  ikRenderScanBulan();
+};
+
+window.ikScanManual = function(val,confirm2=false){
+  val=val.trim();
+  if(!val)return;
+  const s=IK.siswa.find(x=>x.id===val||x.nama.toLowerCase()===val.toLowerCase());
+  if(!s){
+    document.getElementById('scan-circle').className='ik-scan-circle sc-err';
+    document.getElementById('scan-status-text').textContent='Siswa tidak ditemukan';
+    const ra=document.getElementById('scan-result-area');
+    ra.innerHTML=`<div class="ik-scan-result"><span style="color:#f87171">❌ ID "${val}" tidak ditemukan.</span></div>`;
     return;
   }
-  el.innerHTML = _esLog.slice(0,30).map(l=>`
+  IK.scanSiswa=s; IK._scanPilih=new Set();
+  document.getElementById('scan-circle').className='ik-scan-circle sc-ok';
+  document.getElementById('scan-status-text').textContent='Siswa Ditemukan';
+  const ta=document.getElementById('ik-scan-ta')?.value||IK.cfg.ta;
+  const paid=sudahBayar(s.id,ta);
+  const ra=document.getElementById('scan-result-area');
+  ra.innerHTML=`<div class="ik-scan-result">
+    <div style="font-weight:700;font-size:0.9rem">${s.nama}</div>
+    <div style="font-size:0.75rem;opacity:0.7;margin-bottom:10px">Kelas ${s.kelas}${s.ortu?' · '+s.ortu:''}</div>
+    <div style="font-size:0.75rem;margin-bottom:8px">Sudah bayar: <strong>${paid.size} bulan</strong></div>
+    <button class="ik-btn ik-btn-success" onclick="ikScanBayar()">💾 Bayar Bulan Dipilih</button>
+  </div>`;
+  ikRenderScanBulan();
+};
+
+window.ikScanBayar = function(){
+  if(!IK.scanSiswa){ikToast('❗ Scan siswa dulu','danger');return;}
+  if(!IK._scanPilih.size){ikToast('❗ Pilih bulan dulu','warn');return;}
+  const ta=document.getElementById('ik-scan-ta')?.value||IK.cfg.ta;
+  const s=IK.scanSiswa;
+  let added=0;
+  IK._scanPilih.forEach(k=>{
+    const [b,thn]=k.split('-').map(Number);
+    if(IK.pembayaran.find(p=>p.siswaId===s.id&&p.bulan===b&&p.tahun===thn))return;
+    const rec={id:'P'+Date.now()+Math.random(),siswaId:s.id,namaSiswa:s.nama,kelas:s.kelas,
+      bulan:b,tahun:thn,ta,jumlah:IK.cfg.iuran,tanggal:new Date().toLocaleDateString('id-ID'),catatan:'Scan QR'};
+    IK.pembayaran.push(rec); ikSyncSheets('addBayar',rec); added++;
+  });
+  if(added){
+    ikSave(); ikRenderDashboard(); ikRenderRiwayat(); ikRenderBukasUmum();
+    IK.scanLog.unshift({nama:s.nama,kelas:s.kelas,bulan:added,waktu:new Date().toLocaleTimeString('id-ID')});
+    IK._scanPilih=new Set();
+    ikRenderScanBulan(); ikRenderScanLog();
+    const ra=document.getElementById('scan-result-area');
+    if(ra) ra.innerHTML=`<div class="ik-scan-result"><span style="color:#6ee7b7">✅ ${added} bulan berhasil disimpan untuk ${s.nama}!</span></div>`;
+    ikToast(`✅ ${added} bulan dibayar untuk ${s.nama}`);
+    document.getElementById('scan-manual-input').value='';
+    IK.scanSiswa=null;
+  } else {
+    ikToast('ℹ️ Bulan yang dipilih sudah lunas','warn');
+  }
+};
+
+function ikRenderScanLog(){
+  const el=document.getElementById('scan-log-list'); if(!el)return;
+  const cnt=document.getElementById('scan-log-count');
+  if(cnt)cnt.textContent=IK.scanLog.length+' scan';
+  if(!IK.scanLog.length){el.innerHTML=`<div class="ik-empty"><div class="e-icon">📋</div><div class="e-sub">Belum ada scan</div></div>`;return;}
+  el.innerHTML=IK.scanLog.slice(0,20).map(l=>`
     <div class="ik-log-item">
-      <div style="flex:1;font-size:0.78rem">${l.msg}</div>
-      <span style="font-size:0.68rem;color:#94a3b8;white-space:nowrap">${l.waktu}</span>
+      <span style="font-size:1.2rem">✅</span>
+      <div>
+        <div style="font-weight:700">${l.nama} <span class="ik-badge ik-badge-kelas">${l.kelas}</span></div>
+        <div style="font-size:0.7rem;color:#64748b">${l.bulan} bulan · ${l.waktu}</div>
+      </div>
     </div>`).join('');
 }
-window.ikEsClearLog = function(){ _esLog=[]; ikEsRenderLog(); };
+
+window.ikClearScanLog = function(){IK.scanLog=[];ikRenderScanLog();};
+window.ikResetScan = function(){
+  IK.scanSiswa=null; IK._scanPilih=new Set();
+  const c=document.getElementById('scan-circle');
+  if(c){c.className='ik-scan-circle sc-pulse'; c.textContent='📷';}
+  const st=document.getElementById('scan-status-text');
+  if(st)st.textContent='Mode Scan Aktif';
+  const ra=document.getElementById('scan-result-area');
+  if(ra)ra.innerHTML='';
+  const mi=document.getElementById('scan-manual-input');
+  if(mi)mi.value='';
+  ikRenderScanBulan();
+};
+
+window.ikStartCamera = async function(){
+  const video=document.getElementById('scan-video');
+  const btnStart=document.getElementById('btn-cam-start');
+  const btnStop=document.getElementById('btn-cam-stop');
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+    video.srcObject=stream; video.play(); video.style.display='block';
+    if(btnStart)btnStart.style.display='none';
+    if(btnStop)btnStop.style.display='inline-flex';
+    const canvas=document.getElementById('scan-canvas');
+    const ctx=canvas.getContext('2d');
+    function tick(){
+      if(video.readyState===video.HAVE_ENOUGH_DATA){
+        canvas.height=video.videoHeight; canvas.width=video.videoWidth;
+        ctx.drawImage(video,0,0,canvas.width,canvas.height);
+        const img=ctx.getImageData(0,0,canvas.width,canvas.height);
+        const code=jsQR(img.data,img.width,img.height);
+        if(code&&code.data){
+          const inp=document.getElementById('scan-manual-input');
+          if(inp)inp.value=code.data;
+          ikScanManual(code.data,true);
+          ikStopCamera(); return;
+        }
+      }
+      scanTimer=requestAnimationFrame(tick);
+    }
+    scanTimer=requestAnimationFrame(tick);
+  }catch(e){ikToast('❌ Kamera tidak bisa diakses: '+e.message,'danger');}
+};
+
+window.ikStopCamera = function(){
+  const video=document.getElementById('scan-video');
+  if(video&&video.srcObject){video.srcObject.getTracks().forEach(t=>t.stop());video.srcObject=null;video.style.display='none';}
+  const btnStart=document.getElementById('btn-cam-start');
+  const btnStop=document.getElementById('btn-cam-stop');
+  if(btnStart)btnStart.style.display='inline-flex';
+  if(btnStop)btnStop.style.display='none';
+  if(scanTimer){cancelAnimationFrame(scanTimer);scanTimer=null;}
+};
+
+// ================================================================
+// IMPORT/EXPORT
+// ================================================================
+window.ikDzOver = function(e){e.preventDefault();document.getElementById('ik-dz').classList.add('over');};
+window.ikDzLeave = function(){document.getElementById('ik-dz').classList.remove('over');};
+window.ikDzDrop = function(e){e.preventDefault();document.getElementById('ik-dz').classList.remove('over');const f=e.dataTransfer.files[0];if(f)ikReadFile(f);};
+window.ikImportSiswa = function(input){const f=input.files[0];if(f)ikReadFile(f);input.value='';};
+
+function ikReadFile(f){
+  const r=new FileReader();
+  r.onload=e=>{
+    const txt=e.target.result;
+    if(f.name.endsWith('.json')){
+      try{const j=JSON.parse(txt);
+        if(Array.isArray(j)){const added=j.filter(s=>s.nama&&s.kelas&&!IK.siswa.find(x=>x.id===s.id));
+          added.forEach(s=>{if(!s.id)s.id='S'+Date.now()+Math.random();IK.siswa.push(s);});
+          ikSave();ikRenderSiswa();ikRenderDashboard();ikPopulateSiswaSelect();ikRebuildKelasSelects();
+          ikToast('✅ '+added.length+' siswa diimpor dari JSON');}
+      }catch(ex){ikToast('❌ File JSON tidak valid','danger');}
+    } else {
+      const lines=txt.split('\n').filter(l=>l.trim());
+      let added=0;
+      lines.forEach((line,i)=>{
+        if(i===0&&line.toLowerCase().includes('nama'))return;
+        const [nama,kelas,ortu,hp]=(line.includes('\t')?line.split('\t'):line.split(',')).map(s=>s.trim().replace(/^"|"$/g,''));
+        if(!nama||!kelas)return;
+        if(IK.siswa.find(s=>s.nama===nama&&s.kelas===kelas))return;
+        IK.siswa.push({id:'S'+Date.now()+Math.floor(Math.random()*9999),nama,kelas,ortu:ortu||'',hp:hp||'',tanggal:new Date().toLocaleDateString('id-ID')});
+        added++;
+      });
+      if(added){ikSave();ikRenderSiswa();ikRenderDashboard();ikPopulateSiswaSelect();ikRebuildKelasSelects();ikToast('✅ '+added+' siswa diimpor dari CSV');}
+      else ikToast('ℹ️ Tidak ada data baru dari CSV','warn');
+    }
+  };
+  r.readAsText(f);
+}
+
+function dlCSV(filename,content){const b=new Blob(['\ufeff'+content],{type:'text/csv'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=filename;a.click();URL.revokeObjectURL(u);}
+function dlJSON(filename,data){const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=filename;a.click();URL.revokeObjectURL(u);}
+
+window.ikExportCSV = function(){
+  const rows=['Nama,Kelas,OrangTua,NoHP,Tanggal',...IK.siswa.map(s=>`"${s.nama}","${s.kelas}","${s.ortu||''}","${s.hp||''}","${s.tanggal||''}"`)];
+  dlCSV('siswa.csv',rows.join('\n')); ikToast('✅ Ekspor CSV berhasil');
+};
+window.ikExportJSON = function(){dlJSON('siswa.json',IK.siswa);ikToast('✅ Ekspor JSON berhasil');};
+window.ikExportBayarCSV = function(){
+  const rows=['Tanggal,NamaSiswa,Kelas,Bulan,Tahun,Jumlah,Catatan',...IK.pembayaran.map(p=>`"${p.tanggal||''}","${p.namaSiswa}","${p.kelas}","${BN[p.bulan]}","${p.tahun}",${p.jumlah},"${p.catatan||''}"`)];
+  dlCSV('pembayaran.csv',rows.join('\n')); ikToast('✅ Ekspor pembayaran CSV');
+};
+window.ikExportPengeluaranCSV = function(){
+  const rows=['Tanggal,Keterangan,Kategori,Jumlah',...(IK.pengeluaran||[]).map(p=>`"${p.tanggal||''}","${p.ket}","${p.kategori||''}",${p.jumlah}`)];
+  dlCSV('pengeluaran.csv',rows.join('\n')); ikToast('✅ Ekspor pengeluaran CSV');
+};
+window.ikBackupAll = function(){
+  dlJSON('backup_iuran_komite_'+Date.now()+'.json',{siswa:IK.siswa,pembayaran:IK.pembayaran,pengeluaran:IK.pengeluaran,cfg:IK.cfg,kelasList:IK.kelasList});
+  ikToast('✅ Backup semua data berhasil');
+};
+
+// ================================================================
+// EDIT STATUS
+// ================================================================
+let esLog = [];
+
+window.ikInitEditStatus = function(){
+  const tEl=document.getElementById('es-ta'); if(!tEl)return;
+  if(!tEl.options.length){
+    const list=taList();
+    tEl.innerHTML=list.map(ta=>`<option value="${ta}"${ta===IK.cfg.ta?' selected':''}>${ta}</option>`).join('');
+  }
+  ikEsPopulateBulan(false);
+  // kelas
+  const kEl=document.getElementById('es-kelas'); if(kEl){
+    kEl.innerHTML='<option value="">Semua</option>'+IK.kelasList.map(k=>`<option value="${k}">${k}</option>`).join('');
+  }
+  ikRenderEditStatus();
+};
+
+window.ikEsPopulateBulan = function(reset){
+  const ta=document.getElementById('es-ta')?.value||IK.cfg.ta;
+  const {t1,t2}=parseTA(ta);
+  const el=document.getElementById('es-bulan'); if(!el)return;
+  const now=new Date(); const cb=now.getMonth()+1;
+  const prev=reset?null:el.value;
+  el.innerHTML=BUTA.map((b,i)=>{
+    const thn=b>=7?t1:t2;
+    const sel=prev?String(i)===prev:b===cb;
+    return `<option value="${i}"${sel?' selected':''}>${BN[b]} ${thn}</option>`;
+  }).join('');
+};
+
+window.ikRenderEditStatus = function(){
+  const ta=document.getElementById('es-ta')?.value||IK.cfg.ta;
+  const bIdx=+(document.getElementById('es-bulan')?.value||0);
+  const b=BUTA[bIdx]; const {t1,t2}=parseTA(ta); const thn=b>=7?t1:t2;
+  const fk=document.getElementById('es-kelas')?.value||'';
+  const fs=document.getElementById('es-status-filter')?.value||'';
+  const cari=document.getElementById('es-cari')?.value.toLowerCase()||'';
+  const paid=new Set(IK.pembayaran.filter(p=>p.bulan===b&&p.tahun===thn).map(p=>p.siswaId));
+  let siswa=IK.siswa.filter(s=>{
+    if(fk&&s.kelas!==fk)return false;
+    if(cari&&!s.nama.toLowerCase().includes(cari))return false;
+    if(fs==='lunas'&&!paid.has(s.id))return false;
+    if(fs==='belum'&&paid.has(s.id))return false;
+    return true;
+  }).sort((a,z)=>a.kelas.localeCompare(z.kelas)||a.nama.localeCompare(z.nama));
+  const ct=document.getElementById('es-count-tag');
+  if(ct)ct.textContent=siswa.length+' siswa';
+  const cb2=document.getElementById('es-cb-all');
+  if(cb2)cb2.checked=false;
+  const tb=document.getElementById('es-tbody'); if(!tb)return;
+  if(!siswa.length){tb.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:16px;color:#94a3b8">Tidak ada data</td></tr>`;return;}
+  tb.innerHTML=siswa.map((s,i)=>{
+    const lunas=paid.has(s.id);
+    return `<tr>
+      <td><input type="checkbox" class="es-cb" value="${s.id}"></td>
+      <td style="color:#94a3b8">${i+1}</td>
+      <td><strong>${s.nama}</strong></td>
+      <td><span class="ik-badge ik-badge-kelas">${s.kelas}</span></td>
+      <td><span class="ik-badge ${lunas?'ik-badge-lunas':'ik-badge-belum'}">${lunas?'✅ Lunas':'❌ Belum'}</span></td>
+      <td>
+        ${lunas
+          ?`<button class="ik-btn ik-btn-danger ik-btn-xs" onclick="ikEsSetStatus('${s.id}','belum',${b},${thn})">Batal Lunas</button>`
+          :`<button class="ik-btn ik-btn-success ik-btn-xs" onclick="ikEsSetStatus('${s.id}','lunas',${b},${thn})">Tandai Lunas</button>`
+        }
+      </td>
+    </tr>`;
+  }).join('');
+};
+
+window.ikEsToggleAll = function(cb){
+  document.querySelectorAll('.es-cb').forEach(c=>c.checked=cb.checked);
+};
+window.ikEsSelectAll = function(){
+  document.querySelectorAll('.es-cb').forEach(c=>c.checked=true);
+  const a=document.getElementById('es-cb-all'); if(a)a.checked=true;
+};
+window.ikEsDeselectAll = function(){
+  document.querySelectorAll('.es-cb').forEach(c=>c.checked=false);
+  const a=document.getElementById('es-cb-all'); if(a)a.checked=false;
+};
+
+window.ikEsBulkAksi = function(aksi){
+  const checked=[...document.querySelectorAll('.es-cb:checked')].map(c=>c.value);
+  if(!checked.length){ikToast('❗ Pilih siswa dulu','danger');return;}
+  IK._esBulkTarget={ids:checked,aksi};
+  const ta=document.getElementById('es-ta')?.value||IK.cfg.ta;
+  const bIdx=+(document.getElementById('es-bulan')?.value||0);
+  const b=BUTA[bIdx]; const {t1,t2}=parseTA(ta); const thn=b>=7?t1:t2;
+  IK._esBulkTarget.b=b; IK._esBulkTarget.thn=thn;
+  document.getElementById('es-pw-info').innerHTML=`Akan <strong>${aksi==='lunas'?'menandai lunas':'membatalkan lunas'}</strong> <strong>${checked.length} siswa</strong> untuk bulan <strong>${BN[b]} ${thn}</strong>`;
+  document.getElementById('es-pw-input').value='';
+  document.getElementById('es-pw-error').style.display='none';
+  document.getElementById('ik-modal-password').classList.add('open');
+  setTimeout(()=>document.getElementById('es-pw-input').focus(),100);
+};
+
+window.ikEsSetStatus = function(sid,aksi,b,thn){
+  IK._esBulkTarget={ids:[sid],aksi,b,thn};
+  document.getElementById('es-pw-info').innerHTML=`${aksi==='lunas'?'Tandai lunas':'Batal lunas'} untuk bulan <strong>${BN[b]} ${thn}</strong>`;
+  document.getElementById('es-pw-input').value='';
+  document.getElementById('es-pw-error').style.display='none';
+  document.getElementById('ik-modal-password').classList.add('open');
+  setTimeout(()=>document.getElementById('es-pw-input').focus(),100);
+};
+
+window.ikEsKonfirmasiPassword = function(){
+  const pw=document.getElementById('es-pw-input').value;
+  if(pw!==IK.cfg.password){
+    document.getElementById('es-pw-error').style.display='block';
+    document.getElementById('es-pw-input').value='';
+    return;
+  }
+  ikCloseModal('ik-modal-password');
+  const {ids,aksi,b,thn}=IK._esBulkTarget;
+  let changed=0;
+  const ta=document.getElementById('es-ta')?.value||IK.cfg.ta;
+  ids.forEach(sid=>{
+    const s=IK.siswa.find(x=>x.id===sid); if(!s)return;
+    if(aksi==='lunas'){
+      if(!IK.pembayaran.find(p=>p.siswaId===sid&&p.bulan===b&&p.tahun===thn)){
+        const rec={id:'P'+Date.now()+Math.random(),siswaId:sid,namaSiswa:s.nama,kelas:s.kelas,
+          bulan:b,tahun:thn,ta,jumlah:IK.cfg.iuran,tanggal:new Date().toLocaleDateString('id-ID'),catatan:'Edit Manual'};
+        IK.pembayaran.push(rec); changed++;
+        esLog.unshift({waktu:new Date().toLocaleTimeString(),nama:s.nama,kelas:s.kelas,aksi:'Lunas',bulan:BN[b]+' '+thn});
+      }
+    } else {
+      const before=IK.pembayaran.length;
+      IK.pembayaran=IK.pembayaran.filter(p=>!(p.siswaId===sid&&p.bulan===b&&p.tahun===thn));
+      if(IK.pembayaran.length<before){changed++;
+        esLog.unshift({waktu:new Date().toLocaleTimeString(),nama:s.nama,kelas:s.kelas,aksi:'Dibatalkan',bulan:BN[b]+' '+thn});}
+    }
+  });
+  if(changed){
+    ikSave(); ikRenderEditStatus(); ikRenderDashboard(); ikRenderRiwayat(); ikRenderBelum(); ikRenderBukasUmum();
+    ikToast(`✅ ${changed} status diperbarui`);
+    ikRenderEsLog();
+  } else {
+    ikToast('ℹ️ Tidak ada perubahan','warn');
+  }
+};
+
+function ikRenderEsLog(){
+  const el=document.getElementById('es-log-container'); if(!el)return;
+  if(!esLog.length){el.innerHTML='<div class="ik-empty"><div class="e-icon">📋</div><div class="e-sub">Belum ada perubahan</div></div>';return;}
+  el.innerHTML=esLog.slice(0,30).map(l=>`
+    <div class="ik-log-item">
+      <span style="font-size:1rem">${l.aksi==='Lunas'?'✅':'❌'}</span>
+      <div>
+        <div style="font-weight:700">${l.nama} <span class="ik-badge ik-badge-kelas">${l.kelas}</span></div>
+        <div style="font-size:0.7rem;color:#64748b">${l.aksi} · ${l.bulan} · ${l.waktu}</div>
+      </div>
+    </div>`).join('');
+}
+
+window.ikEsClearLog = function(){esLog=[];ikRenderEsLog();};
 
 // ================================================================
 // BU KAS UMUM
 // ================================================================
-// IK.pengeluaran stored in localStorage
 function ikLoadBukas(){
-  try{ const p=localStorage.getItem('ik_pengeluaran'); if(p) IK.pengeluaran=JSON.parse(p); }catch(e){}
+  try{const b=localStorage.getItem('ik_pengeluaran');if(b)IK.pengeluaran=JSON.parse(b);}catch(e){}
 }
 function ikSaveBukas(){
-  localStorage.setItem('ik_pengeluaran', JSON.stringify(IK.pengeluaran));
+  localStorage.setItem('ik_pengeluaran',JSON.stringify(IK.pengeluaran||[]));
 }
 
 function ikPopulateBukasTA(){
-  const list = taList();
   ['bukas-filter-ta','bukas-lap-ta'].forEach(id=>{
     const el=document.getElementById(id); if(!el)return;
+    const list=taList();
     el.innerHTML=list.map(ta=>`<option value="${ta}"${ta===IK.cfg.ta?' selected':''}>${ta}</option>`).join('');
   });
 }
 
+window.ikTambahPengeluaran = function(){
+  const ket=document.getElementById('bukas-ket').value.trim();
+  const jml=+document.getElementById('bukas-jml').value;
+  const kat=document.getElementById('bukas-kat').value;
+  const tgl=document.getElementById('bukas-tgl').value||new Date().toLocaleDateString('id-ID');
+  if(!ket||!jml){ikToast('❗ Keterangan dan jumlah wajib diisi','danger');return;}
+  const rec={id:'E'+Date.now(),tanggal:tgl,ket,kategori:kat,jumlah:jml};
+  IK.pengeluaran.push(rec); ikSaveBukas(); ikRenderBukasUmum();
+  document.getElementById('bukas-ket').value='';
+  document.getElementById('bukas-jml').value='';
+  ikToast('✅ Pengeluaran dicatat');
+};
+
+window.ikHapusPengeluaran = function(id){
+  if(!confirm('Hapus data pengeluaran ini?'))return;
+  IK.pengeluaran=IK.pengeluaran.filter(p=>p.id!==id);
+  ikSaveBukas(); ikRenderBukasUmum();
+  ikToast('🗑️ Pengeluaran dihapus');
+};
+
 function ikRenderBukasUmum(){
-  ikPopulateBukasTA();
-  const ta = (document.getElementById('bukas-filter-ta')||{}).value || IK.cfg.ta;
-  const {t1,t2} = parseTA(ta);
+  const ta=document.getElementById('bukas-filter-ta')?.value||IK.cfg.ta;
+  // Pemasukan dari iuran
+  const {t1,t2}=parseTA(ta);
+  const bayarTA=IK.pembayaran.filter(p=>(p.tahun===t1&&p.bulan>=7)||(p.tahun===t2&&p.bulan<=6));
+  const totalMasuk=bayarTA.reduce((s,p)=>s+(p.jumlah||0),0);
+  const totalKeluar=(IK.pengeluaran||[]).reduce((s,p)=>s+(p.jumlah||0),0);
+  const saldo=totalMasuk-totalKeluar;
 
-  // Hitung total pemasukan dari pembayaran
-  const pmasuk = IK.pembayaran.filter(p => p.ta===ta || ((p.tahun===t1&&p.bulan>=7)||(p.tahun===t2&&p.bulan<=6)));
-  const totalMasuk = pmasuk.reduce((a,p)=>a+p.jumlah,0);
+  const $=id=>document.getElementById(id);
+  if($('bukas-total-masuk'))$('bukas-total-masuk').textContent='Rp '+totalMasuk.toLocaleString('id-ID');
+  if($('bukas-jml-transaksi'))$('bukas-jml-transaksi').textContent=bayarTA.length+' transaksi';
+  if($('bukas-total-keluar'))$('bukas-total-keluar').textContent='Rp '+totalKeluar.toLocaleString('id-ID');
+  if($('bukas-jml-pengeluaran'))$('bukas-jml-pengeluaran').textContent=(IK.pengeluaran||[]).length+' item';
+  if($('bukas-saldo'))$('bukas-saldo').textContent='Rp '+saldo.toLocaleString('id-ID');
 
-  // Hitung total pengeluaran
-  const pkeluar = IK.pengeluaran || [];
-  const totalKeluar = pkeluar.reduce((a,p)=>a+(+p.jumlah||0),0);
-  const saldo = totalMasuk - totalKeluar;
-
-  // Update KPI
-  const elM = document.getElementById('bukas-total-masuk');
-  const elK = document.getElementById('bukas-total-keluar');
-  const elS = document.getElementById('bukas-saldo');
-  const elT = document.getElementById('bukas-jml-transaksi');
-  const elKn = document.getElementById('bukas-jml-pengeluaran');
-  if(elM) elM.textContent = 'Rp ' + totalMasuk.toLocaleString('id-ID');
-  if(elK) elK.textContent = 'Rp ' + totalKeluar.toLocaleString('id-ID');
-  if(elS){
-    elS.textContent = 'Rp ' + saldo.toLocaleString('id-ID');
-    elS.style.color = saldo >= 0 ? '#047857' : '#b91c1c';
-  }
-  if(elT) elT.textContent = pmasuk.length + ' transaksi';
-  if(elKn) elKn.textContent = pkeluar.length + ' item';
-
-  // Tabel pemasukan per bulan
-  const tbM = document.getElementById('bukas-tb-masuk');
-  if(tbM){
-    let grandTotal = 0;
-    const rows = BUTA.map(b=>{
-      const thn = b>=7?t1:t2;
-      const pbr = IK.pembayaran.filter(p=>p.bulan===b&&p.tahun===thn);
-      const tot = pbr.reduce((a,p)=>a+p.jumlah,0);
-      const lbs = IK.siswa.filter(s=>pbr.some(p=>p.siswaId===s.id)).length;
-      grandTotal += tot;
+  // Rekap masuk per bulan
+  const tbm=$('bukas-tb-masuk'); if(tbm){
+    tbm.innerHTML=BUTA.map(b=>{
+      const thn=b>=7?t1:t2;
+      const bpay=bayarTA.filter(p=>p.bulan===b&&p.tahun===thn);
+      const lunas=new Set(bpay.map(p=>p.siswaId)).size;
+      const total=bpay.reduce((s,p)=>s+(p.jumlah||0),0);
       return `<tr>
         <td>${BN[b]} ${thn}</td>
-        <td>${pbr.length}</td>
-        <td>${lbs} siswa</td>
-        <td style="color:#047857;font-weight:${tot?'700':'400'}">${tot?'Rp '+tot.toLocaleString('id-ID'):'—'}</td>
+        <td>${bpay.length}</td>
+        <td>${lunas}</td>
+        <td style="font-weight:700;color:${total>0?'#047857':'#94a3b8'}">${total>0?'Rp '+total.toLocaleString('id-ID'):'—'}</td>
       </tr>`;
-    });
-    rows.push(`<tr style="background:#fffbeb;font-weight:700;border-top:2px solid #d97706">
-      <td colspan="3">TOTAL PEMASUKAN</td>
-      <td style="color:#047857">Rp ${grandTotal.toLocaleString('id-ID')}</td>
-    </tr>`);
-    tbM.innerHTML = rows.join('');
+    }).join('');
   }
 
-  // Tabel pengeluaran
-  const wrap = document.getElementById('bukas-tb-keluar-wrap');
-  if(wrap){
-    if(!pkeluar.length){
-      wrap.innerHTML='<div class="ik-empty"><div class="e-icon">📋</div><div class="e-sub">Belum ada pengeluaran</div></div>';
+  // Riwayat pengeluaran
+  const tbk=$('bukas-tb-keluar-wrap'); if(tbk){
+    if(!(IK.pengeluaran||[]).length){
+      tbk.innerHTML='<div class="ik-empty"><div class="e-icon">📋</div><div class="e-sub">Belum ada pengeluaran</div></div>';
     } else {
-      wrap.innerHTML=`<div class="ik-table-wrap"><table>
+      const sorted=[...(IK.pengeluaran||[])].sort((a,b)=>b.id.localeCompare(a.id));
+      tbk.innerHTML=`<div class="ik-table-wrap"><table>
         <thead><tr><th>Tanggal</th><th>Keterangan</th><th>Kategori</th><th>Jumlah</th><th>Aksi</th></tr></thead>
-        <tbody>${pkeluar.slice().reverse().map((p,ri)=>{
-          const i = pkeluar.length-1-ri;
-          return `<tr>
-            <td>${p.tanggal||'—'}</td>
-            <td><strong>${p.ket}</strong></td>
-            <td><span class="ik-badge ik-badge-kelas">${p.kategori||'Lain-lain'}</span></td>
-            <td style="color:#b91c1c;font-weight:700">Rp ${(+p.jumlah||0).toLocaleString('id-ID')}</td>
-            <td><button class="ik-btn ik-btn-danger ik-btn-xs" onclick="ikHapusPengeluaran(${i})">🗑️</button></td>
-          </tr>`;
-        }).join('')}
-        <tr style="background:#fef2f2;font-weight:700;border-top:2px solid #b91c1c">
-          <td colspan="3">TOTAL PENGELUARAN</td>
-          <td style="color:#b91c1c">Rp ${totalKeluar.toLocaleString('id-ID')}</td>
-          <td></td>
-        </tr>
-        </tbody></table></div>`;
+        <tbody>${sorted.map(p=>`<tr>
+          <td style="font-size:0.72rem;color:#94a3b8">${p.tanggal||'—'}</td>
+          <td>${p.ket}</td>
+          <td><span class="ik-badge" style="background:#e0f2fe;color:#0369a1">${p.kategori||'—'}</span></td>
+          <td style="color:#b91c1c;font-weight:700">Rp ${(p.jumlah||0).toLocaleString('id-ID')}</td>
+          <td><button class="ik-btn ik-btn-danger ik-btn-xs" onclick="ikHapusPengeluaran('${p.id}')">🗑️</button></td>
+        </tr>`).join('')}</tbody>
+      </table></div>`;
     }
   }
 }
 window.ikRenderBukasUmum = ikRenderBukasUmum;
 
-window.ikTambahPengeluaran = function(){
-  const ket = document.getElementById('bukas-ket').value.trim();
-  const jml = +document.getElementById('bukas-jml').value;
-  const kat = document.getElementById('bukas-kat').value;
-  const tgl = document.getElementById('bukas-tgl').value;
-  if(!ket){ikToast('❗ Keterangan wajib diisi','danger');return;}
-  if(!jml||jml<=0){ikToast('❗ Jumlah harus lebih dari 0','danger');return;}
-  if(!IK.pengeluaran) IK.pengeluaran=[];
-  const tglFmt = tgl ? new Date(tgl).toLocaleDateString('id-ID') : new Date().toLocaleDateString('id-ID');
-  const rec = {id:'K'+Date.now(), ket, jumlah:jml, kategori:kat, tanggal:tglFmt};
-  IK.pengeluaran.push(rec);
-  ikSaveBukas();
-  // Sync ke Google Sheets
-  ikSyncSheets('addPengeluaran', rec);
-  document.getElementById('bukas-ket').value='';
-  document.getElementById('bukas-jml').value='';
-  ikRenderBukasUmum();
-  ikToast('✅ Pengeluaran Rp '+jml.toLocaleString('id-ID')+' dicatat & dikirim ke Sheets!');
-};
-
-window.ikHapusPengeluaran = function(i){
-  if(!confirm('Hapus data pengeluaran ini?'))return;
-  const rec = IK.pengeluaran[i];
-  ikSyncSheets('deletePengeluaran', {id: rec.id});
-  IK.pengeluaran.splice(i,1);
-  ikSaveBukas(); ikRenderBukasUmum();
-  ikToast('🗑️ Pengeluaran dihapus & dihapus dari Sheets');
-};
-
-window.ikExportPengeluaranCSV = function(){
-  const rows = [['ID','Tanggal','Keterangan','Kategori','Jumlah']];
-  (IK.pengeluaran||[]).forEach(p=>rows.push([p.id,p.tanggal,p.ket,p.kategori||'',p.jumlah]));
-  const csv = rows.map(r=>r.map(v=>`"${v||''}"`).join(',')).join('\n');
-  const b=new Blob([csv],{type:'text/csv'}); const a=document.createElement('a');
-  a.href=URL.createObjectURL(b); a.download='pengeluaran-kas.csv'; a.click();
-  ikToast('✅ Export CSV pengeluaran');
-};
-
 window.ikGenLapKas = function(){
-  const ta = document.getElementById('bukas-lap-ta').value || IK.cfg.ta;
-  const {t1,t2} = parseTA(ta);
-  const out = document.getElementById('bukas-lap-out');
-
-  const pmasuk = IK.pembayaran.filter(p => p.ta===ta || ((p.tahun===t1&&p.bulan>=7)||(p.tahun===t2&&p.bulan<=6)));
-  const totalMasuk = pmasuk.reduce((a,p)=>a+p.jumlah,0);
-  const pkeluar = IK.pengeluaran||[];
-  const totalKeluar = pkeluar.reduce((a,p)=>a+(+p.jumlah||0),0);
-  const saldo = totalMasuk - totalKeluar;
-  const tgl = new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
-
-  out.innerHTML=`<div class="ik-card" style="background:white">
-    ${ikKopBukas()}
-    <div class="ik-ljudul"><h3>LAPORAN KAS UMUM KOMITE SEKOLAH</h3><p>Tahun Ajaran ${ta}</p></div>
-    <dl class="ik-lmeta">
-      <dt>Nama Sekolah</dt><dd>: ${IK.cfg.sekolah}</dd>
-      <dt>Tahun Ajaran</dt><dd>: ${ta}</dd>
-      <dt>Total Pemasukan</dt><dd>: Rp ${totalMasuk.toLocaleString('id-ID')}</dd>
-      <dt>Total Pengeluaran</dt><dd>: Rp ${totalKeluar.toLocaleString('id-ID')}</dd>
-      <dt>Saldo Kas</dt><dd>: <strong style="color:${saldo>=0?'#047857':'#b91c1c'}">Rp ${saldo.toLocaleString('id-ID')}</strong></dd>
-    </dl>
-    <div style="font-size:0.72rem;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px">I. Pemasukan</div>
-    <div class="ik-ltable"><table>
-      <thead><tr><th>No</th><th>Bulan</th><th>Transaksi</th><th>Jumlah</th></tr></thead>
-      <tbody>
-        ${BUTA.map((b,i)=>{
-          const thn=b>=7?t1:t2;
-          const pbr=IK.pembayaran.filter(p=>p.bulan===b&&p.tahun===thn);
-          const tot=pbr.reduce((a,p)=>a+p.jumlah,0);
-          return `<tr><td>${i+1}</td><td>${BN[b]} ${thn}</td><td>${pbr.length}</td><td>${tot?'Rp '+tot.toLocaleString('id-ID'):'—'}</td></tr>`;
-        }).join('')}
-        <tr class="ltr-total"><td colspan="3"><strong>TOTAL MASUK</strong></td><td><strong>Rp ${totalMasuk.toLocaleString('id-ID')}</strong></td></tr>
-      </tbody>
-    </table></div>
-    <div style="font-size:0.72rem;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:0.4px;margin:14px 0 8px">II. Pengeluaran</div>
-    <div class="ik-ltable"><table>
-      <thead><tr><th>No</th><th>Tanggal</th><th>Keterangan</th><th>Kategori</th><th>Jumlah</th></tr></thead>
-      <tbody>
-        ${pkeluar.length ? pkeluar.map((p,i)=>`<tr><td>${i+1}</td><td>${p.tanggal||'—'}</td><td>${p.ket}</td><td>${p.kategori||'—'}</td><td>Rp ${(+p.jumlah||0).toLocaleString('id-ID')}</td></tr>`).join('') : '<tr><td colspan="5" style="text-align:center;color:#94a3b8">Tidak ada pengeluaran</td></tr>'}
-        <tr class="ltr-total"><td colspan="4"><strong>TOTAL KELUAR</strong></td><td><strong>Rp ${totalKeluar.toLocaleString('id-ID')}</strong></td></tr>
-      </tbody>
-    </table></div>
-    <div style="margin-top:14px;padding:10px 14px;border-radius:6px;background:${saldo>=0?'#ecfdf5':'#fef2f2'};border:1px solid ${saldo>=0?'#a7f3d0':'#fee2e2'}">
-      <strong style="color:${saldo>=0?'#047857':'#b91c1c'}">SALDO KAS: Rp ${saldo.toLocaleString('id-ID')}</strong>
-    </div>
-    <div style="font-size:0.75rem;margin-top:20px;color:#475569">Dicetak: ${tgl}</div>
-    <div class="ik-lttd">
-      <div class="ttd-box"><div class="ttd-label">Mengetahui,<br>Kepala Sekolah</div><div class="ttd-name">${IK.cfg.kepsek||'................................'}</div><div class="ttd-jabatan">NIP. ${IK.cfg.nip||'................................'}</div></div>
-      <div class="ttd-box"><div class="ttd-label">Bendahara Komite</div><div class="ttd-name">${IK.cfg.ketua||'................................'}</div><div class="ttd-jabatan">Bendahara / Bu Kas</div></div>
-    </div>
-  </div>`;
+  const ta=document.getElementById('bukas-lap-ta')?.value||IK.cfg.ta;
+  const {t1,t2}=parseTA(ta);
+  const bayarTA=IK.pembayaran.filter(p=>(p.tahun===t1&&p.bulan>=7)||(p.tahun===t2&&p.bulan<=6));
+  const totalMasuk=bayarTA.reduce((s,p)=>s+(p.jumlah||0),0);
+  const totalKeluar=(IK.pengeluaran||[]).reduce((s,p)=>s+(p.jumlah||0),0);
+  const saldo=totalMasuk-totalKeluar;
+  const out=document.getElementById('bukas-lap-out'); if(!out)return;
+  out.innerHTML=`
+    <div class="ik-card">
+      ${ikKopBukas()}
+      <div class="ik-ljudul"><h3>LAPORAN KAS UMUM KOMITE SEKOLAH</h3><p>Tahun Ajaran ${ta}</p></div>
+      <div class="ik-ltable" style="margin-bottom:14px">
+        <table>
+          <thead><tr><th>No</th><th>Bulan</th><th>Pemasukan</th><th>Pengeluaran</th><th>Saldo</th></tr></thead>
+          <tbody>
+            ${BUTA.map((b,i)=>{
+              const thn=b>=7?t1:t2;
+              const masuk=bayarTA.filter(p=>p.bulan===b&&p.tahun===thn).reduce((s,p)=>s+(p.jumlah||0),0);
+              const keluar=0;
+              return `<tr><td>${i+1}</td><td>${BN[b]} ${thn}</td>
+                <td style="color:#047857">${masuk>0?'Rp '+masuk.toLocaleString('id-ID'):'—'}</td>
+                <td style="color:#b91c1c">${keluar>0?'Rp '+keluar.toLocaleString('id-ID'):'—'}</td>
+                <td>Rp ${masuk.toLocaleString('id-ID')}</td>
+              </tr>`;
+            }).join('')}
+            <tr class="ltr-total">
+              <td colspan="2">TOTAL</td>
+              <td>Rp ${totalMasuk.toLocaleString('id-ID')}</td>
+              <td>Rp ${totalKeluar.toLocaleString('id-ID')}</td>
+              <td>Rp ${saldo.toLocaleString('id-ID')}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="ik-lttd">
+        <div class="ttd-box"><div class="ttd-label">Mengetahui,<br>Kepala Sekolah</div><div class="ttd-name">${IK.cfg.kepsek||'_________________'}</div><div class="ttd-jabatan">${IK.cfg.nip?'NIP. '+IK.cfg.nip:''}</div></div>
+        <div class="ttd-box"><div class="ttd-label">Bendahara Komite</div><div class="ttd-name">${IK.cfg.ketua||'_________________'}</div><div class="ttd-jabatan">Bendahara</div></div>
+      </div>
+    </div>`;
 };
 
 window.ikCetakLapKas = function(){
-  const out = document.getElementById('bukas-lap-out');
+  const out=document.getElementById('bukas-lap-out');
   if(!out.innerHTML.trim()){ikGenLapKas();}
   setTimeout(()=>window.print(),200);
 };
@@ -2339,8 +2339,6 @@ function ikKopBukas(){
 // ================================================================
 // GOOGLE SHEETS
 // ================================================================
-
-// POST fire-and-forget (no-cors) untuk write operasi
 async function ikSyncSheets(action, data){
   try{
     await fetch(GAS_URL, {
@@ -2351,8 +2349,6 @@ async function ikSyncSheets(action, data){
   }catch(e){}
 }
 
-// Ambil data dari Sheets - pakai fetch GET dengan redirect:follow
-// GAS doGet mengembalikan JSON dengan header CORS otomatis
 window.ikLoadSheets = async function(){
   ikToast('📡 Memuat data dari Google Sheets...');
   try{
@@ -2372,7 +2368,6 @@ window.ikLoadSheets = async function(){
     ikUpdateSinkronStats(); ikRenderBukasUmum();
     ikToast('✅ Data dimuat! (' + ((j.siswa||[]).length) + ' siswa, ' + ((j.pembayaran||[]).length) + ' transaksi, ' + ((j.pengeluaran||[]).length) + ' pengeluaran)');
   }catch(e){
-    // Fallback: POST dengan Content-Type text/plain (tidak trigger preflight CORS)
     try{
       const res2 = await fetch(GAS_URL, {
         method: 'POST',
@@ -2402,7 +2397,6 @@ window.ikSyncAllSheets = async function(){
   if(!confirm('Kirim semua data lokal ke Google Sheets?\nData lama di Sheets akan ditimpa.')) return;
   ikToast('Mengirim data ke Sheets...');
   try{
-    // Mapping eksplisit agar urutan kolom pasti benar
     const siswaMapped = IK.siswa.map(d => ({
       id: d.id||'', nama: d.nama||'', kelas: d.kelas||'',
       ortu: d.ortu||'', hp: d.hp||'', tanggal: d.tanggal||''
@@ -2428,11 +2422,18 @@ window.ikSyncAllSheets = async function(){
   }
 };
 
+function ikUpdateSinkronStats(){
+  const $=id=>document.getElementById(id);
+  if($('sinkron-jml-siswa'))$('sinkron-jml-siswa').textContent=IK.siswa.length;
+  if($('sinkron-jml-bayar'))$('sinkron-jml-bayar').textContent=IK.pembayaran.length;
+  if($('sinkron-jml-kelas'))$('sinkron-jml-kelas').textContent=IK.kelasList.length;
+}
+window.ikUpdateSinkronStats = ikUpdateSinkronStats;
+
 // ================================================================
 // PENGATURAN
 // ================================================================
 window.ikSimpanKonfig = function(){
-  // URL dan SID sudah hardcoded, tidak perlu disimpan dari form
   ikToast('ℹ️ URL dan Spreadsheet ID sudah tertanam di kode','warn');
 };
 window.ikSimpanCfg = function(){
@@ -2442,16 +2443,17 @@ window.ikSimpanCfg = function(){
   IK.cfg.kepsek=document.getElementById('ik-cfg-kepsek').value;
   IK.cfg.nip=document.getElementById('ik-cfg-nip').value;
   IK.cfg.ketua=document.getElementById('ik-cfg-ketua').value;
-  // Ganti password jika diisi
   const pw=document.getElementById('ik-cfg-password').value;
   const pw2=document.getElementById('ik-cfg-password2').value;
   if(pw){
     if(pw.length<4){ikToast('❗ Password minimal 4 karakter','danger');return;}
     if(pw!==pw2){ikToast('❗ Konfirmasi password tidak cocok','danger');return;}
     IK.cfg.password=pw;
+    // Reset session saat password diganti
+    IK_SESSION.bendahara=false; IK_SESSION.admin=false;
     document.getElementById('ik-cfg-password').value='';
     document.getElementById('ik-cfg-password2').value='';
-    ikToast('✅ Pengaturan & password disimpan!');
+    ikToast('✅ Pengaturan & password disimpan! Silakan login ulang.');
   } else {
     ikToast('✅ Pengaturan disimpan!');
   }
@@ -2480,6 +2482,13 @@ window.ikSampleData = function(){
   });
   ikSave(); ikRenderSiswa(); ikRenderDashboard(); ikPopulateSiswaSelect(); ikRenderRiwayat(); ikRenderKartu(); ikRebuildKelasSelects(); ikUpdateSinkronStats();
   ikToast('✅ '+IK.siswa.length+' data contoh dimuat!');
+};
+
+// ================================================================
+// MODAL
+// ================================================================
+window.ikCloseModal = function(id){
+  const m=document.getElementById(id); if(m)m.classList.remove('open');
 };
 
 // ================================================================
